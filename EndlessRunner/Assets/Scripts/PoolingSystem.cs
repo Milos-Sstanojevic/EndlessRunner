@@ -6,26 +6,18 @@ public class PoolingSystem : MonoBehaviour
 {
     private const int DefaultCapacityForPool = 10;
     private const int MaximumCapacityForPool = 20;
-    private const int OffsetZ = 4;
 
     [SerializeField] private ObstacleController[] obstacle;
     [SerializeField] private SpaceshipController spaceship;
     private ObjectPool<ObstacleController> _poolObstacle;
     private ObjectPool<SpaceshipController> _poolSpaceship;
-    public float ObstacleSpawnDelay = 1;
-    public float SpaceshipSpawnDelay = 2;
-    private float edgePosX = 4f;
-    private float posY = 4f;
-    private float posZ = 23f;
 
-    void Start()
+
+    private void Start()
     {
 
         CreateObstaclePool();
         CreateSpaceshipPool();
-
-        StartCoroutine(SpawnObstacle());
-        StartCoroutine(SpawnSpaceship());
 
         SubscribeToDestroyActions();
     }
@@ -44,9 +36,9 @@ public class PoolingSystem : MonoBehaviour
         }, true, DefaultCapacityForPool, MaximumCapacityForPool);
     }
 
-    ObstacleController CreateObstacle()
+    private ObstacleController CreateObstacle()
     {
-        return Instantiate(obstacle[0]);        //priprema za kad bude bilo vise prepreka
+        return Instantiate(obstacle[0]);
     }
 
     private void CreateSpaceshipPool()
@@ -54,7 +46,6 @@ public class PoolingSystem : MonoBehaviour
         _poolSpaceship = new ObjectPool<SpaceshipController>(CreateSpaceship, spaceship =>
         {
             spaceship.gameObject.SetActive(true);
-
         }, spaceship =>
         {
             spaceship.gameObject.SetActive(false);
@@ -65,12 +56,12 @@ public class PoolingSystem : MonoBehaviour
     }
 
 
-    SpaceshipController CreateSpaceship()
+    private SpaceshipController CreateSpaceship()
     {
         return Instantiate(spaceship);
     }
 
-    void SubscribeToDestroyActions()
+    private void SubscribeToDestroyActions()
     {
         ObstacleController.OnDestroyObstacle += DestroyObstacle;
         SpaceshipController.OnDestroySpaceship += DestroySpaceship;
@@ -81,54 +72,20 @@ public class PoolingSystem : MonoBehaviour
         UnsubscribeFromDestroyAction();
     }
 
-    void UnsubscribeFromDestroyAction()
+    private void UnsubscribeFromDestroyAction()
     {
         ObstacleController.OnDestroyObstacle -= DestroyObstacle;
         SpaceshipController.OnDestroySpaceship -= DestroySpaceship;
     }
 
-
-    void Update()
+    public ObstacleController GetObstacleFromPool()
     {
+        return _poolObstacle.Get();
     }
 
-    public IEnumerator SpawnObstacle()
+    public SpaceshipController GetSpaceshipFromPool()
     {
-        while (GameManager.Instance.IsGameActive)
-        {
-            yield return new WaitForSeconds(ObstacleSpawnDelay);
-
-            HandleObstacleSpawning();
-        }
-    }
-
-    public IEnumerator SpawnSpaceship()
-    {
-        while (GameManager.Instance.IsGameActive)
-        {
-            yield return new WaitForSeconds(SpaceshipSpawnDelay);
-
-            HandleSpaceshipSpawning();
-        }
-    }
-
-    private void HandleObstacleSpawning()
-    {
-        var obstacle = _poolObstacle.Get();
-        float randomXObst = Random.Range(-edgePosX, edgePosX);
-
-        obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
-    }
-
-
-    private void HandleSpaceshipSpawning()
-    {
-        var spaceship = _poolSpaceship.Get();
-
-        float randomXShip = Random.Range(-edgePosX, edgePosX);
-        float randomY = Random.Range(1f, posY);
-
-        spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + OffsetZ);
+        return _poolSpaceship.Get();
     }
 
     private void DestroyObstacle(ObstacleController obstacle)
