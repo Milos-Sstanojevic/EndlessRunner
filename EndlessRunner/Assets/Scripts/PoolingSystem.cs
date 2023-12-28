@@ -1,95 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class PoolingSystem : MonoBehaviour
 {
-    public ObstacleController obstacle;
-    public SpaceshipController spaceship;
+    private const int DefaultCapacityForPool = 10;
+    private const int MaximumCapacityForPool = 20;
+    private const int OffsetZ = 4;
+
+    [SerializeField] private ObstacleController[] obstacle;
+    [SerializeField] private SpaceshipController spaceship;
     private ObjectPool<ObstacleController> _poolObstacle;
     private ObjectPool<SpaceshipController> _poolSpaceship;
-    public float obstacleSpawnDelay = 1;
-    public float spaceshipSpawnDelay = 2;
-    private float posX = 4f;
-    private float posY = 3f;
+    public float ObstacleSpawnDelay = 1;
+    public float SpaceshipSpawnDelay = 2;
+    private float edgePosX = 4f;
+    private float posY = 4f;
     private float posZ = 23f;
 
-    // Start is called before the first frame update
     void Start()
     {
 
         CreateObstaclePool();
         CreateSpaceshipPool();
 
-
         StartCoroutine(SpawnObstacle());
         StartCoroutine(SpawnSpaceship());
+
+        SubscribeToDestroyActions();
     }
-
-
-    void Update()
-    {
-    }
-
-    public IEnumerator SpawnObstacle()
-    {
-        while (GameManager.Instance.IsGameActive)
-        {
-            yield return new WaitForSeconds(obstacleSpawnDelay);
-
-            HandleObstacleSpawning();
-        }
-    }
-
-    public IEnumerator SpawnSpaceship()
-    {
-        while (GameManager.Instance.IsGameActive)
-        {
-            yield return new WaitForSeconds(spaceshipSpawnDelay);
-
-            HandleSpaceshipSpawning();
-        }
-    }
-
-
-    private void HandleObstacleSpawning()
-    {
-        var obstacle = _poolObstacle.Get();
-        float randomXObst = Random.Range(-posX, posX);
-
-        obstacle.transform.position = new Vector3(randomXObst, 0, posZ);
-        obstacle.Init(DestroyObstacle);
-    }
-
-
-    private void HandleSpaceshipSpawning()
-    {
-
-        var spaceship = _poolSpaceship.Get();
-
-        float randomXShip = Random.Range(-posX, posX);
-        float randomY = Random.Range(1f, posY);
-
-        spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + 4);
-        spaceship.Init(DestroySpaceship);
-    }
-
 
     private void CreateObstaclePool()
     {
         _poolObstacle = new ObjectPool<ObstacleController>(CreateObstacle, obstacle =>
         {
             obstacle.gameObject.SetActive(true);
-
         }, obstacle =>
         {
             obstacle.gameObject.SetActive(false);
         }, obstacle =>
         {
             Destroy(obstacle.gameObject);
-        }, true, 10, 20);
+        }, true, DefaultCapacityForPool, MaximumCapacityForPool);
+    }
 
+    ObstacleController CreateObstacle()
+    {
+        return Instantiate(obstacle[0]);        //priprema za kad bude bilo vise prepreka
     }
 
     private void CreateSpaceshipPool()
@@ -104,17 +61,74 @@ public class PoolingSystem : MonoBehaviour
         }, spaceship =>
         {
             Destroy(spaceship.gameObject);
-        }, true, 10, 20);
+        }, true, DefaultCapacityForPool, MaximumCapacityForPool);
     }
 
-    ObstacleController CreateObstacle()
-    {
-        return Instantiate(obstacle);
-    }
 
     SpaceshipController CreateSpaceship()
     {
         return Instantiate(spaceship);
+    }
+
+    void SubscribeToDestroyActions()
+    {
+        ObstacleController.OnDestroyObstacle += DestroyObstacle;
+        SpaceshipController.OnDestroySpaceship += DestroySpaceship;
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromDestroyAction();
+    }
+
+    void UnsubscribeFromDestroyAction()
+    {
+        ObstacleController.OnDestroyObstacle -= DestroyObstacle;
+        SpaceshipController.OnDestroySpaceship -= DestroySpaceship;
+    }
+
+
+    void Update()
+    {
+    }
+
+    public IEnumerator SpawnObstacle()
+    {
+        while (GameManager.Instance.IsGameActive)
+        {
+            yield return new WaitForSeconds(ObstacleSpawnDelay);
+
+            HandleObstacleSpawning();
+        }
+    }
+
+    public IEnumerator SpawnSpaceship()
+    {
+        while (GameManager.Instance.IsGameActive)
+        {
+            yield return new WaitForSeconds(SpaceshipSpawnDelay);
+
+            HandleSpaceshipSpawning();
+        }
+    }
+
+    private void HandleObstacleSpawning()
+    {
+        var obstacle = _poolObstacle.Get();
+        float randomXObst = Random.Range(-edgePosX, edgePosX);
+
+        obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
+    }
+
+
+    private void HandleSpaceshipSpawning()
+    {
+        var spaceship = _poolSpaceship.Get();
+
+        float randomXShip = Random.Range(-edgePosX, edgePosX);
+        float randomY = Random.Range(1f, posY);
+
+        spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + OffsetZ);
     }
 
     private void DestroyObstacle(ObstacleController obstacle)

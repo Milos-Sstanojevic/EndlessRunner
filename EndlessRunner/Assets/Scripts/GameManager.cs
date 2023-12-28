@@ -1,29 +1,28 @@
+
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static GlobalConstants;
 
 public class GameManager : MonoBehaviour
 {
+    private const int shipsWorth = 20;
+
     public static GameManager Instance;
-    public GameObject startScreen;
-    public PlayerController player;
-    public PoolingSystem poolingSystem;
-    public GameObject endScreen;
-    public GameObject pauseScreen;
-    public GameObject scoreScreen;
-    public AudioSource audioSource;
-    public AudioClip spaceshipCollected;
+    [SerializeField] private GameObject startScreen;
+    [SerializeField] private PoolingSystem poolingSystem;
+    [SerializeField] private GameObject endScreen;
+    [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private GameObject scoreScreen;
+    [SerializeField] private TextMeshProUGUI pointsText;
+
     private int points;
-    public TextMeshProUGUI pointsText;
 
 
     //SINGLETON
     public bool IsGameActive { get; private set; }
-    public GameState CurrentState { get; private set; }
+    public GameStates CurrentState { get; private set; }
     public float MovingSpeed { get; private set; }
 
     private void Awake()
@@ -36,7 +35,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
+        SetGameState(GameStates.Pause);
         SubscribeToCollectAction();
     }
 
@@ -45,32 +44,27 @@ public class GameManager : MonoBehaviour
         UnsubscribeFromCollectAction();
     }
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
         MovingSpeed = 8;
-        audioSource = GetComponent<AudioSource>();
         points = 0;
-        pointsText.text = "Score: " + points;
+        pointsText.text = ScoreText + points;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P) && CurrentState == GameState.Playing)
+        if (Input.GetKeyDown(KeyCode.P) && CurrentState == GameStates.Playing)
         {
             PauseGame();
         }
 
-        if (CurrentState == GameState.Pause && Input.GetKeyDown(KeyCode.Escape))
+        if (CurrentState == GameStates.Pause && Input.GetKeyDown(KeyCode.Escape))
         {
             ResumeGame();
         }
     }
 
-    public void SetGameState(GameState state)
+    private void SetGameState(GameStates state)
     {
         CurrentState = state;
     }
@@ -78,32 +72,27 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         IsGameActive = true;
-        SetGameState(GameState.Playing);
-        player.animator.SetBool("Run", true);
+        SetGameState(GameStates.Playing);
         poolingSystem.gameObject.SetActive(true);
         scoreScreen.SetActive(true);
-        StartCoroutine(AddPointsEachSecond());
+        StartCoroutine(AddPointsEachHalfSecond());
         startScreen.SetActive(false);
     }
 
     public void PauseGame()
     {
-        SetGameState(GameState.Pause);
         IsGameActive = false;
-        player.animator.SetBool("Run", false);
+        SetGameState(GameStates.Pause);
         pauseScreen.SetActive(true);
-        player.animator.enabled = false;
     }
 
     public void ResumeGame()
     {
-        SetGameState(GameState.Playing);
-
         IsGameActive = true;
+        SetGameState(GameStates.Playing);
         pauseScreen.SetActive(false);
-        player.animator.SetBool("Run", true);
         StartSpawningCoroutines();
-        StartCoroutine(AddPointsEachSecond());
+        StartCoroutine(AddPointsEachHalfSecond());
     }
 
 
@@ -115,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        SetGameState(GameState.GameOver);
+        SetGameState(GameStates.GameOver);
         endScreen.SetActive(true);
         scoreScreen.SetActive(false);
         IsGameActive = false;
@@ -132,21 +121,20 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    public IEnumerator AddPointsEachSecond()
+    public IEnumerator AddPointsEachHalfSecond()
     {
         while (IsGameActive)
         {
-            points += 1;
-            pointsText.text = "Score: " + points;
+            points++;
+            pointsText.text = ScoreText + points;
             yield return new WaitForSeconds(0.5f);
         }
     }
 
     public void CollectSpaceship()
     {
-        points += 20;
-        pointsText.text = "Score: " + points;
-        audioSource.PlayOneShot(spaceshipCollected, 1.0f);
+        points += shipsWorth;
+        pointsText.text = ScoreText + points;
     }
 
     void UnsubscribeFromCollectAction()
@@ -162,7 +150,7 @@ public class GameManager : MonoBehaviour
 }
 
 
-public enum GameState
+public enum GameStates
 {
     Playing,
     Pause,

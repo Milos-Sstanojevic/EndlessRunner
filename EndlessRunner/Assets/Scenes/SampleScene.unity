@@ -948,17 +948,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 750193884}
   m_CullTransparentMesh: 1
---- !u!114 &777534805 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5072763247599114993, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
-  m_PrefabInstance: {fileID: 8784078332744857191}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9f94d7d2a5212140aadbedbca358d10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &895725762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2345,10 +2334,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d6c4de9a1990438b4d2b1385b6506, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstacle: {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+  obstacle:
+  - {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+  - {fileID: 0}
   spaceship: {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
-  obstacleSpawnDelay: 1
-  spaceshipSpawnDelay: 2
+  ObstacleSpawnDelay: 1
+  SpaceshipSpawnDelay: 2
 --- !u!1 &1282098889
 GameObject:
   m_ObjectHideFlags: 0
@@ -3277,10 +3268,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ReferenceResolution: {x: 1100, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -3469,13 +3460,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startScreen: {fileID: 1117733303}
-  player: {fileID: 777534805}
   poolingSystem: {fileID: 1243810419}
   endScreen: {fileID: 2039614976}
   pauseScreen: {fileID: 83512360}
   scoreScreen: {fileID: 1748329537}
-  audioSource: {fileID: 1981790935}
-  spaceshipCollected: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
   pointsText: {fileID: 981399730}
 --- !u!4 &1981790934
 Transform:
@@ -3510,7 +3498,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 27
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500

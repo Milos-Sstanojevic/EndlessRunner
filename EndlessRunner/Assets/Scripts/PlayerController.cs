@@ -1,35 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using static GlobalConstants;
 
 public class PlayerController : MonoBehaviour
 {
+
     private Rigidbody playerRb;
-    public Animator animator;
-    public AudioSource audioSource;
-    public AudioClip jumpSound;
-    public AudioClip deathSound;
+    private Animator Animator;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip deathSound;
     [SerializeField] private float jumpForce;
     private bool canJump = true;
-    public float gravityModifier;
+    public float GravityModifier;
     private float edgePosX = 4;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-
-        Physics.gravity *= gravityModifier;
-        canJump = true;
+        Animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
     }
 
+    void Start()
+    {
+        Physics.gravity *= GravityModifier;
+        canJump = true;
+    }
 
-    // Update is called once per frame
     void Update()
     {
         Movement();
+        if (GameManager.Instance.CurrentState == GameStates.Playing)
+        {
+            Animator.SetBool(RunAnimation, true);
+        }
+        else
+        {
+            Animator.SetBool(RunAnimation, false);
+        }
     }
 
 
@@ -53,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
     void MoveLeftOrRight()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
+        float horizontalInput = Input.GetAxis(HorizontalAxis);
 
         transform.Translate(Vector3.right * GameManager.Instance.MovingSpeed * Time.deltaTime * horizontalInput);
     }
@@ -61,8 +70,8 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        animator.SetBool("Jump", true);
-        audioSource.PlayOneShot(jumpSound, 1.0f);
+        Animator.SetBool(JumpAnimation, true);
+        audioSource.PlayOneShot(jumpSound, ClipVolume);
         playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         canJump = false;
     }
@@ -82,26 +91,26 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Obstacle"))
+        if (other.gameObject.CompareTag(ObstacleTag))
         {
             GameManager.Instance.GameOver();
             if (ShouldDropPlayerOnGround())
                 transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
-            animator.SetBool("Dead", true);
-            audioSource.PlayOneShot(deathSound, 1.0f);
+            Animator.SetBool(DeadAnimation, true);
+            audioSource.PlayOneShot(deathSound, ClipVolume);
         }
 
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag(GroundTag))
         {
             canJump = true;
-            animator.SetBool("Jump", false);
+            Animator.SetBool(JumpAnimation, false);
         }
     }
 
     private bool ShouldDropPlayerOnGround()
     {
-        return (transform.position.y != 0);
+        return transform.position.y != 0;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -115,6 +124,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
-        Physics.gravity /= gravityModifier; //ovo treba da izmenis
+        Physics.gravity /= GravityModifier;
     }
 }

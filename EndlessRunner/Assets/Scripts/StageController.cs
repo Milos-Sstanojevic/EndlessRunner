@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StageController : MonoBehaviour
@@ -7,18 +5,21 @@ public class StageController : MonoBehaviour
     private float heigthRepeat;
     private Vector3 startPos;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        heigthRepeat = GetComponent<BoxCollider>().size.z;
+    }
+
     void Start()
     {
         if (IsItStage2())
         {
-            startPos = new Vector3(0, -0.05f, 0); //nerviralo me treperenje 
+            startPos = new Vector3(0, -0.05f, 0);
         }
         else
         {
             startPos = Vector3.zero;
         }
-        heigthRepeat = GetComponent<BoxCollider>().size.z;
     }
 
     bool IsItStage2()
@@ -26,7 +27,6 @@ public class StageController : MonoBehaviour
         return gameObject.CompareTag("1");      //ako nije stage 2 onda je stage 1, ovo treba podesiti kad napravim vise stage-ova koji se menjaju.
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (GameManager.Instance.IsGameActive)
