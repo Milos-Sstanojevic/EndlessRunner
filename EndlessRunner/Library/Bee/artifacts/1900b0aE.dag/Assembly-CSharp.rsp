@@ -356,13 +356,15 @@
 "Assets/Scripts/Controllers/PlayerController.cs"
 "Assets/Scripts/Controllers/SpaceshipController.cs"
 "Assets/Scripts/Controllers/StageController.cs"
-"Assets/Scripts/Controllers/UIManager.cs"
 "Assets/Scripts/GlobalConstants.cs"
 "Assets/Scripts/Interface/ICollectible.cs"
 "Assets/Scripts/Interface/IDestroyable.cs"
 "Assets/Scripts/Managers/AudioManager.cs"
+"Assets/Scripts/Managers/EventManager.cs"
 "Assets/Scripts/Managers/GameManager.cs"
+"Assets/Scripts/Managers/MovementManager.cs"
 "Assets/Scripts/Managers/SpawnManager.cs"
+"Assets/Scripts/Managers/UIManager.cs"
 "Assets/Scripts/PoolingSystem.cs"
 -langversion:9.0
 

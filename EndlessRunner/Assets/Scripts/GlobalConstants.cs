@@ -10,5 +10,7 @@ public static class GlobalConstants
     public const string ObstacleTag = "Obstacle";
     public const float PositionBehindPlayerAxisZ = -12;
     public const float ClipVolume = 0.5f;
+    public const float AddPointsDelay = 0.5f;
+    public const int OneScorePoint = 1;
     public const int ShipsWorth = 20;
 }

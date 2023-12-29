@@ -10,12 +10,23 @@ public class SpawnManager : MonoBehaviour
     private const float posZ = 35f;
     public const float ObstacleSpawnDelay = 1;
     public const float SpaceshipSpawnDelay = 2;
-
     [SerializeField] private PoolingSystem _pool;
+    private bool canSpawn;
 
+    private void OnEnable()
+    {
+        StartCoroutine(SpawnObstacle());
+        StartCoroutine(SpawnSpaceship());
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(SpawnObstacle());
+        StopCoroutine(SpawnSpaceship());
+    }
     public IEnumerator SpawnObstacle()
     {
-        while (GameManager.Instance.IsGameActive)
+        while (canSpawn)
         {
             yield return new WaitForSeconds(ObstacleSpawnDelay);
             HandleObstacleSpawning();
@@ -24,7 +35,7 @@ public class SpawnManager : MonoBehaviour
 
     public IEnumerator SpawnSpaceship()
     {
-        while (GameManager.Instance.IsGameActive)
+        while (canSpawn)
         {
             yield return new WaitForSeconds(SpaceshipSpawnDelay);
             HandleSpaceshipSpawning();
@@ -50,4 +61,8 @@ public class SpawnManager : MonoBehaviour
 
         spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + OffsetZ);
     }
+
+
+    public void EnableSpawning() => canSpawn = true;
+    public void DisableSpawning() => canSpawn = false;
 }

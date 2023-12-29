@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using static GlobalConstants;
 
 public class PlayerController : MonoBehaviour
 {
+    public event Action OnPlayerDead;
+
     private const float edgePosX = 4;
     private Rigidbody playerRb;
     private Animator Animator;
@@ -11,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool canJump = true;
     [SerializeField] private float GravityModifier;
     private bool movementEnabled = false;
+    private float movementSpeed;
 
 
     private void Awake()
@@ -43,9 +47,8 @@ public class PlayerController : MonoBehaviour
     private void MoveLeftOrRight()
     {
         float horizontalInput = Input.GetAxisRaw(HorizontalAxis);
-        transform.Translate(Vector3.right * GameManager.Instance.MovingSpeed * Time.deltaTime * horizontalInput);
+        transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput);
     }
-
 
     private void Jump()
     {
@@ -75,8 +78,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag(ObstacleTag))
         {
-            GameManager.Instance.GameOver(); // ovo treba da se desi u GameManager-u, ne ovde, iskoristi event
-
+            OnPlayerDead?.Invoke();
 
             if (IsPlayerOnGround())
                 transform.position = new Vector3(transform.position.x, 0, transform.position.z);
@@ -100,7 +102,7 @@ public class PlayerController : MonoBehaviour
         if (collectible != null)
         {
             audioManager.PlaySpaceshipCollectedSound();
-            collectible.Collect();
+            EventManager.Instance.Collect(collectible);
         }
     }
 
@@ -111,4 +113,5 @@ public class PlayerController : MonoBehaviour
 
     public void SetMovementEnabled() => movementEnabled = true;
     public void SetMovementDisabled() => movementEnabled = false;
+    public void SetSpeedOfCharacter(float speed) => movementSpeed = speed;
 }

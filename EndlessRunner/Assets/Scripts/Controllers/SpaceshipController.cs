@@ -4,14 +4,21 @@ using static GlobalConstants;
 
 public class SpaceshipController : MonoBehaviour, ICollectible, IDestroyable
 {
-    public static event Action OnSpaceshipCollected;
-    public static event Action<SpaceshipController> OnDestroySpaceship;
+    public event Action<SpaceshipController> OnDestroySpaceship;
     [SerializeField] private AudioManager audioManager;
     public float RotationSpeed;
+    private float movementSpeed;
+    private bool canMove;
+
+
+    private void Awake()
+    {
+        EventManager.Instance.OnCollectAction += Collect;
+    }
 
     private void Update()
     {
-        if (GameManager.Instance.IsGameActive)
+        if (canMove)
         {
             RotateSpaceship();
             MoveSpaceship();
@@ -30,17 +37,23 @@ public class SpaceshipController : MonoBehaviour, ICollectible, IDestroyable
 
     private void MoveSpaceship()
     {
-        transform.Translate(Vector3.back * GameManager.Instance.MovingSpeed * Time.deltaTime, Space.World);
+        transform.Translate(Vector3.back * movementSpeed * Time.deltaTime, Space.World);
     }
 
-    public void Collect()
+    public void Collect(ICollectible collectible)
     {
-        OnDestroySpaceship?.Invoke(this);
-        OnSpaceshipCollected?.Invoke();
+        if (collectible == this)
+            Destroy();
     }
 
     public void Destroy()
     {
         OnDestroySpaceship?.Invoke(this);
     }
+
+    public void SetMovementSpeed(float speed) => movementSpeed = speed;
+
+
+    public void SetMovementDisabled() => canMove = false;
+    public void SetMovementEnabled() => canMove = true;
 }

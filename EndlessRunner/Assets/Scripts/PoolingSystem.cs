@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -12,17 +13,27 @@ public class PoolingSystem : MonoBehaviour
     private ObjectPool<ObstacleController> _poolObstacle;
     private ObjectPool<SpaceshipController> _poolSpaceship;
 
+    private List<SpaceshipController> instantiatedSpaceships;
+    private List<ObstacleController> instantiatedObstacles;
+
 
     private void Start()
     {
+        instantiatedSpaceships = new List<SpaceshipController>();
+        instantiatedObstacles = new List<ObstacleController>();
 
-        CreateObstaclePool();
-        CreateSpaceshipPool();
+        instantiatedObstacles = CreateObstaclePool();
+        instantiatedSpaceships = CreateSpaceshipPool();
 
-        SubscribeToDestroyActions();
+        SubscribeToDestroyObstacleAction();
     }
 
-    private void CreateObstaclePool()
+    private void SubscribeToDestroyObstacleAction()
+    {
+        ObstacleController.OnDestroyObstacle += DestroyObstacle;
+    }
+
+    private List<ObstacleController> CreateObstaclePool()
     {
         _poolObstacle = new ObjectPool<ObstacleController>(CreateObstacle, obstacle =>
         {
@@ -34,14 +45,19 @@ public class PoolingSystem : MonoBehaviour
         {
             Destroy(obstacle.gameObject);
         }, true, DefaultCapacityForPool, MaximumCapacityForPool);
+
+        return instantiatedObstacles;
     }
 
     private ObstacleController CreateObstacle()
     {
-        return Instantiate(obstacle[0]);
+        ObstacleController obs = Instantiate(obstacle[0]);
+        instantiatedObstacles.Add(obs);
+
+        return obs;
     }
 
-    private void CreateSpaceshipPool()
+    private List<SpaceshipController> CreateSpaceshipPool()
     {
         _poolSpaceship = new ObjectPool<SpaceshipController>(CreateSpaceship, spaceship =>
         {
@@ -51,31 +67,42 @@ public class PoolingSystem : MonoBehaviour
             spaceship.gameObject.SetActive(false);
         }, spaceship =>
         {
+            UnubscribeFromDestroySpaceshipAction(spaceship);
             Destroy(spaceship.gameObject);
         }, true, DefaultCapacityForPool, MaximumCapacityForPool);
+
+        return instantiatedSpaceships;
     }
 
+    private void UnubscribeFromDestroySpaceshipAction(SpaceshipController spaceship)
+    {
+        spaceship.OnDestroySpaceship -= DestroySpaceship;
+    }
 
     private SpaceshipController CreateSpaceship()
     {
-        return Instantiate(spaceship);
+        SpaceshipController ship = Instantiate(spaceship);
+        SubscribeToDestroySpaceshipAction(ship);
+
+        instantiatedSpaceships.Add(ship);
+
+        return ship;
     }
 
-    private void SubscribeToDestroyActions()
+    private void SubscribeToDestroySpaceshipAction(SpaceshipController ship)
     {
-        ObstacleController.OnDestroyObstacle += DestroyObstacle;
-        SpaceshipController.OnDestroySpaceship += DestroySpaceship;
+        ship.OnDestroySpaceship += DestroySpaceship;
     }
 
     private void OnDestroy()
     {
-        UnsubscribeFromDestroyAction();
+        UnsubscribeFromDestroyObstacleAction();
     }
 
-    private void UnsubscribeFromDestroyAction()
+    private void UnsubscribeFromDestroyObstacleAction()
     {
         ObstacleController.OnDestroyObstacle -= DestroyObstacle;
-        SpaceshipController.OnDestroySpaceship -= DestroySpaceship;
+
     }
 
     public ObstacleController GetObstacleFromPool()
@@ -96,5 +123,16 @@ public class PoolingSystem : MonoBehaviour
     private void DestroySpaceship(SpaceshipController spaceship)
     {
         _poolSpaceship.Release(spaceship);
+    }
+
+
+    public List<SpaceshipController> GetInstanciatedSpaceships()
+    {
+        return instantiatedSpaceships;
+    }
+
+    public List<ObstacleController> GetInstanciatedObstacles()
+    {
+        return instantiatedObstacles;
     }
 }

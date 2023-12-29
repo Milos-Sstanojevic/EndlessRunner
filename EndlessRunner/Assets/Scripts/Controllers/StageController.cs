@@ -4,6 +4,8 @@ public class StageController : MonoBehaviour
 {
     private float heigthRepeat;
     private Vector3 startPos;
+    private float movementSpeed;
+    private bool canMove;
 
     private void Awake()
     {
@@ -17,7 +19,7 @@ public class StageController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsGameActive)
+        if (canMove)
         {
             MoveStage();
             MoveStageToTheEnd();
@@ -26,7 +28,7 @@ public class StageController : MonoBehaviour
 
     private void MoveStage()
     {
-        transform.Translate(Vector3.back * GameManager.Instance.MovingSpeed * Time.deltaTime);
+        transform.Translate(Vector3.back * movementSpeed * Time.deltaTime);
     }
 
     private void MoveStageToTheEnd()
@@ -36,4 +38,9 @@ public class StageController : MonoBehaviour
             transform.position = startPos + new Vector3(0, 0, heigthRepeat);
         }
     }
+
+    public void SetMovementSpeed(float speed) => movementSpeed = speed;
+
+    public void SetMovementDisabled() => canMove = false;
+    public void SetMovementEnabled() => canMove = true;
 }
