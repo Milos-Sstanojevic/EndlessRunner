@@ -1,8 +1,9 @@
 using UnityEngine;
+using static GlobalConstants;
 
 public class StageController : MonoBehaviour
 {
-    private float heigthRepeat;
+    private float totalStageLength;
     private Vector3 startPos;
     private float movementSpeed;
     private bool canMove;
@@ -13,12 +14,30 @@ public class StageController : MonoBehaviour
 
     private void Awake()
     {
-        heigthRepeat = GetComponent<BoxCollider>().size.z;
+        CalculateTotalStageLength();
+    }
+
+    private void CalculateTotalStageLength()
+    {
+        totalStageLength = 0f;
+
+        foreach (Transform child in transform)
+        {
+            if (child.CompareTag("Ground"))
+            {
+                MeshCollider collider = child.GetComponent<MeshCollider>();
+
+                if (collider != null)
+                {
+                    totalStageLength += collider.bounds.size.z;
+                }
+            }
+        }
     }
 
     private void Start()
     {
-        startPos = Vector3.zero;
+        startPos = new Vector3(0, 0, 0);
     }
 
     private void Update()
@@ -37,9 +56,12 @@ public class StageController : MonoBehaviour
 
     private void MoveStageToTheEnd()
     {
-        if (transform.position.z < startPos.z - heigthRepeat)
+        Debug.Log("Length: " + totalStageLength);
+        if (transform.position.z <= startPos.z - totalStageLength)
         {
-            transform.position = startPos + new Vector3(0, 0, heigthRepeat);
+            float offset = totalStageLength * 2;
+            transform.position = new Vector3(0, 0, transform.position.z + offset - CorrectiveOffset);
+
         }
     }
 }

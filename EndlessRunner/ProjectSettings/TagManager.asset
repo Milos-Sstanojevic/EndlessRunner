@@ -7,8 +7,8 @@ TagManager:
   - Obstacle
   - Ground
   - 1
-  - 0
   - Spaceship
+  - EndOfRoad
   layers:
   - Default
   - TransparentFX

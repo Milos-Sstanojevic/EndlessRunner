@@ -13,4 +13,5 @@ public static class GlobalConstants
     public const float AddPointsDelay = 0.5f;
     public const int OneScorePoint = 1;
     public const int ShipsWorth = 20;
+    public const float CorrectiveOffset = 0.098f;
 }
