@@ -1,8 +1,6 @@
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GlobalConstants;
@@ -14,11 +12,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private PoolingSystem poolingSystem;
     [SerializeField] private List<StageController> stagesInGame;
+    [SerializeField] private MovementManager movementManager;
     private bool isPaused = false;
     private List<SpaceshipController> spaceshipsInGame;
     private List<ObstacleController> obstaclesInGame;
 
-    [SerializeField] private MovementManager movementManager;
 
 
     //SINGLETON
@@ -40,6 +38,11 @@ public class GameManager : MonoBehaviour
         SetGameState(GameStates.Paused);
     }
 
+    private void SetGameState(GameStates state)
+    {
+        CurrentState = state;
+    }
+
     private void OnEnable()
     {
         SubscribeToCollectAction();
@@ -48,28 +51,18 @@ public class GameManager : MonoBehaviour
 
     private void SubscribeToDeadPlayerAction()
     {
-        player.OnPlayerDead += GameOver;
+        EventManager.Instance.OnPlayerDeadAction += GameOver;
+    }
+    public void GameOver()
+    {
+        SetGameState(GameStates.GameOver);
+        uiManager.SetEndScreenActive();
+        uiManager.SetScoreScreenInactive();
     }
 
     private void SubscribeToCollectAction()
     {
         EventManager.Instance.OnCollectAction += CollectSpaceship;
-    }
-
-    private void OnDisable()
-    {
-        UnsubscribeFromCollectAction();
-        UnsubscribeFromPlayerDeadAction();
-    }
-
-    private void UnsubscribeFromPlayerDeadAction()
-    {
-        player.OnPlayerDead -= GameOver;
-    }
-
-    private void UnsubscribeFromCollectAction()
-    {
-        EventManager.Instance.OnCollectAction -= CollectSpaceship;
     }
 
     public void CollectSpaceship(ICollectible collectible)
@@ -86,7 +79,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && CurrentState == GameStates.Playing)
+        if (Input.GetKeyDown(KeyCode.Escape) && (CurrentState == GameStates.Playing || CurrentState == GameStates.Paused))
         {
             if (isPaused)
                 ResumeGame();
@@ -94,8 +87,22 @@ public class GameManager : MonoBehaviour
                 PauseGame();
         }
 
-        StatePlaying();
-        StatePauseOrGameOver();
+        HandlePlayingState();
+        HandlePauseOrGameOverState();
+    }
+
+    private void HandlePauseOrGameOverState()
+    {
+        if (CurrentState == GameStates.Paused || CurrentState == GameStates.GameOver)
+        {
+            movementManager.DisableAllMovements(player, obstaclesInGame, stagesInGame, spaceshipsInGame);
+            DisableSpawnManager();
+        }
+    }
+    private void DisableSpawnManager()
+    {
+        spawnManager.DisableSpawning();
+        spawnManager.gameObject.SetActive(false);
     }
 
     public void PauseGame()
@@ -108,12 +115,12 @@ public class GameManager : MonoBehaviour
     public void ResumeGame()
     {
         SetGameState(GameStates.Playing);
-        uiManager.SetPauseScreenInactive();
         StartCoroutine(AddPointsEachHalfSecond());
+        uiManager.SetPauseScreenInactive();
         isPaused = false;
     }
 
-    private void StatePlaying()
+    private void HandlePlayingState()
     {
         if (CurrentState == GameStates.Playing)
         {
@@ -146,25 +153,7 @@ public class GameManager : MonoBehaviour
         obstaclesInGame = poolingSystem.GetInstanciatedObstacles();
     }
 
-    private void StatePauseOrGameOver()
-    {
-        if (CurrentState == GameStates.Paused || CurrentState == GameStates.GameOver)
-        {
-            movementManager.DisableAllMovements(player, obstaclesInGame, stagesInGame, spaceshipsInGame);
-            DisableSpawnManager();
-        }
-    }
 
-    private void DisableSpawnManager()
-    {
-        spawnManager.DisableSpawning();
-        spawnManager.gameObject.SetActive(false);
-    }
-
-    private void SetGameState(GameStates state)
-    {
-        CurrentState = state;
-    }
 
     public void StartGame()
     {
@@ -181,13 +170,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameOver()
-    {
-        SetGameState(GameStates.GameOver);
-        uiManager.SetEndScreenActive();
-        uiManager.SetScoreScreenInactive();
-    }
-
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -197,6 +179,22 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Exit");
         Application.Quit();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromCollectAction();
+        UnsubscribeFromPlayerDeadAction();
+    }
+
+    private void UnsubscribeFromPlayerDeadAction()
+    {
+        EventManager.Instance.OnPlayerDeadAction -= GameOver;
+    }
+
+    private void UnsubscribeFromCollectAction()
+    {
+        EventManager.Instance.OnCollectAction -= CollectSpaceship;
     }
 }
 

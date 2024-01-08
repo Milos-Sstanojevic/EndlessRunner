@@ -36,37 +36,37 @@ public class MovementManager : MonoBehaviour
         }
     }
 
-    public void SetSpeedForAll(PlayerController player, List<ObstacleController> obstacles, List<StageController> stages, List<SpaceshipController> spaceships, float MovingSpeed)
+    public void SetSpeedForAll(PlayerController player, List<ObstacleController> obstacles, List<StageController> stages, List<SpaceshipController> spaceships, float movingSpeed)
     {
-        player.SetSpeedOfCharacter(MovingSpeed);
+        player.SetSpeedOfCharacter(movingSpeed);
 
-        SetMovementSpeedToSpaceships(spaceships, MovingSpeed);
-        SetMovementSpeedToObstacles(obstacles, MovingSpeed);
-        SetMovementSpeedToStages(stages, MovingSpeed);
+        SetMovementSpeedToSpaceships(spaceships, movingSpeed);
+        SetMovementSpeedToObstacles(obstacles, movingSpeed);
+        SetMovementSpeedToStages(stages, movingSpeed);
 
     }
 
-    public void SetMovementSpeedToSpaceships(List<SpaceshipController> spaceshipsInGame, float MovingSpeed)
+    public void SetMovementSpeedToSpaceships(List<SpaceshipController> spaceshipsInGame, float movingSpeed)
     {
         foreach (SpaceshipController ship in spaceshipsInGame)
         {
-            ship.SetMovementSpeed(MovingSpeed);
+            ship.SetMovementSpeed(movingSpeed);
         }
     }
 
-    public void SetMovementSpeedToObstacles(List<ObstacleController> obstaclesInGame, float MovingSpeed)
+    public void SetMovementSpeedToObstacles(List<ObstacleController> obstaclesInGame, float movingSpeed)
     {
         foreach (ObstacleController obstacle in obstaclesInGame)
         {
-            obstacle.SetMovementSpeed(MovingSpeed);
+            obstacle.SetMovementSpeed(movingSpeed);
         }
     }
 
-    public void SetMovementSpeedToStages(List<StageController> stagesInGame, float MovingSpeed)
+    public void SetMovementSpeedToStages(List<StageController> stagesInGame, float movingSpeed)
     {
         foreach (StageController stage in stagesInGame)
         {
-            stage.SetMovementSpeed(MovingSpeed);
+            stage.SetMovementSpeed(movingSpeed);
         }
     }
 

@@ -718,6 +718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74bc6b98caf68ea48b541d075a99f262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1244077504}
   jumpSound: {fileID: 8300000, guid: 113ee460fadc340e4957a7404a9fbb27, type: 3}
   deathSound: {fileID: 8300000, guid: 07fc76fde664654468afff3bc12f84b0, type: 3}
   spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
@@ -2635,7 +2636,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacle:
   - {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
-  - {fileID: 0}
   spaceship: {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
 --- !u!114 &1244077504 stripped
 MonoBehaviour:

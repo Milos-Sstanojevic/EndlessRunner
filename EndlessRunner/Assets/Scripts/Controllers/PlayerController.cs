@@ -1,11 +1,8 @@
-using System;
 using UnityEngine;
 using static GlobalConstants;
 
 public class PlayerController : MonoBehaviour
 {
-    public event Action OnPlayerDead;
-
     private const float edgePosX = 4;
     private Rigidbody playerRb;
     private Animator Animator;
@@ -16,6 +13,14 @@ public class PlayerController : MonoBehaviour
     private bool movementEnabled = false;
     private float movementSpeed;
 
+    public bool ShouldPlayJumpSound { get; set; }
+    public bool ShouldPlaySpaceshipCollectedSound { get; set; }
+    public bool ShouldPlayDeathSound { get; set; }
+
+
+    public void SetMovementEnabled() => movementEnabled = true;
+    public void SetMovementDisabled() => movementEnabled = false;
+    public void SetSpeedOfCharacter(float speed) => movementSpeed = speed;
 
     private void Awake()
     {
@@ -55,7 +60,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
             Animator.SetBool(JumpAnimation, true);
-            audioManager.PlayJumpSound();
+            ShouldPlayJumpSound = true;
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             canJump = false;
         }
@@ -78,13 +83,13 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag(ObstacleTag))
         {
-            OnPlayerDead?.Invoke();
+            EventManager.Instance.OnPlayerDead();
 
-            if (IsPlayerOnGround())
+            if (!IsPlayerOnGround())
                 transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
             Animator.SetBool(DeadAnimation, true);
-            audioManager.PlayDeathSound();
+            ShouldPlayDeathSound = true;
         }
 
         if (other.gameObject.CompareTag(GroundTag))
@@ -94,14 +99,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool IsPlayerOnGround() => transform.position.y != 0;
+    private bool IsPlayerOnGround() => transform.position.y == 0;
 
     private void OnTriggerEnter(Collider other)
     {
         ICollectible collectible = other.GetComponent<ICollectible>();
         if (collectible != null)
         {
-            audioManager.PlaySpaceshipCollectedSound();
+            ShouldPlaySpaceshipCollectedSound = true;
             EventManager.Instance.Collect(collectible);
         }
     }
@@ -110,8 +115,4 @@ public class PlayerController : MonoBehaviour
     {
         Physics.gravity /= GravityModifier;
     }
-
-    public void SetMovementEnabled() => movementEnabled = true;
-    public void SetMovementDisabled() => movementEnabled = false;
-    public void SetSpeedOfCharacter(float speed) => movementSpeed = speed;
 }

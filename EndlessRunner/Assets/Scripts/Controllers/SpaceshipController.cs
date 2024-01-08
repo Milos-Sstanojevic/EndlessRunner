@@ -1,15 +1,15 @@
-using System;
 using UnityEngine;
 using static GlobalConstants;
 
 public class SpaceshipController : MonoBehaviour, ICollectible, IDestroyable
 {
-    public event Action<SpaceshipController> OnDestroySpaceship;
-    [SerializeField] private AudioManager audioManager;
     public float RotationSpeed;
     private float movementSpeed;
     private bool canMove;
 
+    public void SetMovementSpeed(float speed) => movementSpeed = speed;
+    public void SetMovementDisabled() => canMove = false;
+    public void SetMovementEnabled() => canMove = true;
 
     private void Awake()
     {
@@ -48,12 +48,6 @@ public class SpaceshipController : MonoBehaviour, ICollectible, IDestroyable
 
     public void Destroy()
     {
-        OnDestroySpaceship?.Invoke(this);
+        EventManager.Instance.Destroy(this);
     }
-
-    public void SetMovementSpeed(float speed) => movementSpeed = speed;
-
-
-    public void SetMovementDisabled() => canMove = false;
-    public void SetMovementEnabled() => canMove = true;
 }

@@ -1,39 +1,31 @@
-using System;
 using UnityEngine;
 using static GlobalConstants;
 public class ObstacleController : MonoBehaviour, IDestroyable
 {
-    public static event Action<ObstacleController> OnDestroyObstacle;
     private float movementSpeed;
     private bool canMove;
 
+    public void SetMovementSpeed(float speed) => movementSpeed = speed;
+    public void SetMovementDisabled() => canMove = false;
+    public void SetMovementEnabled() => canMove = true;
 
-    protected virtual void Update()
+    private void Update()
     {
-        if (canMove)
-        {
-            MoveObstacle();
-        }
+        MoveObstacle();
     }
 
     private void MoveObstacle()
     {
-        transform.Translate(Vector3.back * movementSpeed * Time.deltaTime, Space.World);
-
-        if (transform.position.z < PositionBehindPlayerAxisZ)//ako prodje iza player-a pokreni akciju koja ce uraditi Release u pool za obstacle
+        if (canMove)
         {
+            transform.Translate(Vector3.back * movementSpeed * Time.deltaTime, Space.World);
             Destroy();
         }
     }
 
     public void Destroy()
     {
-        OnDestroyObstacle?.Invoke(this);
+        if (transform.position.z < PositionBehindPlayerAxisZ)
+            EventManager.Instance.Destroy(this);
     }
-
-    public void SetMovementSpeed(float speed) => movementSpeed = speed;
-
-
-    public void SetMovementDisabled() => canMove = false;
-    public void SetMovementEnabled() => canMove = true;
 }
