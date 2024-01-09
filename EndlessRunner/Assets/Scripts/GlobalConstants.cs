@@ -19,4 +19,5 @@ public static class GlobalConstants
     public const float MinimumSpaceshipSpawningDelay = 0.3f;
     public const float MinimumObstacleSpawningDelay = 0.1f;
     public const float SpawningDelayDecreaser = 0.1f;
+    public const float StagePostitionOffset = 14.91158f;
 }

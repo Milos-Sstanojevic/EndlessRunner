@@ -44,9 +44,16 @@ public class SpawnManager : MonoBehaviour
     {
         ObstacleController obstacle = _pool.GetObstacleFromPool();
 
-        float randomXObst = Random.Range(-edgePosX, edgePosX);
+        if (obstacle.name == "DoubleObstacle(Clone)")
+        {
+            obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y, posZ);
+        }
+        else
+        {
+            float randomXObst = Random.Range(-edgePosX, edgePosX);
 
-        obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
+            obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
+        }
     }
 
     public IEnumerator SpawnSpaceship()

@@ -4,16 +4,16 @@ using static GlobalConstants;
 public class StageController : MonoBehaviour
 {
     private float totalStageLength;
-    private Vector3 startPos;
     private float movementSpeed;
     private bool canMove;
-
+    private GameObject spawnStagePoint;
     public void SetMovementSpeed(float speed) => movementSpeed = speed;
     public void SetMovementDisabled() => canMove = false;
     public void SetMovementEnabled() => canMove = true;
 
     private void Awake()
     {
+        spawnStagePoint = GameObject.FindGameObjectWithTag("EndOfRoad");
         CalculateTotalStageLength();
     }
 
@@ -37,7 +37,6 @@ public class StageController : MonoBehaviour
 
     private void Start()
     {
-        startPos = new Vector3(0, 0, 0);
     }
 
     private void Update()
@@ -56,11 +55,9 @@ public class StageController : MonoBehaviour
 
     private void MoveStageToTheEnd()
     {
-        Debug.Log($"{this.gameObject.name}: {totalStageLength}");
-        if (transform.position.z <= startPos.z - totalStageLength)
+        if (transform.position.z < -totalStageLength)
         {
-            float offset = totalStageLength * 2;
-            transform.position = new Vector3(0, 0, transform.position.z + offset - CorrectiveOffset);
+            transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + StagePostitionOffset);
         }
     }
 }

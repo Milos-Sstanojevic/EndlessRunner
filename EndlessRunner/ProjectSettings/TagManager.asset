@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Obstacle
   - Ground
-  - 1
   - Spaceship
   - EndOfRoad
   layers:

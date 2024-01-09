@@ -7,15 +7,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRb;
     private Animator Animator;
     [SerializeField] private float jumpForce;
-    [SerializeField] private AudioManager audioManager;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip deathSound;
+    private AudioSource audioSource;
     private bool canJump = true;
     [SerializeField] private float GravityModifier;
     private bool movementEnabled = false;
     private float movementSpeed;
 
-    public bool ShouldPlayJumpSound { get; set; }
     public bool ShouldPlaySpaceshipCollectedSound { get; set; }
-    public bool ShouldPlayDeathSound { get; set; }
 
 
     public void SetMovementEnabled() => movementEnabled = true;
@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         playerRb = GetComponent<Rigidbody>();
         Animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -60,10 +61,15 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
             Animator.SetBool(JumpAnimation, true);
-            ShouldPlayJumpSound = true;
+            PlayJumpSound();
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             canJump = false;
         }
+    }
+
+    public void PlayJumpSound()
+    {
+        audioSource.PlayOneShot(jumpSound, ClipVolume);
     }
 
     private void KeepPlayerOnRoad()
@@ -89,7 +95,7 @@ public class PlayerController : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
             Animator.SetBool(DeadAnimation, true);
-            ShouldPlayDeathSound = true;
+            PlayDeathSound();
         }
 
         if (other.gameObject.CompareTag(GroundTag))
@@ -97,6 +103,11 @@ public class PlayerController : MonoBehaviour
             canJump = true;
             Animator.SetBool(JumpAnimation, false);
         }
+    }
+
+    public void PlayDeathSound()
+    {
+        audioSource.PlayOneShot(deathSound, ClipVolume);
     }
 
     private bool IsPlayerOnGround() => transform.position.y == 0;
@@ -110,6 +121,8 @@ public class PlayerController : MonoBehaviour
             EventManager.Instance.Collect(collectible);
         }
     }
+
+
 
     private void OnDestroy()
     {

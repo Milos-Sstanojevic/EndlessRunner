@@ -7,6 +7,7 @@ public class PoolingSystem : MonoBehaviour
     private const int DefaultCapacityForPool = 10;
     private const int MaximumCapacityForPool = 20;
 
+    [SerializeField] private Transform parentOfPool;
     [SerializeField] private ObstacleController[] obstacle;
     [SerializeField] private SpaceshipController spaceship;
     private ObjectPool<ObstacleController> _poolObstacle;
@@ -54,7 +55,9 @@ public class PoolingSystem : MonoBehaviour
 
     private ObstacleController CreateObstacle()
     {
-        ObstacleController obs = Instantiate(obstacle[0]);
+        int index = Random.Range(0, 2);
+        ObstacleController obs = Instantiate(obstacle[index]);
+        obs.transform.SetParent(parentOfPool);
         instantiatedObstacles.Add(obs);
 
         return obs;
@@ -80,7 +83,7 @@ public class PoolingSystem : MonoBehaviour
     private SpaceshipController CreateSpaceship()
     {
         SpaceshipController ship = Instantiate(spaceship);
-
+        ship.transform.SetParent(parentOfPool);
         instantiatedSpaceships.Add(ship);
         return ship;
     }
