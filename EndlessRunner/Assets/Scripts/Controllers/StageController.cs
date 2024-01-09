@@ -56,12 +56,11 @@ public class StageController : MonoBehaviour
 
     private void MoveStageToTheEnd()
     {
-        Debug.Log("Length: " + totalStageLength);
+        Debug.Log($"{this.gameObject.name}: {totalStageLength}");
         if (transform.position.z <= startPos.z - totalStageLength)
         {
             float offset = totalStageLength * 2;
             transform.position = new Vector3(0, 0, transform.position.z + offset - CorrectiveOffset);
-
         }
     }
 }

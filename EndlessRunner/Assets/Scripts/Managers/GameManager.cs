@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     private List<SpaceshipController> spaceshipsInGame;
     private List<ObstacleController> obstaclesInGame;
 
-
+    private int speedupRound = 1;
 
     //SINGLETON
     public static GameManager Instance { get; private set; }
@@ -89,6 +89,40 @@ public class GameManager : MonoBehaviour
 
         HandlePlayingState();
         HandlePauseOrGameOverState();
+        SpeedupGame();
+    }
+
+    private void SpeedupGame()
+    {
+        int score = uiManager.GetScore();
+        if (score >= ScoreStep * speedupRound)
+        {
+            IncreaseMovementSpeed();
+            DecreaseSpawningTime();
+        }
+    }
+
+    private void IncreaseMovementSpeed()
+    {
+        MovingSpeed += SpeedIncrease;
+        speedupRound++;
+
+        movementManager.SetMovementSpeedToSpaceships(spaceshipsInGame, MovingSpeed);
+        movementManager.SetMovementSpeedToObstacles(obstaclesInGame, MovingSpeed);
+        movementManager.SetMovementSpeedToStages(stagesInGame, MovingSpeed);
+    }
+
+
+    private void DecreaseSpawningTime()
+    {
+        float spaceshipSpawnDelay = spawnManager.GetSpaceshipSpawnDelay();
+        float obstacleSpawnDelay = spawnManager.GetObstacleSpawnDelay();
+
+        if (spaceshipSpawnDelay > MinimumSpaceshipSpawningDelay)
+            spawnManager.SetSpaceshipSpawnDelay(spaceshipSpawnDelay - SpawningDelayDecreaser);
+
+        if (obstacleSpawnDelay > MinimumObstacleSpawningDelay)
+            spawnManager.SetObstacleSpawnDelay(obstacleSpawnDelay - SpawningDelayDecreaser);
     }
 
     private void HandlePauseOrGameOverState()
@@ -127,7 +161,11 @@ public class GameManager : MonoBehaviour
             GetSpaceshipsAndObstaclesInGame();
 
             movementManager.EnableAllMovement(player, obstaclesInGame, stagesInGame, spaceshipsInGame);
-            movementManager.SetSpeedForAll(player, obstaclesInGame, stagesInGame, spaceshipsInGame, MovingSpeed);
+
+            player.SetSpeedOfCharacter(MovingSpeed);
+            movementManager.SetMovementSpeedToSpaceships(spaceshipsInGame, MovingSpeed);
+            movementManager.SetMovementSpeedToObstacles(obstaclesInGame, MovingSpeed);
+            movementManager.SetMovementSpeedToStages(stagesInGame, MovingSpeed);
 
             SetupPlayingScreen();
 

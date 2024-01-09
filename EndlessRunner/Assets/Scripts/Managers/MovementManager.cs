@@ -36,15 +36,15 @@ public class MovementManager : MonoBehaviour
         }
     }
 
-    public void SetSpeedForAll(PlayerController player, List<ObstacleController> obstacles, List<StageController> stages, List<SpaceshipController> spaceships, float movingSpeed)
-    {
-        player.SetSpeedOfCharacter(movingSpeed);
+    // public void SetSpeedForAll(PlayerController player, List<ObstacleController> obstacles, List<StageController> stages, List<SpaceshipController> spaceships, float movingSpeed)
+    // {
+    //     player.SetSpeedOfCharacter(movingSpeed);
 
-        SetMovementSpeedToSpaceships(spaceships, movingSpeed);
-        SetMovementSpeedToObstacles(obstacles, movingSpeed);
-        SetMovementSpeedToStages(stages, movingSpeed);
+    //     SetMovementSpeedToSpaceships(spaceships, movingSpeed);
+    //     SetMovementSpeedToObstacles(obstacles, movingSpeed);
+    //     SetMovementSpeedToStages(stages, movingSpeed);
 
-    }
+    // }
 
     public void SetMovementSpeedToSpaceships(List<SpaceshipController> spaceshipsInGame, float movingSpeed)
     {

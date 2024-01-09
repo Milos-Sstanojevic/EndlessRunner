@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static GlobalConstants;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -8,12 +9,16 @@ public class SpawnManager : MonoBehaviour
     private const float edgePosX = 4f;
     private const float posY = 4f;
     private const float posZ = 35f;
-    public const float ObstacleSpawnDelay = 1;
-    public const float SpaceshipSpawnDelay = 2;
+    private float obstacleSpawnDelay = 1f;
+    private float spaceshipSpawnDelay = 2f;
     private bool canSpawn;
 
     public void EnableSpawning() => canSpawn = true;
     public void DisableSpawning() => canSpawn = false;
+    public float GetObstacleSpawnDelay() => obstacleSpawnDelay;
+    public float GetSpaceshipSpawnDelay() => spaceshipSpawnDelay;
+    public void SetObstacleSpawnDelay(float spawnDelayInSeconds) => obstacleSpawnDelay = spawnDelayInSeconds;
+    public void SetSpaceshipSpawnDelay(float spawnDelayInSeconds) => spaceshipSpawnDelay = spawnDelayInSeconds;
 
     private void OnEnable()
     {
@@ -30,7 +35,7 @@ public class SpawnManager : MonoBehaviour
     {
         while (canSpawn)
         {
-            yield return new WaitForSeconds(ObstacleSpawnDelay);
+            yield return new WaitForSeconds(obstacleSpawnDelay);
             HandleObstacleSpawning();
         }
     }
@@ -48,7 +53,7 @@ public class SpawnManager : MonoBehaviour
     {
         while (canSpawn)
         {
-            yield return new WaitForSeconds(SpaceshipSpawnDelay);
+            yield return new WaitForSeconds(spaceshipSpawnDelay);
             HandleSpaceshipSpawning();
         }
     }

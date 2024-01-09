@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using static GlobalConstants;
 public class UIManager : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class UIManager : MonoBehaviour
     public void SetScoreScreenActive() => scoreScreen.SetActive(true);
 
     public void SetScoreScreenInactive() => scoreScreen.SetActive(false);
+
+    public int GetScore() => score;
 
     public void SetScoreOnScoreScreen(int points)
     {

@@ -14,4 +14,9 @@ public static class GlobalConstants
     public const int OneScorePoint = 1;
     public const int ShipsWorth = 20;
     public const float CorrectiveOffset = 0.098f;
+    public const int ScoreStep = 100;
+    public const float SpeedIncrease = 1f;
+    public const float MinimumSpaceshipSpawningDelay = 0.3f;
+    public const float MinimumObstacleSpawningDelay = 0.1f;
+    public const float SpawningDelayDecreaser = 0.1f;
 }
