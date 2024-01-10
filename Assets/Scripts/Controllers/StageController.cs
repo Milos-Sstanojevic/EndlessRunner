@@ -4,8 +4,6 @@ public class StageController : MovementManager
 {
     private const float StagePostitionOffset = 14.91158f;
     private float totalStageLength;
-    // private float movementSpeed;
-    // private bool canMove;
     private GameObject spawnStagePoint;
 
     private void Awake()
@@ -32,24 +30,11 @@ public class StageController : MovementManager
         }
     }
 
-    private void Start()
-    {
-    }
-
     protected override void Update()
     {
         base.Update();
-        //MoveStage();
         MoveStageToTheEnd();
     }
-
-    // private void MoveStage()
-    // {
-    //     if (canMove)
-    //     {
-    //         transform.Translate(Vector3.back * movementSpeed * Time.deltaTime);
-    //     }
-    // }
 
     private void MoveStageToTheEnd()
     {
@@ -58,19 +43,4 @@ public class StageController : MovementManager
             transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + StagePostitionOffset);
         }
     }
-
-    // public void EnableMovement()
-    // {
-    //     canMove = true;
-    // }
-
-    // public void DisableMovement()
-    // {
-    //     canMove = false;
-    // }
-
-    // public void SetMovementSpeed(float speed)
-    // {
-    //     movementSpeed = speed;
-    // }
 }

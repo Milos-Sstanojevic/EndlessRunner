@@ -14,10 +14,10 @@ public class SpaceshipController : MovementManager, ICollectible, IDestroyable
         base.Update();
 
         RotateSpaceship();
-        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
-        {
-            Destroy();
-        }
+        // if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+        // {
+        //     Destroy();
+        // }
     }
 
     private void RotateSpaceship()

@@ -42,7 +42,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleObstacleSpawning()
     {
-        ObstacleController obstacle = _pool.GetObstacleFromPool();
+        MovementManager obstacle = _pool.GetObstacleFromPool();
 
         if (obstacle.name == "DoubleObstacleMiddle(Clone)")
         {
@@ -51,7 +51,6 @@ public class SpawnManager : MonoBehaviour
         else
         {
             float randomXObst = Random.Range(-edgePosX, edgePosX);
-
             obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
         }
     }

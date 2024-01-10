@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MovementManager : MonoBehaviour
+public class MovementManager : MonoBehaviour, IDestroyable
 {
     private bool movementEnabled;
     private float movementSpeed;
@@ -8,6 +8,7 @@ public class MovementManager : MonoBehaviour
     protected virtual void Update()
     {
         MoveObject();
+        Destroy();
     }
 
     private void MoveObject()
@@ -31,5 +32,11 @@ public class MovementManager : MonoBehaviour
     public void SetMovementSpeed(float speed)
     {
         movementSpeed = speed;
+    }
+
+    public void Destroy()
+    {
+        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+            EventManager.Instance.OnObjectDestroyed(this);
     }
 }

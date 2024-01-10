@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     private List<MovementManager> movabelsInGame;
     // [SerializeField] private MovementManager movementManager;
     private List<SpaceshipController> spaceshipsInGame;
-    private List<ObstacleController> obstaclesInGame;
+    private List<MovementManager> obstaclesInGame;
     private int speedupRound = 1;
     private GameStates CurrentState;
     public float MovingSpeed { get; private set; }
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         MovingSpeed = 8;
         spaceshipsInGame = new List<SpaceshipController>();
-        obstaclesInGame = new List<ObstacleController>();
+        obstaclesInGame = new List<MovementManager>();
         movabelsInGame = new List<MovementManager>();
     }
 
@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
         {
             movabelsInGame.Add(ship);
         }
-        foreach (ObstacleController obstacle in obstaclesInGame)
+        foreach (MovementManager obstacle in obstaclesInGame)
         {
             movabelsInGame.Add(obstacle);
         }
