@@ -5,6 +5,11 @@ using static GlobalConstants;
 
 public class PoolingSystem : MonoBehaviour
 {
+    private const int ChanceForRoadblock = 80;
+    private const int HundredPercent = 100;
+    private const int ZeroPercent = 0;
+    private const int RoadblockIndex = 0;
+    private const int DoubleConeIndex = 1;
     private const int DefaultCapacityForPool = 10;
     private const int MaximumCapacityForPool = 20;
 

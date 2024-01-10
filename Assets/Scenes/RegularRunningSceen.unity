@@ -726,8 +726,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74bc6b98caf68ea48b541d075a99f262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1244077504}
-  spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
 --- !u!4 &427268136
 Transform:
   m_ObjectHideFlags: 0
@@ -3549,50 +3547,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490460004}
   m_CullTransparentMesh: 1
---- !u!1 &1552747737
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1552747739}
-  - component: {fileID: 1552747738}
-  m_Layer: 0
-  m_Name: MovementManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1552747738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552747737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1552747739
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552747737}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1950996646}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1678952510
 GameObject:
   m_ObjectHideFlags: 0
@@ -4155,7 +4109,6 @@ Transform:
   - {fileID: 2076377577}
   - {fileID: 1087235155}
   - {fileID: 427268136}
-  - {fileID: 1552747739}
   - {fileID: 952731859}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4195,7 +4148,6 @@ MonoBehaviour:
   stagesInGame:
   - {fileID: 1838649009}
   - {fileID: 2096471297}
-  movementManager: {fileID: 1552747738}
 --- !u!4 &1981790934
 Transform:
   m_ObjectHideFlags: 0
@@ -4472,10 +4424,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2311826525622677357, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3976238698996553829, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
       propertyPath: m_Name
       value: Player
@@ -4524,10 +4472,6 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 427268135}
-    - target: {fileID: 7896171451228950087, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
-      propertyPath: m_Constraints
-      value: 120
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

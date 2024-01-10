@@ -1,43 +1,28 @@
 using UnityEngine;
-using static GlobalConstants;
 
-public class SpaceshipController : MonoBehaviour, ICollectible, IDestroyable
+public class SpaceshipController : MovementManager, ICollectible, IDestroyable
 {
     public float RotationSpeed;
-    private float movementSpeed;
-    private bool canMove;
-
-    public void SetMovementSpeed(float speed) => movementSpeed = speed;
-    public void SetMovementDisabled() => canMove = false;
-    public void SetMovementEnabled() => canMove = true;
 
     private void Awake()
     {
         EventManager.Instance.OnCollectAction += Collect;
     }
 
-    private void Update()
+    protected override void Update()
     {
-        if (canMove)
-        {
-            RotateSpaceship();
-            MoveSpaceship();
+        base.Update();
 
-            if (transform.position.z < PositionBehindPlayerAxisZ)
-            {
-                Destroy();
-            }
+        RotateSpaceship();
+        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+        {
+            Destroy();
         }
     }
 
     private void RotateSpaceship()
     {
         transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.forward);
-    }
-
-    private void MoveSpaceship()
-    {
-        transform.Translate(Vector3.back * movementSpeed * Time.deltaTime, Space.World);
     }
 
     public void Collect(ICollectible collectible)
@@ -48,6 +33,6 @@ public class SpaceshipController : MonoBehaviour, ICollectible, IDestroyable
 
     public void Destroy()
     {
-        EventManager.Instance.Destroy(this);
+        EventManager.Instance.OnObjectDestroyed(this);
     }
 }

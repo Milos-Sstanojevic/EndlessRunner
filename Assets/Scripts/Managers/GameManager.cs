@@ -3,26 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static GlobalConstants;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+    private const int ScoreStep = 100;
+    private const float SpeedIncrease = 1f;
+    private const float MinimumSpaceshipSpawningDelay = 0.3f;
+    private const float MinimumObstacleSpawningDelay = 0.2f;
+    private const float SpawningDelayDecreaser = 0.05f;
+    private const float AddPointsDelay = 0.5f;
+    private const int OneScorePoint = 1;
+    private const int ShipsWorth = 20;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private PlayerController player;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private PoolingSystem poolingSystem;
     [SerializeField] private List<StageController> stagesInGame;
-    [SerializeField] private MovementManager movementManager;
-    private bool isPaused = false;
+    private List<MovementManager> movabelsInGame;
+    // [SerializeField] private MovementManager movementManager;
     private List<SpaceshipController> spaceshipsInGame;
     private List<ObstacleController> obstaclesInGame;
-
     private int speedupRound = 1;
-
-    //SINGLETON
-    public static GameManager Instance { get; private set; }
     private GameStates CurrentState;
     public float MovingSpeed { get; private set; }
+
+
+    private void Start()
+    {
+        MovingSpeed = 8;
+        spaceshipsInGame = new List<SpaceshipController>();
+        obstaclesInGame = new List<ObstacleController>();
+        movabelsInGame = new List<MovementManager>();
+    }
 
     private void Awake()
     {
@@ -35,7 +48,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        SetGameState(GameStates.Paused);
+        SetGameState(GameStates.MainMenu);
     }
 
     private void SetGameState(GameStates state)
@@ -53,6 +66,13 @@ public class GameManager : MonoBehaviour
     {
         EventManager.Instance.OnPlayerDeadAction += GameOver;
     }
+
+    private void SubscribeToCollectAction()
+    {
+        EventManager.Instance.OnCollectAction += CollectSpaceship;
+    }
+
+    //Unity event, called when player is dead
     public void GameOver()
     {
         SetGameState(GameStates.GameOver);
@@ -60,28 +80,16 @@ public class GameManager : MonoBehaviour
         uiManager.SetScoreScreenInactive();
     }
 
-    private void SubscribeToCollectAction()
-    {
-        EventManager.Instance.OnCollectAction += CollectSpaceship;
-    }
-
     public void CollectSpaceship(ICollectible collectible)
     {
         uiManager.SetScoreOnScoreScreen(ShipsWorth);
     }
 
-    private void Start()
-    {
-        MovingSpeed = 8;
-        spaceshipsInGame = new List<SpaceshipController>();
-        obstaclesInGame = new List<ObstacleController>();
-    }
-
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && (CurrentState == GameStates.Playing || CurrentState == GameStates.Paused))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused)
+            if (CurrentState == GameStates.Paused)
                 ResumeGame();
             else
                 PauseGame();
@@ -92,9 +100,49 @@ public class GameManager : MonoBehaviour
         SpeedupGame();
     }
 
+    public void PauseGame()
+    {
+        if (CurrentState == GameStates.Playing)
+        {
+            SetGameState(GameStates.Paused);
+            uiManager.SetPauseScreenActive();
+        }
+    }
+
+    //Bind with Unity event, on continue game button
+    public void ResumeGame()
+    {
+        SetGameState(GameStates.Playing);
+        StartCoroutine(AddPointsEachHalfSecond());
+        uiManager.SetPauseScreenInactive();
+    }
+
+    private void HandlePlayingState()
+    {
+        if (CurrentState == GameStates.Playing)
+        {
+            GetSpaceshipsAndObstaclesInGame();
+
+            EnableMovementAndSetSpeedOfMovableObjects();
+
+            SetupPlayingScreen();
+            EnableSpawnManager();
+        }
+    }
+
+    private void HandlePauseOrGameOverState()
+    {
+        if (CurrentState == GameStates.Paused || CurrentState == GameStates.GameOver)
+        {
+            DisableMovementOfMovableObjects();
+            DisableSpawnManager();
+        }
+    }
+
     private void SpeedupGame()
     {
         int score = uiManager.GetScore();
+
         if (score >= ScoreStep * speedupRound)
         {
             IncreaseMovementSpeed();
@@ -102,16 +150,76 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void GetSpaceshipsAndObstaclesInGame()
+    {
+        spaceshipsInGame = poolingSystem.GetInstanciatedSpaceships();
+        obstaclesInGame = poolingSystem.GetInstanciatedObstacles();
+
+        CreateListOfMovablesInGame();
+    }
+
+    private void CreateListOfMovablesInGame()
+    {
+        foreach (SpaceshipController ship in spaceshipsInGame)
+        {
+            movabelsInGame.Add(ship);
+        }
+        foreach (ObstacleController obstacle in obstaclesInGame)
+        {
+            movabelsInGame.Add(obstacle);
+        }
+        foreach (StageController stage in stagesInGame)
+        {
+            movabelsInGame.Add(stage);
+        }
+    }
+
+    private void EnableMovementAndSetSpeedOfMovableObjects()
+    {
+        foreach (MovementManager movable in movabelsInGame)
+        {
+            movable.EnableMovement();
+            movable.SetMovementSpeed(MovingSpeed);
+        }
+        player.EnableMovement();
+        player.SetMovementSpeed(MovingSpeed);
+    }
+
+    private void SetupPlayingScreen()
+    {
+        uiManager.SetScoreScreenActive();
+        uiManager.SetStartScreenInactive();
+    }
+
+    private void EnableSpawnManager()
+    {
+        spawnManager.EnableSpawning();
+        spawnManager.gameObject.SetActive(true);
+    }
+
+    private void DisableSpawnManager()
+    {
+        spawnManager.DisableSpawning();
+        spawnManager.gameObject.SetActive(false);
+    }
+
+
+    private void DisableMovementOfMovableObjects()
+    {
+        foreach (MovementManager movable in movabelsInGame)
+        {
+            movable.DisableMovement();
+        }
+        player.DisableMovement();
+    }
+
     private void IncreaseMovementSpeed()
     {
         MovingSpeed += SpeedIncrease;
         speedupRound++;
 
-        movementManager.SetMovementSpeedToSpaceships(spaceshipsInGame, MovingSpeed);
-        movementManager.SetMovementSpeedToObstacles(obstaclesInGame, MovingSpeed);
-        movementManager.SetMovementSpeedToStages(stagesInGame, MovingSpeed);
+        EnableMovementAndSetSpeedOfMovableObjects();
     }
-
 
     private void DecreaseSpawningTime()
     {
@@ -125,74 +233,7 @@ public class GameManager : MonoBehaviour
             spawnManager.SetObstacleSpawnDelay(obstacleSpawnDelay - SpawningDelayDecreaser);
     }
 
-    private void HandlePauseOrGameOverState()
-    {
-        if (CurrentState == GameStates.Paused || CurrentState == GameStates.GameOver)
-        {
-            movementManager.DisableAllMovements(player, obstaclesInGame, stagesInGame, spaceshipsInGame);
-            DisableSpawnManager();
-        }
-    }
-    private void DisableSpawnManager()
-    {
-        spawnManager.DisableSpawning();
-        spawnManager.gameObject.SetActive(false);
-    }
-
-    public void PauseGame()
-    {
-        SetGameState(GameStates.Paused);
-        uiManager.SetPauseScreenActive();
-        isPaused = true;
-    }
-
-    public void ResumeGame()
-    {
-        SetGameState(GameStates.Playing);
-        StartCoroutine(AddPointsEachHalfSecond());
-        uiManager.SetPauseScreenInactive();
-        isPaused = false;
-    }
-
-    private void HandlePlayingState()
-    {
-        if (CurrentState == GameStates.Playing)
-        {
-            GetSpaceshipsAndObstaclesInGame();
-
-            movementManager.EnableAllMovement(player, obstaclesInGame, stagesInGame, spaceshipsInGame);
-
-            player.SetSpeedOfCharacter(MovingSpeed);
-            movementManager.SetMovementSpeedToSpaceships(spaceshipsInGame, MovingSpeed);
-            movementManager.SetMovementSpeedToObstacles(obstaclesInGame, MovingSpeed);
-            movementManager.SetMovementSpeedToStages(stagesInGame, MovingSpeed);
-
-            SetupPlayingScreen();
-
-            EnableSpawnManager();
-        }
-    }
-
-    private void EnableSpawnManager()
-    {
-        spawnManager.EnableSpawning();
-        spawnManager.gameObject.SetActive(true);
-    }
-
-    private void SetupPlayingScreen()
-    {
-        uiManager.SetScoreScreenActive();
-        uiManager.SetStartScreenInactive();
-    }
-
-    public void GetSpaceshipsAndObstaclesInGame()
-    {
-        spaceshipsInGame = poolingSystem.GetInstanciatedSpaceships();
-        obstaclesInGame = poolingSystem.GetInstanciatedObstacles();
-    }
-
-
-
+    //Bind with Unity event, on start game button
     public void StartGame()
     {
         SetGameState(GameStates.Playing);
@@ -208,11 +249,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Bind with Unity event, on restart game button
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    //Bind with Unity event, on exit game button
     public void QuitGame()
     {
         Debug.Log("Exit");
@@ -239,6 +282,7 @@ public class GameManager : MonoBehaviour
 
 public enum GameStates
 {
+    MainMenu,
     Playing,
     Paused,
     GameOver

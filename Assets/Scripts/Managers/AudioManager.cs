@@ -3,27 +3,25 @@ using static GlobalConstants;
 
 public class AudioManager : MonoBehaviour
 {
+    private const float ClipVolume = 0.5f;
     private AudioSource audioSource;
-    [SerializeField] private PlayerController player;
-    [SerializeField] private AudioClip spaceshipCollectedSound;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void Update()
+    public void PlayJumpSound(AudioClip jumpSound)
     {
-        PlaySpaceshipCollectedSound();
+        audioSource.PlayOneShot(jumpSound, ClipVolume);
+    }
+    public void PlayDeathSound(AudioClip deathSound)
+    {
+        audioSource.PlayOneShot(deathSound, ClipVolume);
     }
 
-
-    public void PlaySpaceshipCollectedSound()
+    public void PlaySpaceshipCollectedSound(AudioClip spaceshipCollectedSound)
     {
-        if (player.ShouldPlaySpaceshipCollectedSound == true)
-        {
-            audioSource.PlayOneShot(spaceshipCollectedSound, ClipVolume);
-            player.ShouldPlaySpaceshipCollectedSound = false;
-        }
+        audioSource.PlayOneShot(spaceshipCollectedSound, ClipVolume);
     }
 }

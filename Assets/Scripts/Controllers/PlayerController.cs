@@ -1,32 +1,26 @@
 using UnityEngine;
-using static GlobalConstants;
 
 public class PlayerController : MonoBehaviour
 {
+    private const string GroundTag = "Ground";
+    private const string ObstacleTag = "Obstacle";
+    private const string HorizontalAxis = "Horizontal";
     private const float edgePosX = 4;
     private Rigidbody playerRb;
-    private Animator Animator;
+    [SerializeField] private AnimationManager characterAnimator;
     [SerializeField] private float jumpForce;
     [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip deathSound;
-    private AudioSource audioSource;
-    private bool canJump = true;
+    [SerializeField] private AudioClip spaceshipCollectedSound;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private float GravityModifier;
-    private bool movementEnabled = false;
+    private bool canJump = true;
+    private bool movementEnabled;
     private float movementSpeed;
-
-    public bool ShouldPlaySpaceshipCollectedSound { get; set; }
-
-
-    public void SetMovementEnabled() => movementEnabled = true;
-    public void SetMovementDisabled() => movementEnabled = false;
-    public void SetSpeedOfCharacter(float speed) => movementSpeed = speed;
 
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
-        Animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -38,7 +32,7 @@ public class PlayerController : MonoBehaviour
     {
         if (movementEnabled)
         {
-            Animator.SetBool(RunAnimation, true);
+            characterAnimator.PlayRunAnimation();
 
             MoveLeftOrRight();
             Jump();
@@ -46,7 +40,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Animator.SetBool(RunAnimation, false);
+            characterAnimator.StopRunAnimation();
         }
     }
 
@@ -60,16 +54,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
-            Animator.SetBool(JumpAnimation, true);
-            PlayJumpSound();
+            characterAnimator.PlayJumpAnimation();
+            audioManager.PlayJumpSound(jumpSound);
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             canJump = false;
         }
-    }
-
-    public void PlayJumpSound()
-    {
-        audioSource.PlayOneShot(jumpSound, ClipVolume);
     }
 
     private void KeepPlayerOnRoad()
@@ -84,7 +73,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag(ObstacleTag))
@@ -94,21 +82,17 @@ public class PlayerController : MonoBehaviour
             if (!IsPlayerOnGround())
                 transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
-            Animator.SetBool(DeadAnimation, true);
-            PlayDeathSound();
+            characterAnimator.PlayDeadAnimation();
+            audioManager.PlayDeathSound(deathSound);
         }
 
         if (other.gameObject.CompareTag(GroundTag))
         {
             canJump = true;
-            Animator.SetBool(JumpAnimation, false);
+            characterAnimator.StopJumpAnimation();
         }
     }
 
-    public void PlayDeathSound()
-    {
-        audioSource.PlayOneShot(deathSound, ClipVolume);
-    }
 
     private bool IsPlayerOnGround() => transform.position.y == 0;
 
@@ -117,15 +101,29 @@ public class PlayerController : MonoBehaviour
         ICollectible collectible = other.GetComponent<ICollectible>();
         if (collectible != null)
         {
-            ShouldPlaySpaceshipCollectedSound = true;
-            EventManager.Instance.Collect(collectible);
+            audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
+            EventManager.Instance.OnCollectibleCollected(collectible);
         }
     }
-
 
 
     private void OnDestroy()
     {
         Physics.gravity /= GravityModifier;
+    }
+
+    public void EnableMovement()
+    {
+        movementEnabled = true;
+    }
+
+    public void DisableMovement()
+    {
+        movementEnabled = false;
+    }
+
+    public void SetMovementSpeed(float speed)
+    {
+        movementSpeed = speed;
     }
 }
