@@ -19,7 +19,6 @@ public class EnemyController : ObjectManager
         {
             enemyAnimator.StartWalkAnimation();
             transform.Translate((Vector3.left * isOnLeftEdge) * movementSpeed * Time.deltaTime, Space.World);
-            Debug.Log(movementSpeed);
             RotateEnemy();
         }
         else
@@ -28,12 +27,12 @@ public class EnemyController : ObjectManager
 
     private void RotateEnemy()
     {
-        if (transform.position.x < -GlobalConstants.edgePosX)
+        if (transform.position.x < -GlobalConstants.EdgePosX)
         {
             transform.Rotate(0, -180, 0);
             isOnLeftEdge *= -1;
         }
-        else if (transform.position.x > GlobalConstants.edgePosX)
+        else if (transform.position.x > GlobalConstants.EdgePosX)
         {
             transform.Rotate(0, 180, 0);
             isOnLeftEdge *= -1;

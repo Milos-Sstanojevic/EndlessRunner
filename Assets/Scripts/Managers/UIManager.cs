@@ -4,7 +4,7 @@ using UnityEngine.SocialPlatforms.Impl;
 using static GlobalConstants;
 public class UIManager : MonoBehaviour
 {
-    private const string ScoreText = "Score: ";
+    private const string scoreText = "Score: ";
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject endScreen;
     [SerializeField] private GameObject pauseScreen;
@@ -14,13 +14,7 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        pointsText.text = ScoreText + score;
-    }
-
-    //Unity event, called when restart button is pressed
-    public void SetStartScreenActive()
-    {
-        startScreen.SetActive(true);
+        pointsText.text = scoreText + score;
     }
 
     //Unity event, called when play button is pressed
@@ -64,6 +58,6 @@ public class UIManager : MonoBehaviour
     public void SetScoreOnScoreScreen(int points)
     {
         score += points;
-        pointsText.text = ScoreText + score;
+        pointsText.text = scoreText + score;
     }
 }

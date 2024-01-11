@@ -369,6 +369,7 @@ GameObject:
   - component: {fileID: -4834785537647469847}
   - component: {fileID: 5208618901591304463}
   - component: {fileID: 6482012536767241962}
+  - component: {fileID: 3502762557447713865}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Obstacle
@@ -466,6 +467,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c104b6b556b0614ba7fc11f107b4983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &3502762557447713865
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6850901344987526839}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.3235501
+  m_Height: 4.1341443
+  m_Direction: 1
+  m_Center: {x: -0.018356442, y: 1.6736999, z: 0.10462131}
 --- !u!1 &6850901344987526841
 GameObject:
   m_ObjectHideFlags: 0

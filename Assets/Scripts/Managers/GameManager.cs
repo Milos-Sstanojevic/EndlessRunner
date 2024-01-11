@@ -7,14 +7,15 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private const int ScoreStep = 100;
-    private const float SpeedIncrease = 1f;
-    private const float MinimumSpaceshipSpawningDelay = 0.3f;
-    private const float MinimumObstacleSpawningDelay = 0.2f;
-    private const float SpawningDelayDecreaser = 0.08f;
-    private const float AddPointsDelay = 0.5f;
-    private const int OneScorePoint = 1;
-    private const int ShipsWorth = 20;
+    private const int scoreStep = 100;
+    private const float speedIncrease = 1f;
+    private const float minimumSpaceshipSpawningDelay = 0.3f;
+    private const float minimumObstacleSpawningDelay = 0.2f;
+    private const float spawningDelayDecreaser = 0.08f;
+    private const float addPointsDelay = 0.5f;
+    private const int oneScorePoint = 1;
+    private const int shipsWorth = 20;
+    private const float playerSpeedBalancer = 1;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private PlayerController player;
     [SerializeField] private UIManager uiManager;
@@ -81,7 +82,7 @@ public class GameManager : MonoBehaviour
 
     public void CollectSpaceship(ICollectible collectible)
     {
-        uiManager.SetScoreOnScoreScreen(ShipsWorth);
+        uiManager.SetScoreOnScoreScreen(shipsWorth);
     }
 
     private void Update()
@@ -142,7 +143,7 @@ public class GameManager : MonoBehaviour
     {
         int score = uiManager.GetScore();
 
-        if (score >= ScoreStep * speedupRound)
+        if (score >= scoreStep * speedupRound)
         {
             IncreaseMovementSpeed();
             DecreaseSpawningTime();
@@ -181,7 +182,7 @@ public class GameManager : MonoBehaviour
             movable.SetMovementSpeed(MovingSpeed);
         }
         player.EnableMovement();
-        player.SetMovementSpeed(MovingSpeed);
+        player.SetMovementSpeed(MovingSpeed + playerSpeedBalancer);
     }
 
     private void SetupPlayingScreen()
@@ -214,7 +215,7 @@ public class GameManager : MonoBehaviour
 
     private void IncreaseMovementSpeed()
     {
-        MovingSpeed += SpeedIncrease;
+        MovingSpeed += speedIncrease;
         speedupRound++;
 
         EnableMovementAndSetSpeedOfMovableObjects();
@@ -226,16 +227,16 @@ public class GameManager : MonoBehaviour
         float obstacleSpawnDelay = spawnManager.GetObstacleSpawnDelay();
         float spawnDelay;
 
-        if (spaceshipSpawnDelay > MinimumSpaceshipSpawningDelay)
+        if (spaceshipSpawnDelay > minimumSpaceshipSpawningDelay)
         {
-            spawnDelay = HandleDecreasingSpawnDelay(spaceshipSpawnDelay, MinimumSpaceshipSpawningDelay);
+            spawnDelay = HandleDecreasingSpawnDelay(spaceshipSpawnDelay, minimumSpaceshipSpawningDelay);
 
             spawnManager.SetSpaceshipSpawnDelay(spawnDelay);
         }
 
-        if (obstacleSpawnDelay > MinimumObstacleSpawningDelay)
+        if (obstacleSpawnDelay > minimumObstacleSpawningDelay)
         {
-            spawnDelay = HandleDecreasingSpawnDelay(obstacleSpawnDelay, MinimumObstacleSpawningDelay);
+            spawnDelay = HandleDecreasingSpawnDelay(obstacleSpawnDelay, minimumObstacleSpawningDelay);
 
             spawnManager.SetObstacleSpawnDelay(spawnDelay);
         }
@@ -243,7 +244,7 @@ public class GameManager : MonoBehaviour
 
     private float HandleDecreasingSpawnDelay(float spawnDelay, float minimumSpawnDelay)
     {
-        float delay = spawnDelay - SpawningDelayDecreaser;
+        float delay = spawnDelay - spawningDelayDecreaser;
 
         if (delay < minimumSpawnDelay)
             delay = minimumSpawnDelay;
@@ -263,8 +264,8 @@ public class GameManager : MonoBehaviour
     {
         while (CurrentState == GameStates.Playing)
         {
-            uiManager.SetScoreOnScoreScreen(OneScorePoint);
-            yield return new WaitForSeconds(AddPointsDelay);
+            uiManager.SetScoreOnScoreScreen(oneScorePoint);
+            yield return new WaitForSeconds(addPointsDelay);
         }
     }
 

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private const string GroundTag = "Ground";
-    private const string ObstacleTag = "Obstacle";
-    private const string HorizontalAxis = "Horizontal";
+    private const string groundTag = "Ground";
+    private const string obstacleTag = "Obstacle";
+    private const string horizontalAxis = "Horizontal";
     private Rigidbody playerRb;
     [SerializeField] private AnimationManager characterAnimator;
     [SerializeField] private float jumpForce;
@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip spaceshipCollectedSound;
     [SerializeField] private AudioManager audioManager;
-    [SerializeField] private float GravityModifier;
+    [SerializeField] private float gravityModifier;
     private bool canJump = true;
     private bool movementEnabled;
     private float movementSpeed;
@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        Physics.gravity *= GravityModifier;
+        Physics.gravity *= gravityModifier;
     }
 
     private void Update()
@@ -45,7 +45,8 @@ public class PlayerController : MonoBehaviour
 
     private void MoveLeftOrRight()
     {
-        float horizontalInput = Input.GetAxisRaw(HorizontalAxis);
+        float horizontalInput = Input.GetAxisRaw(horizontalAxis);
+        Debug.Log(movementSpeed);
         transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput);
     }
 
@@ -62,19 +63,19 @@ public class PlayerController : MonoBehaviour
 
     private void KeepPlayerOnRoad()
     {
-        if (transform.position.x < -GlobalConstants.edgePosX)
+        if (transform.position.x < -GlobalConstants.EdgePosX)
         {
-            transform.position = new Vector3(-GlobalConstants.edgePosX, transform.position.y, transform.position.z);
+            transform.position = new Vector3(-GlobalConstants.EdgePosX, transform.position.y, transform.position.z);
         }
-        if (transform.position.x > GlobalConstants.edgePosX)
+        if (transform.position.x > GlobalConstants.EdgePosX)
         {
-            transform.position = new Vector3(GlobalConstants.edgePosX, transform.position.y, transform.position.z);
+            transform.position = new Vector3(GlobalConstants.EdgePosX, transform.position.y, transform.position.z);
         }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag(ObstacleTag))
+        if (other.gameObject.CompareTag(obstacleTag))
         {
             EventManager.Instance.OnPlayerDead();
 
@@ -85,7 +86,7 @@ public class PlayerController : MonoBehaviour
             audioManager.PlayDeathSound(deathSound);
         }
 
-        if (other.gameObject.CompareTag(GroundTag))
+        if (other.gameObject.CompareTag(groundTag))
         {
             canJump = true;
             characterAnimator.StopJumpAnimation();
@@ -108,7 +109,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
-        Physics.gravity /= GravityModifier;
+        Physics.gravity /= gravityModifier;
     }
 
     public void EnableMovement()

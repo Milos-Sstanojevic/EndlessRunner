@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    private const float ClipVolume = 0.5f;
+    private const float clipVolume = 0.5f;
     private AudioSource audioSource;
 
     private void Awake()
@@ -12,15 +12,15 @@ public class AudioManager : MonoBehaviour
 
     public void PlayJumpSound(AudioClip jumpSound)
     {
-        audioSource.PlayOneShot(jumpSound, ClipVolume);
+        audioSource.PlayOneShot(jumpSound, clipVolume);
     }
     public void PlayDeathSound(AudioClip deathSound)
     {
-        audioSource.PlayOneShot(deathSound, ClipVolume);
+        audioSource.PlayOneShot(deathSound, clipVolume);
     }
 
     public void PlaySpaceshipCollectedSound(AudioClip spaceshipCollectedSound)
     {
-        audioSource.PlayOneShot(spaceshipCollectedSound, ClipVolume);
+        audioSource.PlayOneShot(spaceshipCollectedSound, clipVolume);
     }
 }

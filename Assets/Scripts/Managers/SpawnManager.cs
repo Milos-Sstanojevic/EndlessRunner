@@ -4,7 +4,7 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private PoolingSystem _pool;
-    private const int OffsetZ = 4;
+    private const int offsetZ = 4;
     private const float posY = 4f;
     private const float posZ = 35f;
     private float obstacleSpawnDelay = 1f;
@@ -22,12 +22,22 @@ public class SpawnManager : MonoBehaviour
         StopCoroutine(SpawnObstacle());
         StopCoroutine(SpawnSpaceship());
     }
+
     public IEnumerator SpawnObstacle()
     {
         while (canSpawn)
         {
             yield return new WaitForSeconds(obstacleSpawnDelay);
             HandleObstacleSpawning();
+        }
+    }
+
+    public IEnumerator SpawnSpaceship()
+    {
+        while (canSpawn)
+        {
+            yield return new WaitForSeconds(spaceshipSpawnDelay);
+            HandleSpaceshipSpawning();
         }
     }
 
@@ -41,17 +51,8 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            float randomXObst = Random.Range(-GlobalConstants.edgePosX, GlobalConstants.edgePosX);
+            float randomXObst = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
             obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
-        }
-    }
-
-    public IEnumerator SpawnSpaceship()
-    {
-        while (canSpawn)
-        {
-            yield return new WaitForSeconds(spaceshipSpawnDelay);
-            HandleSpaceshipSpawning();
         }
     }
 
@@ -59,26 +60,31 @@ public class SpawnManager : MonoBehaviour
     {
         SpaceshipController spaceship = _pool.GetSpaceshipFromPool();
 
-        float randomXShip = Random.Range(-GlobalConstants.edgePosX, GlobalConstants.edgePosX);
+        float randomXShip = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
         float randomY = Random.Range(1f, posY);
 
-        spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + OffsetZ);
+        spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + offsetZ);
     }
 
     public void EnableSpawning()
     {
         canSpawn = true;
     }
+
     public void DisableSpawning()
     {
         canSpawn = false;
     }
+
     public float GetObstacleSpawnDelay() => obstacleSpawnDelay;
+
     public float GetSpaceshipSpawnDelay() => spaceshipSpawnDelay;
+
     public void SetObstacleSpawnDelay(float spawnDelayInSeconds)
     {
         obstacleSpawnDelay = spawnDelayInSeconds;
     }
+
     public void SetSpaceshipSpawnDelay(float spawnDelayInSeconds)
     {
         spaceshipSpawnDelay = spawnDelayInSeconds;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class StageController : ObjectManager
 {
-    private const float StagePostitionOffset = 14.91158f;
+    private const float stagePostitionOffset = 14.91158f;
     private float totalStageLength;
     private GameObject spawnStagePoint;
 
@@ -41,7 +41,7 @@ public class StageController : ObjectManager
         if (transform.position.z < -totalStageLength)
         {
             float errorOffset = totalStageLength + transform.position.z;
-            transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + StagePostitionOffset + errorOffset);
+            transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + stagePostitionOffset + errorOffset);
         }
     }
 }

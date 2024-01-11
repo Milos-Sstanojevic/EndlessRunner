@@ -3,10 +3,10 @@ using UnityEngine;
 public class AnimationManager : MonoBehaviour
 {
     private Animator animator;
-    private const string DeadAnimation = "Dead";
-    private const string JumpAnimation = "Jump";
-    private const string RunAnimation = "Run";
-    private const string WalkAnimation = "Walk";
+    private const string deadAnimation = "Dead";
+    private const string jumpAnimation = "Jump";
+    private const string runAnimation = "Run";
+    private const string walkAnimation = "Walk";
 
     private void Start()
     {
@@ -14,34 +14,34 @@ public class AnimationManager : MonoBehaviour
     }
     public void PlayRunAnimation()
     {
-        animator.SetBool(RunAnimation, true);
+        animator.SetBool(runAnimation, true);
     }
     public void StopRunAnimation()
     {
-        animator.SetBool(RunAnimation, false);
+        animator.SetBool(runAnimation, false);
     }
 
     public void PlayJumpAnimation()
     {
-        animator.SetBool(JumpAnimation, true);
+        animator.SetBool(jumpAnimation, true);
     }
 
     public void StopJumpAnimation()
     {
-        animator.SetBool(JumpAnimation, false);
+        animator.SetBool(jumpAnimation, false);
     }
 
     public void PlayDeadAnimation()
     {
-        animator.SetBool(DeadAnimation, true);
+        animator.SetBool(deadAnimation, true);
     }
 
     public void StartWalkAnimation()
     {
-        animator.SetBool(WalkAnimation, true);
+        animator.SetBool(walkAnimation, true);
     }
     public void StopWalkAnimation()
     {
-        animator.SetBool(WalkAnimation, true);
+        animator.SetBool(walkAnimation, false);
     }
 }

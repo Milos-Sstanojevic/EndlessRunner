@@ -1,25 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Pool;
 
 public class PoolingSystem : MonoBehaviour
 {
-    private const int ChanceForRoadblock = 65;
-    private const int ChanceForDoubleLeft = 83;
-    private const int HundredPercent = 101;
-    private const int ZeroPercent = 0;
-    private const int RoadblockIndex = 0;
-    private const int DoubleObstacleMiddleIndex = 1;
-    private const int DoubleObstacleLeftIndex = 2;
-    private const int EnemyIndex = 3;
-    private const int DefaultCapacityForPool = 40;
-    private const int MaximumCapacityForPool = 100;
+    private const int chanceForRoadblock = 25;
+    private const int chanceForDoubleRight = 50;
+    private const int chanceForDoubleLeft = 75;
+    private const int chanceForDoubleMid = 90;
+    private const int hundredPercent = 101;
+    private const int zeroPercent = 0;
+    private const int roadblockIndex = 0;
+    private const int doubleObstacleMiddleIndex = 1;
+    private const int doubleObstacleRightIndex = 2;
+    private const int enemyIndex = 3;
+    private const int doubleObstacleLeftIndex = 4;
+    private const int defaultCapacityForPool = 40;
+    private const int maximumCapacityForPool = 100;
     [SerializeField] private Transform parentOfPool;
     [SerializeField] private ObjectManager[] obstacle;
     [SerializeField] private SpaceshipController spaceship;
     private ObjectPool<ObjectManager> _poolObstacle;
     private ObjectPool<SpaceshipController> _poolSpaceship;
-
     private List<SpaceshipController> instantiatedSpaceships;
     private List<ObjectManager> instantiatedObstacles;
 
@@ -55,7 +58,7 @@ public class PoolingSystem : MonoBehaviour
         {
             UnsubscribeFromDestroyAction();
             Destroy(obstacle.gameObject);
-        }, true, DefaultCapacityForPool, MaximumCapacityForPool);
+        }, true, defaultCapacityForPool, maximumCapacityForPool);
 
         return instantiatedObstacles;
     }
@@ -73,18 +76,24 @@ public class PoolingSystem : MonoBehaviour
     private int GenerateIndexWithProbability()
     {
         //ovo mi se ne svidja daj nekako dinamicnije da bude
-
         //smisli kako ces sansu da se stvori enemy
-        int index = Random.Range(ZeroPercent, HundredPercent);
 
-        if (index <= ChanceForRoadblock)
-            return EnemyIndex;
+        int index = Random.Range(zeroPercent, hundredPercent);
 
-        else if (index > ChanceForRoadblock && index < ChanceForDoubleLeft)
-            return DoubleObstacleMiddleIndex;
+        if (index <= chanceForRoadblock)
+            return roadblockIndex;
+
+        else if (index >= chanceForRoadblock && index < chanceForDoubleRight)
+            return doubleObstacleRightIndex;
+
+        else if (index >= chanceForDoubleRight && index < chanceForDoubleLeft)
+            return doubleObstacleLeftIndex;
+
+        else if (index >= chanceForDoubleLeft && index < chanceForDoubleMid)
+            return doubleObstacleMiddleIndex;
 
         else
-            return DoubleObstacleLeftIndex;
+            return enemyIndex;
     }
 
     private List<SpaceshipController> CreateSpaceshipPool()
@@ -99,7 +108,7 @@ public class PoolingSystem : MonoBehaviour
         {
             UnsubscribeFromDestroyAction();
             Destroy(spaceship.gameObject);
-        }, true, DefaultCapacityForPool, MaximumCapacityForPool);
+        }, true, defaultCapacityForPool, maximumCapacityForPool);
 
         return instantiatedSpaceships;
     }
