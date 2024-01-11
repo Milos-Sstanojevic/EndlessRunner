@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -6,6 +7,8 @@ public class PlayerController : MonoBehaviour
     private const string obstacleTag = "Obstacle";
     private const string horizontalAxis = "Horizontal";
     private Rigidbody playerRb;
+    [SerializeField] private ParticleSystem jumpingParticles;
+    [SerializeField] private ParticleSystem landingParticles;
     [SerializeField] private AnimationManager characterAnimator;
     [SerializeField] private float jumpForce;
     [SerializeField] private AudioClip jumpSound;
@@ -46,7 +49,6 @@ public class PlayerController : MonoBehaviour
     private void MoveLeftOrRight()
     {
         float horizontalInput = Input.GetAxisRaw(horizontalAxis);
-        Debug.Log(movementSpeed);
         transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput);
     }
 
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
+            jumpingParticles.Play();
             characterAnimator.PlayJumpAnimation();
             audioManager.PlayJumpSound(jumpSound);
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -88,6 +91,10 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag(groundTag))
         {
+            if (!IsPlayerOnGround())
+            {
+                landingParticles.Play();    //ne valja ovo prepravi BUG
+            }
             canJump = true;
             characterAnimator.StopJumpAnimation();
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private PoolingSystem _pool;
-    private const int offsetZ = 4;
+    private const int offsetZ = 3;
     private const float posY = 4f;
     private const float posZ = 35f;
     private float obstacleSpawnDelay = 1f;
