@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SpaceshipController : MovementManager, ICollectible, IDestroyable
+public class SpaceshipController : ObjectManager, ICollectible, IDestroyable
 {
     public float RotationSpeed;
 
@@ -12,26 +12,22 @@ public class SpaceshipController : MovementManager, ICollectible, IDestroyable
     protected override void Update()
     {
         base.Update();
-
         RotateSpaceship();
-        // if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
-        // {
-        //     Destroy();
-        // }
     }
 
     private void RotateSpaceship()
     {
-        transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.forward);
+        if (base.MovementEnabled == true)
+            transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.forward);
     }
 
     public void Collect(ICollectible collectible)
     {
         if (collectible == this)
-            Destroy();
+            DestroyWhenCollected();
     }
 
-    public void Destroy()
+    public void DestroyWhenCollected()
     {
         EventManager.Instance.OnObjectDestroyed(this);
     }

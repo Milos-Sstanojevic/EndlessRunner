@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StageController : MovementManager
+public class StageController : ObjectManager
 {
     private const float StagePostitionOffset = 14.91158f;
     private float totalStageLength;

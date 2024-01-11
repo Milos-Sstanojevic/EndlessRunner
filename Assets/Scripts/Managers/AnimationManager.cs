@@ -6,6 +6,7 @@ public class AnimationManager : MonoBehaviour
     private const string DeadAnimation = "Dead";
     private const string JumpAnimation = "Jump";
     private const string RunAnimation = "Run";
+    private const string WalkAnimation = "Walk";
 
     private void Start()
     {
@@ -24,7 +25,7 @@ public class AnimationManager : MonoBehaviour
     {
         animator.SetBool(JumpAnimation, true);
     }
-    
+
     public void StopJumpAnimation()
     {
         animator.SetBool(JumpAnimation, false);
@@ -33,5 +34,14 @@ public class AnimationManager : MonoBehaviour
     public void PlayDeadAnimation()
     {
         animator.SetBool(DeadAnimation, true);
+    }
+
+    public void StartWalkAnimation()
+    {
+        animator.SetBool(WalkAnimation, true);
+    }
+    public void StopWalkAnimation()
+    {
+        animator.SetBool(WalkAnimation, true);
     }
 }

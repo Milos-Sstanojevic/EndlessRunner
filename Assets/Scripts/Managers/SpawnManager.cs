@@ -5,19 +5,11 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private PoolingSystem _pool;
     private const int OffsetZ = 4;
-    private const float edgePosX = 4f;
     private const float posY = 4f;
     private const float posZ = 35f;
     private float obstacleSpawnDelay = 1f;
     private float spaceshipSpawnDelay = 2f;
     private bool canSpawn;
-
-    public void EnableSpawning() => canSpawn = true;
-    public void DisableSpawning() => canSpawn = false;
-    public float GetObstacleSpawnDelay() => obstacleSpawnDelay;
-    public float GetSpaceshipSpawnDelay() => spaceshipSpawnDelay;
-    public void SetObstacleSpawnDelay(float spawnDelayInSeconds) => obstacleSpawnDelay = spawnDelayInSeconds;
-    public void SetSpaceshipSpawnDelay(float spawnDelayInSeconds) => spaceshipSpawnDelay = spawnDelayInSeconds;
 
     private void OnEnable()
     {
@@ -41,7 +33,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleObstacleSpawning()
     {
-        MovementManager obstacle = _pool.GetObstacleFromPool();
+        ObjectManager obstacle = _pool.GetObstacleFromPool();
 
         if (obstacle.name.StartsWith("DoubleObstacle"))
         {
@@ -49,7 +41,7 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            float randomXObst = Random.Range(-edgePosX, edgePosX);
+            float randomXObst = Random.Range(-GlobalConstants.edgePosX, GlobalConstants.edgePosX);
             obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
         }
     }
@@ -67,9 +59,28 @@ public class SpawnManager : MonoBehaviour
     {
         SpaceshipController spaceship = _pool.GetSpaceshipFromPool();
 
-        float randomXShip = Random.Range(-edgePosX, edgePosX);
+        float randomXShip = Random.Range(-GlobalConstants.edgePosX, GlobalConstants.edgePosX);
         float randomY = Random.Range(1f, posY);
 
         spaceship.transform.position = new Vector3(randomXShip, randomY, posZ + OffsetZ);
+    }
+
+    public void EnableSpawning()
+    {
+        canSpawn = true;
+    }
+    public void DisableSpawning()
+    {
+        canSpawn = false;
+    }
+    public float GetObstacleSpawnDelay() => obstacleSpawnDelay;
+    public float GetSpaceshipSpawnDelay() => spaceshipSpawnDelay;
+    public void SetObstacleSpawnDelay(float spawnDelayInSeconds)
+    {
+        obstacleSpawnDelay = spawnDelayInSeconds;
+    }
+    public void SetSpaceshipSpawnDelay(float spawnDelayInSeconds)
+    {
+        spaceshipSpawnDelay = spawnDelayInSeconds;
     }
 }

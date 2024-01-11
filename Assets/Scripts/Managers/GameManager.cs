@@ -20,10 +20,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private PoolingSystem poolingSystem;
     [SerializeField] private List<StageController> stagesInGame;
-    private List<MovementManager> movabelsInGame;
-    // [SerializeField] private MovementManager movementManager;
+    private List<ObjectManager> movabelsInGame;
     private List<SpaceshipController> spaceshipsInGame;
-    private List<MovementManager> obstaclesInGame;
+    private List<ObjectManager> obstaclesInGame;
     private int speedupRound = 1;
     private GameStates CurrentState;
     public float MovingSpeed { get; private set; }
@@ -33,8 +32,8 @@ public class GameManager : MonoBehaviour
     {
         MovingSpeed = 8;
         spaceshipsInGame = new List<SpaceshipController>();
-        obstaclesInGame = new List<MovementManager>();
-        movabelsInGame = new List<MovementManager>();
+        obstaclesInGame = new List<ObjectManager>();
+        movabelsInGame = new List<ObjectManager>();
     }
 
     private void Awake()
@@ -164,7 +163,7 @@ public class GameManager : MonoBehaviour
         {
             movabelsInGame.Add(ship);
         }
-        foreach (MovementManager obstacle in obstaclesInGame)
+        foreach (ObjectManager obstacle in obstaclesInGame)
         {
             movabelsInGame.Add(obstacle);
         }
@@ -176,7 +175,7 @@ public class GameManager : MonoBehaviour
 
     private void EnableMovementAndSetSpeedOfMovableObjects()
     {
-        foreach (MovementManager movable in movabelsInGame)
+        foreach (ObjectManager movable in movabelsInGame)
         {
             movable.EnableMovement();
             movable.SetMovementSpeed(MovingSpeed);
@@ -206,7 +205,7 @@ public class GameManager : MonoBehaviour
 
     private void DisableMovementOfMovableObjects()
     {
-        foreach (MovementManager movable in movabelsInGame)
+        foreach (ObjectManager movable in movabelsInGame)
         {
             movable.DisableMovement();
         }

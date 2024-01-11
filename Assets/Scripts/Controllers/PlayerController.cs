@@ -5,7 +5,6 @@ public class PlayerController : MonoBehaviour
     private const string GroundTag = "Ground";
     private const string ObstacleTag = "Obstacle";
     private const string HorizontalAxis = "Horizontal";
-    private const float edgePosX = 4;
     private Rigidbody playerRb;
     [SerializeField] private AnimationManager characterAnimator;
     [SerializeField] private float jumpForce;
@@ -63,13 +62,13 @@ public class PlayerController : MonoBehaviour
 
     private void KeepPlayerOnRoad()
     {
-        if (transform.position.x < -edgePosX)
+        if (transform.position.x < -GlobalConstants.edgePosX)
         {
-            transform.position = new Vector3(-edgePosX, transform.position.y, transform.position.z);
+            transform.position = new Vector3(-GlobalConstants.edgePosX, transform.position.y, transform.position.z);
         }
-        if (transform.position.x > edgePosX)
+        if (transform.position.x > GlobalConstants.edgePosX)
         {
-            transform.position = new Vector3(edgePosX, transform.position.y, transform.position.z);
+            transform.position = new Vector3(GlobalConstants.edgePosX, transform.position.y, transform.position.z);
         }
     }
 

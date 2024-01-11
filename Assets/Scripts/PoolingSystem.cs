@@ -11,23 +11,23 @@ public class PoolingSystem : MonoBehaviour
     private const int RoadblockIndex = 0;
     private const int DoubleObstacleMiddleIndex = 1;
     private const int DoubleObstacleLeftIndex = 2;
-    private const int DefaultCapacityForPool = 10;
-    private const int MaximumCapacityForPool = 20;
-
+    private const int EnemyIndex = 3;
+    private const int DefaultCapacityForPool = 40;
+    private const int MaximumCapacityForPool = 100;
     [SerializeField] private Transform parentOfPool;
-    [SerializeField] private MovementManager[] obstacle;
+    [SerializeField] private ObjectManager[] obstacle;
     [SerializeField] private SpaceshipController spaceship;
-    private ObjectPool<MovementManager> _poolObstacle;
+    private ObjectPool<ObjectManager> _poolObstacle;
     private ObjectPool<SpaceshipController> _poolSpaceship;
 
     private List<SpaceshipController> instantiatedSpaceships;
-    private List<MovementManager> instantiatedObstacles;
+    private List<ObjectManager> instantiatedObstacles;
 
 
     private void Start()
     {
         instantiatedSpaceships = new List<SpaceshipController>();
-        instantiatedObstacles = new List<MovementManager>();
+        instantiatedObstacles = new List<ObjectManager>();
 
         instantiatedObstacles = CreateObstaclePool();
         instantiatedSpaceships = CreateSpaceshipPool();
@@ -43,9 +43,9 @@ public class PoolingSystem : MonoBehaviour
         EventManager.Instance.OnDestroyAction += DestroyObject;
     }
 
-    private List<MovementManager> CreateObstaclePool()
+    private List<ObjectManager> CreateObstaclePool()
     {
-        _poolObstacle = new ObjectPool<MovementManager>(CreateObstacle, obstacle =>
+        _poolObstacle = new ObjectPool<ObjectManager>(CreateObstacle, obstacle =>
         {
             obstacle.gameObject.SetActive(true);
         }, obstacle =>
@@ -60,10 +60,10 @@ public class PoolingSystem : MonoBehaviour
         return instantiatedObstacles;
     }
 
-    private MovementManager CreateObstacle()
+    private ObjectManager CreateObstacle()
     {
         int index = GenerateIndexWithProbability();
-        MovementManager obs = Instantiate(obstacle[index]);
+        ObjectManager obs = Instantiate(obstacle[index]);
         obs.transform.SetParent(parentOfPool);
         instantiatedObstacles.Add(obs);
 
@@ -73,11 +73,16 @@ public class PoolingSystem : MonoBehaviour
     private int GenerateIndexWithProbability()
     {
         //ovo mi se ne svidja daj nekako dinamicnije da bude
+
+        //smisli kako ces sansu da se stvori enemy
         int index = Random.Range(ZeroPercent, HundredPercent);
+
         if (index <= ChanceForRoadblock)
-            return RoadblockIndex;
+            return EnemyIndex;
+
         else if (index > ChanceForRoadblock && index < ChanceForDoubleLeft)
             return DoubleObstacleMiddleIndex;
+
         else
             return DoubleObstacleLeftIndex;
     }
@@ -117,7 +122,7 @@ public class PoolingSystem : MonoBehaviour
         EventManager.Instance.OnDestroyAction -= DestroyObject;
     }
 
-    public MovementManager GetObstacleFromPool()
+    public ObjectManager GetObstacleFromPool()
     {
         return _poolObstacle.Get();
     }
@@ -129,7 +134,7 @@ public class PoolingSystem : MonoBehaviour
 
     private void DestroyObject(IDestroyable destroyable)
     {
-        if (destroyable is MovementManager movable)
+        if (destroyable is ObjectManager movable)
         {
             if (movable.gameObject.CompareTag("Obstacle"))
             {
@@ -155,7 +160,7 @@ public class PoolingSystem : MonoBehaviour
         return instantiatedSpaceships;
     }
 
-    public List<MovementManager> GetInstanciatedObstacles()
+    public List<ObjectManager> GetInstanciatedObstacles()
     {
         return instantiatedObstacles;
     }

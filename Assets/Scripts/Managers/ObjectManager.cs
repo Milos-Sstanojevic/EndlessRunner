@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class MovementManager : MonoBehaviour, IDestroyable
+public class ObjectManager : MonoBehaviour, IDestroyable
 {
-    private bool movementEnabled;
-    private float movementSpeed;
+    protected bool MovementEnabled { get; private set; }
+    protected float MovementSpeed { get; private set; }
 
     protected virtual void Update()
     {
@@ -13,25 +13,25 @@ public class MovementManager : MonoBehaviour, IDestroyable
 
     private void MoveObject()
     {
-        if (movementEnabled)
+        if (MovementEnabled)
         {
-            transform.Translate(Vector3.back * movementSpeed * Time.deltaTime, Space.World);
+            transform.Translate(Vector3.back * MovementSpeed * Time.deltaTime, Space.World);
         }
     }
 
     public void EnableMovement()
     {
-        movementEnabled = true;
+        MovementEnabled = true;
     }
 
     public void DisableMovement()
     {
-        movementEnabled = false;
+        MovementEnabled = false;
     }
 
     public void SetMovementSpeed(float speed)
     {
-        movementSpeed = speed;
+        MovementSpeed = speed;
     }
 
     public void Destroy()
