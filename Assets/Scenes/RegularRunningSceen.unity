@@ -2673,6 +2673,7 @@ MonoBehaviour:
   obstacle:
   - {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
   - {fileID: 6977361175378971136, guid: 99b772da13d26f0458db8f85ca049843, type: 3}
+  - {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
   spaceship: {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
 --- !u!114 &1244077504 stripped
 MonoBehaviour:

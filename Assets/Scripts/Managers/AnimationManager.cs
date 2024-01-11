@@ -24,6 +24,7 @@ public class AnimationManager : MonoBehaviour
     {
         animator.SetBool(JumpAnimation, true);
     }
+    
     public void StopJumpAnimation()
     {
         animator.SetBool(JumpAnimation, false);

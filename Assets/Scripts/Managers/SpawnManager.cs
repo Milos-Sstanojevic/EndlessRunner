@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static GlobalConstants;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -44,7 +43,7 @@ public class SpawnManager : MonoBehaviour
     {
         MovementManager obstacle = _pool.GetObstacleFromPool();
 
-        if (obstacle.name == "DoubleObstacleMiddle(Clone)")
+        if (obstacle.name.StartsWith("DoubleObstacle"))
         {
             obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y, posZ);
         }

@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using static GlobalConstants;
 
 public class PoolingSystem : MonoBehaviour
 {
-    private const int ChanceForRoadblock = 80;
-    private const int HundredPercent = 100;
+    private const int ChanceForRoadblock = 65;
+    private const int ChanceForDoubleLeft = 83;
+    private const int HundredPercent = 101;
     private const int ZeroPercent = 0;
     private const int RoadblockIndex = 0;
-    private const int DoubleConeIndex = 1;
+    private const int DoubleObstacleMiddleIndex = 1;
+    private const int DoubleObstacleLeftIndex = 2;
     private const int DefaultCapacityForPool = 10;
     private const int MaximumCapacityForPool = 20;
 
@@ -71,11 +72,14 @@ public class PoolingSystem : MonoBehaviour
 
     private int GenerateIndexWithProbability()
     {
+        //ovo mi se ne svidja daj nekako dinamicnije da bude
         int index = Random.Range(ZeroPercent, HundredPercent);
         if (index <= ChanceForRoadblock)
             return RoadblockIndex;
+        else if (index > ChanceForRoadblock && index < ChanceForDoubleLeft)
+            return DoubleObstacleMiddleIndex;
         else
-            return DoubleConeIndex;
+            return DoubleObstacleLeftIndex;
     }
 
     private List<SpaceshipController> CreateSpaceshipPool()

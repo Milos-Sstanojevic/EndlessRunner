@@ -1,5 +1,4 @@
 using UnityEngine;
-using static GlobalConstants;
 
 public class AudioManager : MonoBehaviour
 {

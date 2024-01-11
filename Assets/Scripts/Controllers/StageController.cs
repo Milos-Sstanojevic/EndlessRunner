@@ -40,7 +40,8 @@ public class StageController : MovementManager
     {
         if (transform.position.z < -totalStageLength)
         {
-            transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + StagePostitionOffset);
+            float errorOffset = totalStageLength + transform.position.z;
+            transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + StagePostitionOffset + errorOffset);
         }
     }
 }

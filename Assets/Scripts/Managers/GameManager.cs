@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     private const float SpeedIncrease = 1f;
     private const float MinimumSpaceshipSpawningDelay = 0.3f;
     private const float MinimumObstacleSpawningDelay = 0.2f;
-    private const float SpawningDelayDecreaser = 0.05f;
+    private const float SpawningDelayDecreaser = 0.08f;
     private const float AddPointsDelay = 0.5f;
     private const int OneScorePoint = 1;
     private const int ShipsWorth = 20;
@@ -225,13 +225,33 @@ public class GameManager : MonoBehaviour
     {
         float spaceshipSpawnDelay = spawnManager.GetSpaceshipSpawnDelay();
         float obstacleSpawnDelay = spawnManager.GetObstacleSpawnDelay();
+        float spawnDelay;
 
         if (spaceshipSpawnDelay > MinimumSpaceshipSpawningDelay)
-            spawnManager.SetSpaceshipSpawnDelay(spaceshipSpawnDelay - SpawningDelayDecreaser);
+        {
+            spawnDelay = HandleDecreasingSpawnDelay(spaceshipSpawnDelay, MinimumSpaceshipSpawningDelay);
+
+            spawnManager.SetSpaceshipSpawnDelay(spawnDelay);
+        }
 
         if (obstacleSpawnDelay > MinimumObstacleSpawningDelay)
-            spawnManager.SetObstacleSpawnDelay(obstacleSpawnDelay - SpawningDelayDecreaser);
+        {
+            spawnDelay = HandleDecreasingSpawnDelay(obstacleSpawnDelay, MinimumObstacleSpawningDelay);
+
+            spawnManager.SetObstacleSpawnDelay(spawnDelay);
+        }
     }
+
+    private float HandleDecreasingSpawnDelay(float spawnDelay, float minimumSpawnDelay)
+    {
+        float delay = spawnDelay - SpawningDelayDecreaser;
+
+        if (delay < minimumSpawnDelay)
+            delay = minimumSpawnDelay;
+
+        return delay;
+    }
+
 
     //Bind with Unity event, on start game button
     public void StartGame()
