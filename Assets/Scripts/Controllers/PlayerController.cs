@@ -7,9 +7,8 @@ public class PlayerController : MonoBehaviour
     private const string obstacleTag = "Obstacle";
     private const string horizontalAxis = "Horizontal";
     private Rigidbody playerRb;
-    [SerializeField] private ParticleSystem jumpingParticles;
-    [SerializeField] private ParticleSystem landingParticles;
-    [SerializeField] private AnimationManager characterAnimator;
+    private AnimationManager characterAnimator;
+    private ParticleSystemManager playerParticleSystem;
     [SerializeField] private float jumpForce;
     [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip deathSound;
@@ -23,6 +22,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
+        playerParticleSystem = GetComponent<ParticleSystemManager>();
+        characterAnimator = GetComponent<AnimationManager>();
     }
 
     private void Start()
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
-            jumpingParticles.Play();
+            playerParticleSystem.PlayJumpingParticleEffect();
             characterAnimator.PlayJumpAnimation();
             audioManager.PlayJumpSound(jumpSound);
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -91,17 +92,13 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag(groundTag))
         {
-            if (!IsPlayerOnGround())
-            {
-                landingParticles.Play();    //ne valja ovo prepravi BUG
-            }
             canJump = true;
+            playerParticleSystem.PlayLandingParticleEffect();
             characterAnimator.StopJumpAnimation();
         }
     }
 
-
-    private bool IsPlayerOnGround() => transform.position.y == 0;
+    private bool IsPlayerOnGround() => (int)transform.position.y == 0;
 
     private void OnTriggerEnter(Collider other)
     {

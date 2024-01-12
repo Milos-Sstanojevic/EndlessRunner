@@ -4129,14 +4129,6 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 427268135}
-    - target: {fileID: 8682966931910837299, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8682966931910837299, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
-      propertyPath: VelocityModule.enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
