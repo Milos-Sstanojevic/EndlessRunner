@@ -4,8 +4,8 @@ using UnityEngine;
 public class EventManager : MonoBehaviour
 {
     public static EventManager Instance { get; private set; }
-    public event Action<ICollectible> OnCollectAction;
-    public event Action<IDestroyable> OnDestroyAction;
+    public event Action<CollectableBase, int> OnCollectAction;
+    public event Action<ObjectMovementBase> OnDestroyAction;
     public event Action OnPlayerDeadAction;
 
     private void Awake()
@@ -20,12 +20,12 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void OnCollectibleCollected(ICollectible collectible)
+    public void OnCollectibleCollected(CollectableBase collectible, int pointsWorth)
     {
-        OnCollectAction?.Invoke(collectible);
+        OnCollectAction?.Invoke(collectible, pointsWorth);
     }
 
-    public void OnObjectDestroyed(IDestroyable destroyable)
+    public void OnObjectDestroyed(ObjectMovementBase destroyable)
     {
         OnDestroyAction?.Invoke(destroyable);
     }

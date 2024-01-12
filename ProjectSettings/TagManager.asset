@@ -6,8 +6,8 @@ TagManager:
   tags:
   - Obstacle
   - Ground
-  - Spaceship
   - EndOfRoad
+  - Collectable
   layers:
   - Default
   - TransparentFX

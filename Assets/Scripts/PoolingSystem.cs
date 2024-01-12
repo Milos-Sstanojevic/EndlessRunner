@@ -9,31 +9,28 @@ public class PoolingSystem : MonoBehaviour
     private const int chanceForDoubleRight = 50;
     private const int chanceForDoubleLeft = 75;
     private const int chanceForDoubleMid = 90;
+    private const int chanceForSpaceship = 70;
+    private const int chanceForGun = 85;
     private const int hundredPercent = 101;
     private const int zeroPercent = 0;
-    private const int roadblockIndex = 0;
-    private const int doubleObstacleMiddleIndex = 1;
-    private const int doubleObstacleRightIndex = 2;
-    private const int enemyIndex = 3;
-    private const int doubleObstacleLeftIndex = 4;
     private const int defaultCapacityForPool = 40;
     private const int maximumCapacityForPool = 100;
     [SerializeField] private Transform parentOfPool;
-    [SerializeField] private ObjectManager[] obstacle;
-    [SerializeField] private SpaceshipController spaceship;
-    private ObjectPool<ObjectManager> _poolObstacle;
-    private ObjectPool<SpaceshipController> _poolSpaceship;
-    private List<SpaceshipController> instantiatedSpaceships;
-    private List<ObjectManager> instantiatedObstacles;
+    [SerializeField] private ObjectMovementBase[] obstacle;
+    [SerializeField] private CollectableBase[] collectable;
+    private ObjectPool<ObjectMovementBase> _poolObstacle;
+    private ObjectPool<CollectableBase> _poolCollectable;
+    private List<CollectableBase> instantiatedCollectables;
+    private List<ObjectMovementBase> instantiatedObstacles;
 
 
     private void Start()
     {
-        instantiatedSpaceships = new List<SpaceshipController>();
-        instantiatedObstacles = new List<ObjectManager>();
+        instantiatedCollectables = new List<CollectableBase>();
+        instantiatedObstacles = new List<ObjectMovementBase>();
 
         instantiatedObstacles = CreateObstaclePool();
-        instantiatedSpaceships = CreateSpaceshipPool();
+        instantiatedCollectables = CreateCollectablePool();
     }
 
     private void OnEnable()
@@ -46,9 +43,27 @@ public class PoolingSystem : MonoBehaviour
         EventManager.Instance.OnDestroyAction += DestroyObject;
     }
 
-    private List<ObjectManager> CreateObstaclePool()
+    private void DestroyObject(ObjectMovementBase movable)
     {
-        _poolObstacle = new ObjectPool<ObjectManager>(CreateObstacle, obstacle =>
+
+        if (movable.gameObject.CompareTag("Obstacle"))
+        {
+            _poolObstacle.Release(movable);
+        }
+        if (movable.gameObject.CompareTag("Collectable"))
+        {
+            _poolCollectable.Release((CollectableBase)movable);
+        }
+        else
+        {
+            Debug.Log("It just stage for now");
+        }
+
+    }
+
+    private List<ObjectMovementBase> CreateObstaclePool()
+    {
+        _poolObstacle = new ObjectPool<ObjectMovementBase>(CreateObstacle, obstacle =>
         {
             obstacle.gameObject.SetActive(true);
         }, obstacle =>
@@ -63,62 +78,76 @@ public class PoolingSystem : MonoBehaviour
         return instantiatedObstacles;
     }
 
-    private ObjectManager CreateObstacle()
+    private ObjectMovementBase CreateObstacle()
     {
-        int index = GenerateIndexWithProbability();
-        ObjectManager obs = Instantiate(obstacle[index]);
+        int index = GenerateObstacleIndexWithProbability();
+        ObjectMovementBase obs = Instantiate(obstacle[index]);
         obs.transform.SetParent(parentOfPool);
         instantiatedObstacles.Add(obs);
 
         return obs;
     }
 
-    private int GenerateIndexWithProbability()
+    private int GenerateObstacleIndexWithProbability()
     {
-        //ovo mi se ne svidja daj nekako dinamicnije da bude
-        //smisli kako ces sansu da se stvori enemy
-
         int index = Random.Range(zeroPercent, hundredPercent);
+        int[] obstacleChances ={
+            chanceForRoadblock,
+            chanceForDoubleRight,
+            chanceForDoubleLeft,
+            chanceForDoubleMid
+        };
 
-        if (index <= chanceForRoadblock)
-            return roadblockIndex;
+        for (int i = 0; i < obstacleChances.Length; i++)
+        {
+            if (index < obstacleChances[i])
+                return i;
+        }
 
-        else if (index >= chanceForRoadblock && index < chanceForDoubleRight)
-            return doubleObstacleRightIndex;
-
-        else if (index >= chanceForDoubleRight && index < chanceForDoubleLeft)
-            return doubleObstacleLeftIndex;
-
-        else if (index >= chanceForDoubleLeft && index < chanceForDoubleMid)
-            return doubleObstacleMiddleIndex;
-
-        else
-            return enemyIndex;
+        return obstacleChances.Length;
     }
 
-    private List<SpaceshipController> CreateSpaceshipPool()
+    private List<CollectableBase> CreateCollectablePool()
     {
-        _poolSpaceship = new ObjectPool<SpaceshipController>(CreateSpaceship, spaceship =>
+        _poolCollectable = new ObjectPool<CollectableBase>(CreateCollectable, collectable =>
         {
-            spaceship.gameObject.SetActive(true);
-        }, spaceship =>
+            collectable.gameObject.SetActive(true);
+        }, collectable =>
         {
-            spaceship.gameObject.SetActive(false);
-        }, spaceship =>
+            collectable.gameObject.SetActive(false);
+        }, collectable =>
         {
             UnsubscribeFromDestroyAction();
-            Destroy(spaceship.gameObject);
+            Destroy(collectable.gameObject);
         }, true, defaultCapacityForPool, maximumCapacityForPool);
 
-        return instantiatedSpaceships;
+        return instantiatedCollectables;
     }
 
-    private SpaceshipController CreateSpaceship()
+    private CollectableBase CreateCollectable()
     {
-        SpaceshipController ship = Instantiate(spaceship);
-        ship.transform.SetParent(parentOfPool);
-        instantiatedSpaceships.Add(ship);
-        return ship;
+        int index = GenerateCollectableIndexWithProbability();
+        CollectableBase coll = Instantiate(collectable[index]);
+        coll.transform.SetParent(parentOfPool);
+        instantiatedCollectables.Add(coll);
+        return coll;
+    }
+
+    private int GenerateCollectableIndexWithProbability()
+    {
+        int index = Random.Range(zeroPercent, hundredPercent);
+        int[] collectableChances ={
+            chanceForSpaceship,
+            chanceForGun
+        };
+
+        for (int i = 0; i < collectableChances.Length; i++)
+        {
+            if (index < collectableChances[i])
+                return i;
+        }
+
+        return collectableChances.Length;
     }
 
     private void OnDisable()
@@ -131,45 +160,22 @@ public class PoolingSystem : MonoBehaviour
         EventManager.Instance.OnDestroyAction -= DestroyObject;
     }
 
-    public ObjectManager GetObstacleFromPool()
+    public ObjectMovementBase GetObstacleFromPool()
     {
         return _poolObstacle.Get();
     }
 
-    public SpaceshipController GetSpaceshipFromPool()
+    public CollectableBase GetCollectableFromPool()
     {
-        return _poolSpaceship.Get();
+        return _poolCollectable.Get();
     }
 
-    private void DestroyObject(IDestroyable destroyable)
+    public List<CollectableBase> GetInstanciatedCollectables()
     {
-        if (destroyable is ObjectManager movable)
-        {
-            if (movable.gameObject.CompareTag("Obstacle"))
-            {
-                _poolObstacle.Release(movable);
-            }
-            if (movable.gameObject.CompareTag("Spaceship"))
-            {
-                _poolSpaceship.Release((SpaceshipController)movable);
-            }
-            else
-            {
-                Debug.Log("It just stage for now");
-            }
-        }
-        else
-        {
-            Debug.LogError("Invalid destryable type");
-        }
+        return instantiatedCollectables;
     }
 
-    public List<SpaceshipController> GetInstanciatedSpaceships()
-    {
-        return instantiatedSpaceships;
-    }
-
-    public List<ObjectManager> GetInstanciatedObstacles()
+    public List<ObjectMovementBase> GetInstanciatedObstacles()
     {
         return instantiatedObstacles;
     }

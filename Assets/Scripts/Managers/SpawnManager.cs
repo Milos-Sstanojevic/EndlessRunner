@@ -44,7 +44,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleObstacleSpawning()
     {
-        ObjectManager obstacle = _pool.GetObstacleFromPool();
+        ObjectMovementBase obstacle = _pool.GetObstacleFromPool();
 
         if (obstacle.name.StartsWith(flagNameForDoubleObstacle))
         {
@@ -59,7 +59,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleSpaceshipSpawning()
     {
-        SpaceshipController spaceship = _pool.GetSpaceshipFromPool();
+        CollectableBase spaceship = _pool.GetCollectableFromPool();
 
         float randomXShip = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
         float randomY = Random.Range(1f, posY);

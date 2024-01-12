@@ -1,7 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using static GlobalConstants;
 public class UIManager : MonoBehaviour
 {
     private const string scoreText = "Score: ";

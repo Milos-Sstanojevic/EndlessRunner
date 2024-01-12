@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class EnemyController : ObjectManager
+public class EnemyController : ObjectMovementBase
 {
     [SerializeField] private AnimationManager enemyAnimator;
     private int isOnLeftEdge = -1;

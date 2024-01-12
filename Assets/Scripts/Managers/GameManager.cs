@@ -14,16 +14,15 @@ public class GameManager : MonoBehaviour
     private const float spawningDelayDecreaser = 0.08f;
     private const float addPointsDelay = 0.5f;
     private const int oneScorePoint = 1;
-    private const int shipsWorth = 20;
     private const float playerSpeedBalancer = 1;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private PlayerController player;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private PoolingSystem poolingSystem;
     [SerializeField] private List<StageController> stagesInGame;
-    private List<ObjectManager> movabelsInGame;
-    private List<SpaceshipController> spaceshipsInGame;
-    private List<ObjectManager> obstaclesInGame;
+    private List<ObjectMovementBase> movabelsInGame;
+    private List<CollectableBase> spaceshipsInGame;
+    private List<ObjectMovementBase> obstaclesInGame;
     private int speedupRound = 1;
     private GameStates CurrentState;
     public float MovingSpeed { get; private set; }
@@ -32,9 +31,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         MovingSpeed = 8;
-        spaceshipsInGame = new List<SpaceshipController>();
-        obstaclesInGame = new List<ObjectManager>();
-        movabelsInGame = new List<ObjectManager>();
+        spaceshipsInGame = new List<CollectableBase>();
+        obstaclesInGame = new List<ObjectMovementBase>();
+        movabelsInGame = new List<ObjectMovementBase>();
     }
 
     private void Awake()
@@ -69,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     private void SubscribeToCollectAction()
     {
-        EventManager.Instance.OnCollectAction += CollectSpaceship;
+        EventManager.Instance.OnCollectAction += CollectCollectable;
     }
 
     //Unity event, called when player is dead
@@ -80,9 +79,9 @@ public class GameManager : MonoBehaviour
         uiManager.SetScoreScreenInactive();
     }
 
-    public void CollectSpaceship(ICollectible collectible)
+    public void CollectCollectable(CollectableBase collectible, int pointsWorth)
     {
-        uiManager.SetScoreOnScoreScreen(shipsWorth);
+        uiManager.SetScoreOnScoreScreen(pointsWorth);
     }
 
     private void Update()
@@ -152,7 +151,7 @@ public class GameManager : MonoBehaviour
 
     public void GetSpaceshipsAndObstaclesInGame()
     {
-        spaceshipsInGame = poolingSystem.GetInstanciatedSpaceships();
+        spaceshipsInGame = poolingSystem.GetInstanciatedCollectables();
         obstaclesInGame = poolingSystem.GetInstanciatedObstacles();
 
         CreateListOfMovablesInGame();
@@ -160,11 +159,11 @@ public class GameManager : MonoBehaviour
 
     private void CreateListOfMovablesInGame()
     {
-        foreach (SpaceshipController ship in spaceshipsInGame)
+        foreach (CollectableBase ship in spaceshipsInGame)
         {
             movabelsInGame.Add(ship);
         }
-        foreach (ObjectManager obstacle in obstaclesInGame)
+        foreach (ObjectMovementBase obstacle in obstaclesInGame)
         {
             movabelsInGame.Add(obstacle);
         }
@@ -176,7 +175,7 @@ public class GameManager : MonoBehaviour
 
     private void EnableMovementAndSetSpeedOfMovableObjects()
     {
-        foreach (ObjectManager movable in movabelsInGame)
+        foreach (ObjectMovementBase movable in movabelsInGame)
         {
             movable.EnableMovement();
             movable.SetMovementSpeed(MovingSpeed);
@@ -206,7 +205,7 @@ public class GameManager : MonoBehaviour
 
     private void DisableMovementOfMovableObjects()
     {
-        foreach (ObjectManager movable in movabelsInGame)
+        foreach (ObjectMovementBase movable in movabelsInGame)
         {
             movable.DisableMovement();
         }
@@ -295,7 +294,7 @@ public class GameManager : MonoBehaviour
 
     private void UnsubscribeFromCollectAction()
     {
-        EventManager.Instance.OnCollectAction -= CollectSpaceship;
+        EventManager.Instance.OnCollectAction -= CollectCollectable;
     }
 }
 

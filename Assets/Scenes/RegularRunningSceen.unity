@@ -2676,7 +2676,10 @@ MonoBehaviour:
   - {fileID: 3146250182552618409, guid: 4be5ffcd6406bc74699e4d81ad92609b, type: 3}
   - {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
   - {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
-  spaceship: {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
+  collectable:
+  - {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
+  - {fileID: 8404797518885804989, guid: 5ff23b573a6415b4284cb6ad246dce3b, type: 3}
+  - {fileID: 3609463062443591020, guid: 0c2ab57f90c18b2448ece3c747987c16, type: 3}
 --- !u!114 &1244077504 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5072763247599114993, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
@@ -4129,6 +4132,10 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 427268135}
+    - target: {fileID: 7896171451228950087, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
+      propertyPath: m_Constraints
+      value: 120
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

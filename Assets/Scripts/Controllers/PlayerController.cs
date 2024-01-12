@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour
     private const string groundTag = "Ground";
     private const string obstacleTag = "Obstacle";
     private const string horizontalAxis = "Horizontal";
+    private const string verticalAxis = "Vertical";
+    private const float playerEdgePositionBackZ = -10.5f;
+    private const float playerEdgePositionFrontZ = 0;
     private Rigidbody playerRb;
     private AnimationManager characterAnimator;
     private ParticleSystemManager playerParticleSystem;
@@ -50,7 +53,9 @@ public class PlayerController : MonoBehaviour
     private void MoveLeftOrRight()
     {
         float horizontalInput = Input.GetAxisRaw(horizontalAxis);
+        float verticalInput = Input.GetAxisRaw(verticalAxis);
         transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput);
+        transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput);
     }
 
     private void Jump()
@@ -74,6 +79,14 @@ public class PlayerController : MonoBehaviour
         if (transform.position.x > GlobalConstants.EdgePosX)
         {
             transform.position = new Vector3(GlobalConstants.EdgePosX, transform.position.y, transform.position.z);
+        }
+        if (transform.position.z < playerEdgePositionBackZ)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, playerEdgePositionBackZ);
+        }
+        if (transform.position.z > playerEdgePositionFrontZ)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, playerEdgePositionFrontZ);
         }
     }
 
@@ -102,11 +115,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        ICollectible collectible = other.GetComponent<ICollectible>();
-        if (collectible != null)
+        CollectableBase collectable = other.GetComponent<CollectableBase>();
+        if (collectable != null)
         {
+            int pointsWorth = 20;
+            if (collectable is GunController)
+                pointsWorth = 40;
             audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
-            EventManager.Instance.OnCollectibleCollected(collectible);
+            EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
         }
     }
 
