@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
     private const string verticalAxis = "Vertical";
     private const float playerEdgePositionBackZ = -10.5f;
     private const float playerEdgePositionFrontZ = 0;
+    private const int collectablePointsWorth = 20;
+    private const float zeroPosition = 0;
+    private GunController gunInHands;
     private Rigidbody playerRb;
     private AnimationManager characterAnimator;
     private ParticleSystemManager playerParticleSystem;
@@ -18,6 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip spaceshipCollectedSound;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private float gravityModifier;
+    [SerializeField] private GameObject gunPosition;
     private bool canJump = true;
     private bool movementEnabled;
     private float movementSpeed;
@@ -38,8 +42,8 @@ public class PlayerController : MonoBehaviour
     {
         if (movementEnabled)
         {
+            PlayAnimationsWithGun();
             characterAnimator.PlayRunAnimation();
-
             MoveLeftOrRight();
             Jump();
             KeepPlayerOnRoad();
@@ -47,6 +51,18 @@ public class PlayerController : MonoBehaviour
         else
         {
             characterAnimator.StopRunAnimation();
+        }
+    }
+    private void PlayAnimationsWithGun()
+    {
+        if (gunInHands != null && gunInHands.HasGun == true)
+        {
+            characterAnimator.StartRunningWithGunAnimation();
+        }
+        else
+        {
+            characterAnimator.StopRunningWithGunAnimation();
+            gunInHands = null;
         }
     }
 
@@ -97,10 +113,12 @@ public class PlayerController : MonoBehaviour
             EventManager.Instance.OnPlayerDead();
 
             if (!IsPlayerOnGround())
-                transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+                transform.position = new Vector3(transform.position.x, zeroPosition, transform.position.z);
 
             characterAnimator.PlayDeadAnimation();
             audioManager.PlayDeathSound(deathSound);
+
+            ReleaseGunIfITsInHands();
         }
 
         if (other.gameObject.CompareTag(groundTag))
@@ -110,20 +128,42 @@ public class PlayerController : MonoBehaviour
             characterAnimator.StopJumpAnimation();
         }
     }
+    
+    private void ReleaseGunIfITsInHands()
+    {
+        if (gunInHands != null)
+        {
+            gunInHands.ReleaseGunInPool();
+        }
+    }
 
-    private bool IsPlayerOnGround() => (int)transform.position.y == 0;
+    private bool IsPlayerOnGround() => (int)transform.position.y == zeroPosition;
 
     private void OnTriggerEnter(Collider other)
     {
         CollectableBase collectable = other.GetComponent<CollectableBase>();
         if (collectable != null)
         {
-            int pointsWorth = 20;
-            if (collectable is GunController)
-                pointsWorth = 40;
+            int pointsWorth = collectablePointsWorth;
+            if (collectable is GunController gun)
+            {
+                gunInHands = gun;
+                pointsWorth = CollectGun(gun);
+            }
+            else
+            {
+                EventManager.Instance.OnObjectDestroyed(collectable);
+            }
             audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
             EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
+
         }
+    }
+
+    private int CollectGun(GunController gun)
+    {
+        gun.MoveToPlayerHand(this, gunPosition.transform.position);
+        return collectablePointsWorth * 2;
     }
 
 

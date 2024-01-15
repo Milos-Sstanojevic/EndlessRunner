@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private PoolingSystem poolingSystem;
     [SerializeField] private List<StageController> stagesInGame;
-    private List<ObjectMovementBase> movabelsInGame;
+    private List<EnviromentMovementBase> movabelsInGame;
     private List<CollectableBase> spaceshipsInGame;
-    private List<ObjectMovementBase> obstaclesInGame;
+    private List<EnviromentMovementBase> obstaclesInGame;
     private int speedupRound = 1;
     private GameStates CurrentState;
     public float MovingSpeed { get; private set; }
@@ -32,8 +32,8 @@ public class GameManager : MonoBehaviour
     {
         MovingSpeed = 8;
         spaceshipsInGame = new List<CollectableBase>();
-        obstaclesInGame = new List<ObjectMovementBase>();
-        movabelsInGame = new List<ObjectMovementBase>();
+        obstaclesInGame = new List<EnviromentMovementBase>();
+        movabelsInGame = new List<EnviromentMovementBase>();
     }
 
     private void Awake()
@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
         {
             movabelsInGame.Add(ship);
         }
-        foreach (ObjectMovementBase obstacle in obstaclesInGame)
+        foreach (EnviromentMovementBase obstacle in obstaclesInGame)
         {
             movabelsInGame.Add(obstacle);
         }
@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour
 
     private void EnableMovementAndSetSpeedOfMovableObjects()
     {
-        foreach (ObjectMovementBase movable in movabelsInGame)
+        foreach (EnviromentMovementBase movable in movabelsInGame)
         {
             movable.EnableMovement();
             movable.SetMovementSpeed(MovingSpeed);
@@ -205,7 +205,7 @@ public class GameManager : MonoBehaviour
 
     private void DisableMovementOfMovableObjects()
     {
-        foreach (ObjectMovementBase movable in movabelsInGame)
+        foreach (EnviromentMovementBase movable in movabelsInGame)
         {
             movable.DisableMovement();
         }

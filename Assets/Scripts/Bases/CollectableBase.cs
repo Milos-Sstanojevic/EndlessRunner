@@ -1,34 +1,19 @@
 using UnityEngine;
 
-public class CollectableBase : ObjectMovementBase
+public class CollectableBase : EnviromentMovementBase
 {
     protected float RotationSpeed = 80;
-
-    private void Awake()
-    {
-        EventManager.Instance.OnCollectAction += Collect;
-    }
 
     protected override void Update()
     {
         base.Update();
-        RotateSpaceship();
+        RotateCollectable();
     }
 
-    private void RotateSpaceship()
+    private void RotateCollectable()
     {
         if (base.MovementEnabled == true)
             transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.up, Space.World);
     }
 
-    public void Collect(CollectableBase collectible, int pointsWorth)
-    {
-        if (collectible == this)
-            DestroyWhenCollected();
-    }
-
-    public void DestroyWhenCollected()
-    {
-        EventManager.Instance.OnObjectDestroyed(this);
-    }
 }

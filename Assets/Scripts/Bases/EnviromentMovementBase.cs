@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ObjectMovementBase : MonoBehaviour
+public class EnviromentMovementBase : MonoBehaviour
 {
     protected bool MovementEnabled { get; private set; }
     protected float MovementSpeed { get; private set; }

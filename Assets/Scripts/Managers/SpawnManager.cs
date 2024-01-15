@@ -44,7 +44,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleObstacleSpawning()
     {
-        ObjectMovementBase obstacle = _pool.GetObstacleFromPool();
+        EnviromentMovementBase obstacle = _pool.GetObstacleFromPool();
 
         if (obstacle.name.StartsWith(flagNameForDoubleObstacle))
         {

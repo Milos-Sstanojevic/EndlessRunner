@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class EnemyController : ObjectMovementBase
+public class EnemyController : EnviromentMovementBase
 {
     [SerializeField] private AnimationManager enemyAnimator;
     private int isOnLeftEdge = -1;
@@ -27,12 +27,12 @@ public class EnemyController : ObjectMovementBase
 
     private void RotateEnemy()
     {
-        if (transform.position.x < -GlobalConstants.EdgePosX)
+        if (transform.position.x <= -GlobalConstants.EdgePosX)
         {
             transform.Rotate(0, -180, 0);
             isOnLeftEdge *= -1;
         }
-        else if (transform.position.x > GlobalConstants.EdgePosX)
+        else if (transform.position.x >= GlobalConstants.EdgePosX)
         {
             transform.Rotate(0, 180, 0);
             isOnLeftEdge *= -1;
