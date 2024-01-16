@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
         if (movementEnabled)
         {
             PlayAnimationsWithGun();
+            ShootFromGun();
             characterAnimator.PlayRunAnimation();
             MoveLeftOrRight();
             Jump();
@@ -55,14 +56,29 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayAnimationsWithGun()
     {
-        if (gunInHands != null && gunInHands.HasGun == true)
+        if (gunInHands?.HasGun == true)
         {
             characterAnimator.StartRunningWithGunAnimation();
         }
         else
         {
             characterAnimator.StopRunningWithGunAnimation();
-            gunInHands = null;
+        }
+    }
+
+    private void ShootFromGun()
+    {
+        if (gunInHands?.HasGun == true)
+        {
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                gunInHands.ShootFromGun();
+            }
+
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                gunInHands.StopShooting();
+            }
         }
     }
 
@@ -128,7 +144,7 @@ public class PlayerController : MonoBehaviour
             characterAnimator.StopJumpAnimation();
         }
     }
-    
+
     private void ReleaseGunIfITsInHands()
     {
         if (gunInHands != null)
@@ -152,7 +168,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                EventManager.Instance.OnObjectDestroyed(collectable);
+                EventManager.Instance.OnEnviromentDestroyed(collectable);
             }
             audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
             EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);

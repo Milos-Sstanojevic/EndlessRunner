@@ -3,14 +3,21 @@ using UnityEngine;
 
 public class GunController : CollectableBase
 {
-    //private AnimationManager gunAnimation;
-    private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
     private const int gunTimeToLive = 5;
+    private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
+    private ParticleSystemManager gunMuzzleParticle;
+    [SerializeField] private GameObject muzzleParticleObject;
+    [SerializeField] private Transform bulletStartPoint;
+    [SerializeField] private BulletController bulletController;
+    private BulletPoolyingSystem bulletPoolyingSystem;
+    private float range = 60f;
+
     public bool HasGun { get; private set; }
 
     private void Awake()
     {
-        //gunAnimation = GetComponent<AnimationManager>();
+        gunMuzzleParticle = GetComponent<ParticleSystemManager>();
+        bulletPoolyingSystem = GetComponent<BulletPoolyingSystem>();
     }
 
     protected override void Update()
@@ -19,26 +26,52 @@ public class GunController : CollectableBase
         {
             base.Update();
         }
-
-        //ShootFromGun();
     }
 
-    // private void ShootFromGun()
-    // {
-    //     if (HasGun)
-    //     {
-    //         if (Input.GetKeyDown(KeyCode.Mouse0))
-    //         {
-    //             muzzleFlash.SetActive(true);
-    //             gunAnimation.StartShootingAnimation();
-    //         }
-    //         if (Input.GetKeyUp(KeyCode.Mouse0))
-    //         {
-    //             muzzleFlash.SetActive(false);
-    //             gunAnimation.StopShootingAnimation();
-    //         }
-    //     }
-    // }
+    public void ShootFromGun()
+    {
+        muzzleParticleObject.SetActive(true);
+        gunMuzzleParticle.PlayMuzzleParticleEffect();
+
+        RaycastHit hit;
+        if (Physics.Raycast(bulletStartPoint.position, Vector3.forward, out hit, range))
+        {
+            BulletController trail = bulletPoolyingSystem.GetBulletFromPool();
+
+            StartCoroutine(MakeTrail(trail, hit.point));
+
+            EnemyController enemy = hit.transform.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                Debug.Log("Enemy hit");
+            }
+        }
+    }
+
+
+    public void StopShooting()
+    {
+        muzzleParticleObject.SetActive(false);
+        gunMuzzleParticle.StopMuzzleParticleEffect();
+    }
+
+    public IEnumerator MakeTrail(BulletController trail, Vector3 hitPoint)
+    {
+        Vector3 startPosition = trail.transform.position;
+        float distance = Vector3.Distance(trail.transform.position, hitPoint);
+        float remainingDistance = distance;
+
+        while (remainingDistance > 0)
+        {
+            trail.transform.position = Vector3.Lerp(startPosition, hitPoint, 1 - (remainingDistance / distance));
+            remainingDistance -= bulletController.GetSpeed() * Time.deltaTime;
+
+            yield return null;
+        }
+
+        trail.transform.position = hitPoint;
+    }
+
 
     public void MoveToPlayerHand(PlayerController player, Vector3 gunPos)
     {
@@ -56,12 +89,14 @@ public class GunController : CollectableBase
     {
         yield return new WaitForSeconds(gunTimeToLive);
         HasGun = false;
-        EventManager.Instance.OnObjectDestroyed(this);
+        transform.Rotate(-90, 0, 0);
+        EventManager.Instance.OnEnviromentDestroyed(this);
     }
 
     public void ReleaseGunInPool()
     {
-        EventManager.Instance.OnObjectDestroyed(this);
+        transform.Rotate(-90, 0, 0);
+        EventManager.Instance.OnEnviromentDestroyed(this);
     }
 
 }

@@ -42,6 +42,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+
     private void HandleObstacleSpawning()
     {
         EnviromentMovementBase obstacle = _pool.GetObstacleFromPool();
@@ -90,4 +91,5 @@ public class SpawnManager : MonoBehaviour
     {
         spaceshipSpawnDelay = spawnDelayInSeconds;
     }
+
 }

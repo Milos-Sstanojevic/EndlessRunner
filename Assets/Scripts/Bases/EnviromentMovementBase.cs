@@ -37,6 +37,6 @@ public class EnviromentMovementBase : MonoBehaviour
     public void Destroy()
     {
         if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
-            EventManager.Instance.OnObjectDestroyed(this);
+            EventManager.Instance.OnEnviromentDestroyed(this);
     }
 }

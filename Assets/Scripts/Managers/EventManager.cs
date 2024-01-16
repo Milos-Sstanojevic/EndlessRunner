@@ -6,6 +6,7 @@ public class EventManager : MonoBehaviour
     public static EventManager Instance { get; private set; }
     public event Action<CollectableBase, int> OnCollectAction;
     public event Action<EnviromentMovementBase> OnDestroyAction;
+    public event Action<BulletController> OnBulletDestroyAction;
     public event Action OnPlayerDeadAction;
     public event Action OnGunCollectedAction;
 
@@ -26,9 +27,14 @@ public class EventManager : MonoBehaviour
         OnCollectAction?.Invoke(collectible, pointsWorth);
     }
 
-    public void OnObjectDestroyed(EnviromentMovementBase destroyable)
+    public void OnEnviromentDestroyed(EnviromentMovementBase destroyable)
     {
         OnDestroyAction?.Invoke(destroyable);
+    }
+
+    public void OnBulletDestroyed(BulletController bullet)
+    {
+        OnBulletDestroyAction?.Invoke(bullet);
     }
 
     public void OnPlayerDead()
