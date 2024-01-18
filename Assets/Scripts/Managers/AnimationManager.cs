@@ -61,16 +61,5 @@ public class AnimationManager : MonoBehaviour
         animator.SetBool(runWithGunAnimation, false);
     }
 
-    //Happens while left mouse button is pressed
-    public void StartShootingAnimation()
-    {
-        animator.SetBool(gunShootingAnimation, true);
-    }
-
-    //Happens when left mouse button is released
-    public void StopShootingAnimation()
-    {
-        animator.SetBool(gunShootingAnimation, false);
-    }
 }
 

@@ -2,19 +2,15 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    public TrailRenderer bulletTrail;
-    private float bulletSpeed = 50;
-
-    private void Start()
+    private float bulletSpeed = 100;
+    private void Update()
     {
-        bulletTrail = GetComponent<TrailRenderer>();
-
         ReturnBulletToPool();
     }
 
     private void ReturnBulletToPool()
     {
-        if (transform.position.z > -7f)
+        if (transform.position.z > 10f)
         {
             EventManager.Instance.OnBulletDestroyed(this);
         }

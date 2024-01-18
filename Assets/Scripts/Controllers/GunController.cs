@@ -5,20 +5,9 @@ public class GunController : CollectableBase
 {
     private const int gunTimeToLive = 5;
     private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
-    private ParticleSystemManager gunMuzzleParticle;
     [SerializeField] private GameObject muzzleParticleObject;
-    [SerializeField] private Transform bulletStartPoint;
-    [SerializeField] private BulletController bulletController;
-    private BulletPoolyingSystem bulletPoolyingSystem;
-    private float range = 60f;
-
     public bool HasGun { get; private set; }
 
-    private void Awake()
-    {
-        gunMuzzleParticle = GetComponent<ParticleSystemManager>();
-        bulletPoolyingSystem = GetComponent<BulletPoolyingSystem>();
-    }
 
     protected override void Update()
     {
@@ -26,52 +15,24 @@ public class GunController : CollectableBase
         {
             base.Update();
         }
+        ShootFromGun();
     }
 
     public void ShootFromGun()
     {
-        muzzleParticleObject.SetActive(true);
-        gunMuzzleParticle.PlayMuzzleParticleEffect();
-
-        RaycastHit hit;
-        if (Physics.Raycast(bulletStartPoint.position, Vector3.forward, out hit, range))
+        if (HasGun)
         {
-            BulletController trail = bulletPoolyingSystem.GetBulletFromPool();
-
-            StartCoroutine(MakeTrail(trail, hit.point));
-
-            EnemyController enemy = hit.transform.GetComponent<EnemyController>();
-            if (enemy != null)
+            if (Input.GetKey(KeyCode.Mouse0))
             {
-                Debug.Log("Enemy hit");
+                muzzleParticleObject.SetActive(true);
+            }
+
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                muzzleParticleObject.SetActive(false);
             }
         }
     }
-
-
-    public void StopShooting()
-    {
-        muzzleParticleObject.SetActive(false);
-        gunMuzzleParticle.StopMuzzleParticleEffect();
-    }
-
-    public IEnumerator MakeTrail(BulletController trail, Vector3 hitPoint)
-    {
-        Vector3 startPosition = trail.transform.position;
-        float distance = Vector3.Distance(trail.transform.position, hitPoint);
-        float remainingDistance = distance;
-
-        while (remainingDistance > 0)
-        {
-            trail.transform.position = Vector3.Lerp(startPosition, hitPoint, 1 - (remainingDistance / distance));
-            remainingDistance -= bulletController.GetSpeed() * Time.deltaTime;
-
-            yield return null;
-        }
-
-        trail.transform.position = hitPoint;
-    }
-
 
     public void MoveToPlayerHand(PlayerController player, Vector3 gunPos)
     {
@@ -90,12 +51,14 @@ public class GunController : CollectableBase
         yield return new WaitForSeconds(gunTimeToLive);
         HasGun = false;
         transform.Rotate(-90, 0, 0);
+        muzzleParticleObject.SetActive(false);
         EventManager.Instance.OnEnviromentDestroyed(this);
     }
 
     public void ReleaseGunInPool()
     {
         transform.Rotate(-90, 0, 0);
+        muzzleParticleObject.SetActive(false);
         EventManager.Instance.OnEnviromentDestroyed(this);
     }
 

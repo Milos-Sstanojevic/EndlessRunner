@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private const string groundTag = "Ground";
+    private const string enemyTag = "Enemy";
     private const string obstacleTag = "Obstacle";
     private const string horizontalAxis = "Horizontal";
     private const string verticalAxis = "Vertical";
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private float gravityModifier;
     [SerializeField] private GameObject gunPosition;
+    [SerializeField] private ShootingController shootingController;
     private bool canJump = true;
     private bool movementEnabled;
     private float movementSpeed;
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             characterAnimator.StopRunAnimation();
+            characterAnimator.StopRunningWithGunAnimation();
         }
     }
     private void PlayAnimationsWithGun()
@@ -68,18 +71,8 @@ public class PlayerController : MonoBehaviour
 
     private void ShootFromGun()
     {
-        if (gunInHands?.HasGun == true)
-        {
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                gunInHands.ShootFromGun();
-            }
-
-            if (Input.GetKeyUp(KeyCode.Mouse0))
-            {
-                gunInHands.StopShooting();
-            }
-        }
+        if (Input.GetKey(KeyCode.Mouse0) && gunInHands?.HasGun == true)
+            shootingController.ShootBullet();
     }
 
     private void MoveLeftOrRight()
@@ -124,7 +117,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag(obstacleTag))
+        if (other.gameObject.CompareTag(obstacleTag) /*|| other.gameObject.CompareTag(enemyTag)*/)
         {
             EventManager.Instance.OnPlayerDead();
 

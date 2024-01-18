@@ -6,6 +6,7 @@ using UnityEngine.Pool;
 public class PoolingSystem : MonoBehaviour
 {
     private const string obstacleTag = "Obstacle";
+    private const string enemyTag = "Enemy";
     private const string collectableTag = "Collectable";
     private const int chanceForRoadblock = 25;
     private const int chanceForDoubleRight = 50;
@@ -47,7 +48,7 @@ public class PoolingSystem : MonoBehaviour
 
     private void DestroyEnviroment(EnviromentMovementBase movable)
     {
-        if (movable.gameObject.CompareTag(obstacleTag))
+        if (movable.gameObject.CompareTag(obstacleTag) || movable.gameObject.CompareTag(enemyTag))
         {
             _poolObstacle.Release(movable);
         }

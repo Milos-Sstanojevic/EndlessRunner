@@ -8,44 +8,51 @@ public class BulletPoolyingSystem : MonoBehaviour
     [SerializeField] private Transform parentBulletPool;
     [SerializeField] private Transform bulletSpawnPoint;
 
-    private void OnEnable()
+    private void Start()
     {
         EventManager.Instance.OnBulletDestroyAction += DestroyBullet;
+
+        CreateBulletPool();
     }
 
     private void DestroyBullet(BulletController bullet)
     {
-        Debug.Log(bullet.transform.position);
+        Debug.Log("Vracam u pool");
         _poolBullet.Release(bullet);
     }
 
-    private void Start()
-    {
-        CreateBulletPool();
-    }
 
     public void CreateBulletPool()
     {
         _poolBullet = new ObjectPool<BulletController>(CreateBullet, bullet =>
         {
-            bullet.transform.position = new Vector3(bulletSpawnPoint.position.x, bulletSpawnPoint.position.y, bulletSpawnPoint.position.z + 1f);
+            Debug.Log("Postavljam na aktive");
             bullet.gameObject.SetActive(true);
         }, bullet =>
         {
+            Debug.Log("Postavljam na deaktive");
             bullet.gameObject.SetActive(false);
         }, bullet =>
         {
+            Debug.Log("Unistavam bullet");
             Destroy(bullet.gameObject);
-        }, true, 1000, 2000);
+        }, true, 2, 4);
     }
 
     private BulletController CreateBullet()
     {
-        BulletController bullet = Instantiate(bulletController, new Vector3(bulletSpawnPoint.position.x, bulletSpawnPoint.position.y, bulletSpawnPoint.position.z + 1f), Quaternion.identity);
+        Debug.Log("Kreiram bullet");
+        BulletController bullet = Instantiate(bulletController);
+        bullet.transform.SetPositionAndRotation(bulletSpawnPoint.position, Quaternion.identity);
+        bullet.transform.SetParent(parentBulletPool);
         return bullet;
     }
 
-    public BulletController GetBulletFromPool() => _poolBullet.Get();
+    public BulletController GetBulletFromPool()
+    {
+        Debug.Log("Uzimam iz pool-a");
+        return _poolBullet.Get();
+    }
 
     private void OnDisable()
     {
