@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class EnemyController : EnviromentMovementBase
 {
     private static Vector3 faceTheOtherWay = new Vector3(0, -180, 0);
+    private const int enemyWorth = 25;
     private const int fullHealth = 100;
     private const int minimumHealth = 0;
     private const int negator = -1;
@@ -13,11 +14,6 @@ public class EnemyController : EnviromentMovementBase
     private int isOnLeftEdge = -1;
     private float movementSpeed = 6.5f;
     private int health = 100;
-
-    private void OnEnable()
-    {
-        Debug.Log(health);
-    }
 
     protected override void Update()
     {
@@ -33,6 +29,7 @@ public class EnemyController : EnviromentMovementBase
         {
             health = fullHealth;
             EventManager.Instance.OnEnviromentDestroyed(this);
+            EventManager.Instance.OnEnemyKilled(enemyWorth);
         }
     }
 
@@ -50,12 +47,12 @@ public class EnemyController : EnviromentMovementBase
 
     private void RotateEnemy()
     {
-        if (transform.position.x < -GlobalConstants.EdgePosX)
+        if (transform.position.x <= -GlobalConstants.EdgePosX)
         {
             transform.Rotate(faceTheOtherWay);
             isOnLeftEdge *= negator;
         }
-        if (transform.position.x > GlobalConstants.EdgePosX)
+        if (transform.position.x >= GlobalConstants.EdgePosX)
         {
             transform.Rotate(-faceTheOtherWay);
             isOnLeftEdge *= negator;

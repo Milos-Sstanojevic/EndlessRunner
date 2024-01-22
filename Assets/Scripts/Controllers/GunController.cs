@@ -50,14 +50,14 @@ public class GunController : CollectableBase
     {
         yield return new WaitForSeconds(gunTimeToLive);
         HasGun = false;
-        transform.Rotate(-90, 0, 0);
+        transform.Rotate(-rotateAroundX);
         muzzleParticleObject.SetActive(false);
         EventManager.Instance.OnEnviromentDestroyed(this);
     }
 
     public void ReleaseGunInPool()
     {
-        transform.Rotate(-90, 0, 0);
+        transform.Rotate(-rotateAroundX);
         muzzleParticleObject.SetActive(false);
         EventManager.Instance.OnEnviromentDestroyed(this);
     }

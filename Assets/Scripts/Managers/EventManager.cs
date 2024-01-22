@@ -7,6 +7,7 @@ public class EventManager : MonoBehaviour
     public event Action<CollectableBase, int> OnCollectAction;
     public event Action<EnviromentMovementBase> OnDestroyAction;
     public event Action<BulletController> OnBulletDestroyAction;
+    public event Action<int> OnEnemyKilledAction;
     public event Action OnPlayerDeadAction;
     public event Action OnGunCollectedAction;
 
@@ -45,5 +46,10 @@ public class EventManager : MonoBehaviour
     public void OnGunCollected()
     {
         OnGunCollectedAction?.Invoke();
+    }
+
+    public void OnEnemyKilled(int enemyWorth)
+    {
+        OnEnemyKilledAction?.Invoke(enemyWorth);
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -9,11 +11,15 @@ public class PlayerController : MonoBehaviour
     private const string horizontalAxis = "Horizontal";
     private const string verticalAxis = "Vertical";
     private const float playerEdgePositionBackZ = -10.5f;
-    private const float playerEdgePositionFrontZ = 0;
-    private const int collectablePointsWorth = 20;
+    private const float playerEdgePositionFrontZ = -2;
+    private const int collectablePointsWorth = 5;
+    private const float asscendingSpeed = 5;
     private const float zeroPosition = 0;
+    private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
     private GunController gunInHands;
+    private JetController jetOnBack;
     private Rigidbody playerRb;
+    private Collider playerCollider;
     private AnimationManager characterAnimator;
     private ParticleSystemManager playerParticleSystem;
     [SerializeField] private float jumpForce;
@@ -23,14 +29,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private float gravityModifier;
     [SerializeField] private GameObject gunPosition;
+    [SerializeField] private GameObject jetPosition;
     [SerializeField] private ShootingController shootingController;
     private bool canJump = true;
+    private bool isInAir = false;
     private bool movementEnabled;
     private float movementSpeed;
+    private Dictionary<Type, Func<CollectableBase, int>> collectableHandlers;
 
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<Collider>();
         playerParticleSystem = GetComponent<ParticleSystemManager>();
         characterAnimator = GetComponent<AnimationManager>();
     }
@@ -38,18 +48,35 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         Physics.gravity *= gravityModifier;
+        collectableHandlers = new Dictionary<Type, Func<CollectableBase, int>>()
+        {
+            {typeof(GunController),CollectGun},
+            {typeof(JetController),CollectJet}
+        };
     }
 
     private void Update()
     {
         if (movementEnabled)
         {
-            PlayAnimationsWithGun();
+            PlayAnimationsWithGunOrFlyingAnimations();
             ShootFromGun();
             characterAnimator.PlayRunAnimation();
             MoveLeftOrRight();
             Jump();
             KeepPlayerOnRoad();
+
+            if (jetOnBack?.HasJet == false && isInAir)
+            {
+                //playerRb.useGravity = true;
+                StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.position.x, zeroPosition + 0.65f, transform.position.z)));
+                jetOnBack = null;
+            }
+
+            if (jetOnBack?.HasJet == true)
+            {
+                KeepPlayerInCameraField();
+            }
         }
         else
         {
@@ -57,7 +84,16 @@ public class PlayerController : MonoBehaviour
             characterAnimator.StopRunningWithGunAnimation();
         }
     }
-    private void PlayAnimationsWithGun()
+
+    private void KeepPlayerInCameraField()
+    {
+        if (transform.position.z > -5f)
+            transform.position = new Vector3(transform.position.x, transform.position.y, -5f);
+        if (transform.position.y <= 4.65f)
+            transform.position = new Vector3(transform.position.x, 4.65f, transform.position.z);
+    }
+
+    private void PlayAnimationsWithGunOrFlyingAnimations()
     {
         if (gunInHands?.HasGun == true)
         {
@@ -66,6 +102,15 @@ public class PlayerController : MonoBehaviour
         else
         {
             characterAnimator.StopRunningWithGunAnimation();
+        }
+
+        if (jetOnBack?.HasJet == true)
+        {
+            characterAnimator.StartFlyingAnimation();
+        }
+        else
+        {
+            characterAnimator.StopFlyingAnimation();
         }
     }
 
@@ -79,13 +124,13 @@ public class PlayerController : MonoBehaviour
     {
         float horizontalInput = Input.GetAxisRaw(horizontalAxis);
         float verticalInput = Input.GetAxisRaw(verticalAxis);
-        transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput);
-        transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput);
+        transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput, Space.World);
+        transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput, Space.World);
     }
 
     private void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canJump)
+        if (Input.GetKeyDown(KeyCode.Space) && canJump && !isInAir)
         {
             playerParticleSystem.PlayJumpingParticleEffect();
             characterAnimator.PlayJumpAnimation();
@@ -144,6 +189,10 @@ public class PlayerController : MonoBehaviour
         {
             gunInHands.ReleaseGunInPool();
         }
+        if (jetOnBack != null)
+        {
+            jetOnBack.ReleaseJetToPool();
+        }
     }
 
     private bool IsPlayerOnGround() => (int)transform.position.y == zeroPosition;
@@ -151,26 +200,72 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         CollectableBase collectable = other.GetComponent<CollectableBase>();
+
         if (collectable != null)
         {
             int pointsWorth = collectablePointsWorth;
-            if (collectable is GunController gun)
+            if (collectableHandlers.TryGetValue(collectable.GetType(), out var collectFunction))
             {
-                gunInHands = gun;
-                pointsWorth = CollectGun(gun);
+                pointsWorth = collectFunction(collectable);
             }
             else
             {
                 EventManager.Instance.OnEnviromentDestroyed(collectable);
             }
+
             audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
             EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
-
         }
     }
 
-    private int CollectGun(GunController gun)
+    private int CollectJet(CollectableBase collectable)
     {
+        JetController jet = (JetController)collectable;
+
+        if (jetOnBack == null && !isInAir)
+        {
+            jetOnBack = jet;
+            StartCoroutine(SlowlyStartOrStopFlying(rotateAroundX, new Vector3(transform.position.x, zeroPosition + 4.65f, transform.position.z)));
+            jet.MoveOnPlayerBack(this, jetPosition.transform.position);
+            //playerRb.useGravity = false;
+        }
+        else
+        {
+            jet.ReleaseJetToPool();
+        }
+
+        return collectablePointsWorth * 2;
+    }
+
+    public IEnumerator SlowlyStartOrStopFlying(Vector3 endRotation, Vector3 endPosition)
+    {
+        isInAir = !isInAir;
+        playerCollider.enabled = false;
+
+        Vector3 startPos = transform.position;
+        Vector3 startRotation = transform.rotation.eulerAngles;
+        float distance = Vector3.Distance(startPos, endPosition);
+        float remainingDistance = distance;
+
+
+        while (remainingDistance > 0)
+        {
+            transform.position = Vector3.Lerp(startPos, endPosition, 1 - (remainingDistance / distance));
+            transform.eulerAngles = Vector3.Lerp(startRotation, endRotation, 1 - (remainingDistance / distance));
+            remainingDistance -= asscendingSpeed * Time.deltaTime;
+
+            yield return null;
+        }
+
+        playerCollider.enabled = true;
+        transform.position = endPosition;
+        transform.eulerAngles = endRotation;
+    }
+
+    private int CollectGun(CollectableBase collectable)
+    {
+        GunController gun = (GunController)collectable;
+        gunInHands = gun;
         gun.MoveToPlayerHand(this, gunPosition.transform.position);
         return collectablePointsWorth * 2;
     }

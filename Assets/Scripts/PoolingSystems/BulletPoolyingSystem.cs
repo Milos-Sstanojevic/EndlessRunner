@@ -3,6 +3,8 @@ using UnityEngine.Pool;
 
 public class BulletPoolyingSystem : MonoBehaviour
 {
+    private const int defaultCapacityForBullets = 10;
+    private const int maximumCapacityForBullets = 20;
     private ObjectPool<BulletController> _poolBullet;
     [SerializeField] private BulletController bulletController;
     [SerializeField] private Transform parentBulletPool;
@@ -32,7 +34,7 @@ public class BulletPoolyingSystem : MonoBehaviour
         }, bullet =>
         {
             Destroy(bullet.gameObject);
-        }, true, 10, 20);
+        }, true, defaultCapacityForBullets, maximumCapacityForBullets);
     }
 
     private BulletController CreateBullet()

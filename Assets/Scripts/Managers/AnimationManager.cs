@@ -8,7 +8,7 @@ public class AnimationManager : MonoBehaviour
     private const string runAnimation = "Run";
     private const string walkAnimation = "Walk";
     private const string runWithGunAnimation = "HasGun";
-    private const string gunShootingAnimation = "Shoot";
+    private const string flyingAnimation = "Flying";
 
     private void Start()
     {
@@ -59,6 +59,16 @@ public class AnimationManager : MonoBehaviour
     public void StopRunningWithGunAnimation()
     {
         animator.SetBool(runWithGunAnimation, false);
+    }
+
+    public void StartFlyingAnimation()
+    {
+        animator.SetBool(flyingAnimation, true);
+    }
+
+    public void StopFlyingAnimation()
+    {
+        animator.SetBool(flyingAnimation, false);
     }
 
 }

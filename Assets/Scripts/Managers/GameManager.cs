@@ -57,18 +57,14 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        SubscribeToCollectAction();
-        SubscribeToDeadPlayerAction();
+        SubscribeToDeadCollectKilledEvents();
     }
 
-    private void SubscribeToDeadPlayerAction()
+    private void SubscribeToDeadCollectKilledEvents()
     {
         EventManager.Instance.OnPlayerDeadAction += GameOver;
-    }
-
-    private void SubscribeToCollectAction()
-    {
         EventManager.Instance.OnCollectAction += CollectCollectable;
+        EventManager.Instance.OnEnemyKilledAction += EnemyKilled;
     }
 
     //Unity event, called when player is dead
@@ -82,6 +78,11 @@ public class GameManager : MonoBehaviour
     public void CollectCollectable(CollectableBase collectible, int pointsWorth)
     {
         uiManager.SetScoreOnScoreScreen(pointsWorth);
+    }
+
+    public void EnemyKilled(int enemyWorth)
+    {
+        uiManager.SetScoreOnScoreScreen(enemyWorth);
     }
 
     private void Update()
