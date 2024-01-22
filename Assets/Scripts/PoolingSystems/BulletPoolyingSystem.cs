@@ -17,7 +17,6 @@ public class BulletPoolyingSystem : MonoBehaviour
 
     private void DestroyBullet(BulletController bullet)
     {
-        Debug.Log("Vracam u pool");
         _poolBullet.Release(bullet);
     }
 
@@ -26,22 +25,18 @@ public class BulletPoolyingSystem : MonoBehaviour
     {
         _poolBullet = new ObjectPool<BulletController>(CreateBullet, bullet =>
         {
-            Debug.Log("Postavljam na aktive");
             bullet.gameObject.SetActive(true);
         }, bullet =>
         {
-            Debug.Log("Postavljam na deaktive");
             bullet.gameObject.SetActive(false);
         }, bullet =>
         {
-            Debug.Log("Unistavam bullet");
             Destroy(bullet.gameObject);
-        }, true, 2, 4);
+        }, true, 10, 20);
     }
 
     private BulletController CreateBullet()
     {
-        Debug.Log("Kreiram bullet");
         BulletController bullet = Instantiate(bulletController);
         bullet.transform.SetPositionAndRotation(bulletSpawnPoint.position, Quaternion.identity);
         bullet.transform.SetParent(parentBulletPool);
@@ -50,7 +45,6 @@ public class BulletPoolyingSystem : MonoBehaviour
 
     public BulletController GetBulletFromPool()
     {
-        Debug.Log("Uzimam iz pool-a");
         return _poolBullet.Get();
     }
 

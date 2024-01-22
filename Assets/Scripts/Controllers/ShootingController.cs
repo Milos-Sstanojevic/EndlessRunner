@@ -1,13 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class ShootingController : MonoBehaviour
 {
     private float lastShootTime;
     private float shootDelay = 0.1f;
     private float range = 15;
-    private bool enemyHit;
+    private bool enemyIsHit;
     [SerializeField] private BulletPoolyingSystem bulletPoolyingSystem;
 
     public void ShootBullet()
@@ -18,16 +16,18 @@ public class ShootingController : MonoBehaviour
             BulletController bullet = bulletPoolyingSystem.GetBulletFromPool();
 
             bullet.transform.position = transform.position;
-            Debug.Log($"Pozicija spawna: {transform.position} ::: pozicija: {bullet.transform.position}");
 
             if (Physics.Raycast(transform.position, Vector3.forward, out hit, range))
             {
-                enemyHit = false;
+                enemyIsHit = false;
                 StartCoroutine(MakeTrail(bullet, hit.point));
-                if (hit.transform.CompareTag("Enemy"))
+
+                EnemyController enemy = hit.transform.GetComponent<EnemyController>();
+
+                if (enemy != null)
                 {
-                    Debug.Log("Enemy hit");
-                    enemyHit = true;
+                    enemy.TakeDamage(bullet.GetBulletDamage());
+                    enemyIsHit = true;
                 }
 
                 lastShootTime = Time.time;
@@ -35,7 +35,6 @@ public class ShootingController : MonoBehaviour
             else
             {
                 StartCoroutine(MakeTrail(bullet, transform.position + Vector3.forward * range));
-
                 lastShootTime = Time.time;
             }
         }
@@ -57,7 +56,7 @@ public class ShootingController : MonoBehaviour
 
         bullet.transform.position = hitPoint;
 
-        if (enemyHit)
+        if (enemyIsHit)
         {
             EventManager.Instance.OnBulletDestroyed(bullet);
         }
