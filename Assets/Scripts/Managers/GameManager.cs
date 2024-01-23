@@ -1,6 +1,5 @@
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,33 +7,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const int scoreStep = 100;
-    private const float speedIncrease = 1f;
     private const float minimumSpaceshipSpawningDelay = 0.3f;
     private const float minimumObstacleSpawningDelay = 0.2f;
     private const float spawningDelayDecreaser = 0.08f;
     private const float addPointsDelay = 0.5f;
     private const int oneScorePoint = 1;
-    private const float playerSpeedBalancer = 1;
     [SerializeField] private SpawnManager spawnManager;
-    [SerializeField] private PlayerController player;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private PoolingSystem poolingSystem;
-    [SerializeField] private List<StageController> stagesInGame;
-    private List<EnviromentMovementBase> movabelsInGame;
-    private List<CollectableBase> spaceshipsInGame;
-    private List<EnviromentMovementBase> obstaclesInGame;
     private int speedupRound = 1;
     private GameStates CurrentState;
-    public float MovingSpeed { get; private set; }
 
-
-    private void Start()
-    {
-        MovingSpeed = 8;
-        spaceshipsInGame = new List<CollectableBase>();
-        obstaclesInGame = new List<EnviromentMovementBase>();
-        movabelsInGame = new List<EnviromentMovementBase>();
-    }
 
     private void Awake()
     {
@@ -121,10 +103,8 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState == GameStates.Playing)
         {
-            GetSpaceshipsAndObstaclesInGame();
-
-            EnableMovementAndSetSpeedOfMovableObjects();
-
+            MovementManager.Instance.EnableMovement();
+            MovementManager.Instance.SetMovementSpeed();
             SetupPlayingScreen();
             EnableSpawnManager();
         }
@@ -134,7 +114,7 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState == GameStates.Paused || CurrentState == GameStates.GameOver)
         {
-            DisableMovementOfMovableObjects();
+            MovementManager.Instance.DisableMovementOfMovableObjects();
             DisableSpawnManager();
         }
     }
@@ -145,44 +125,10 @@ public class GameManager : MonoBehaviour
 
         if (score >= scoreStep * speedupRound)
         {
-            IncreaseMovementSpeed();
+            MovementManager.Instance.IncreaseMovementSpeed();
             DecreaseSpawningTime();
+            speedupRound++;
         }
-    }
-
-    public void GetSpaceshipsAndObstaclesInGame()
-    {
-        spaceshipsInGame = poolingSystem.GetInstanciatedCollectables();
-        obstaclesInGame = poolingSystem.GetInstanciatedObstacles();
-
-        CreateListOfMovablesInGame();
-    }
-
-    private void CreateListOfMovablesInGame()
-    {
-        foreach (CollectableBase ship in spaceshipsInGame)
-        {
-            movabelsInGame.Add(ship);
-        }
-        foreach (EnviromentMovementBase obstacle in obstaclesInGame)
-        {
-            movabelsInGame.Add(obstacle);
-        }
-        foreach (StageController stage in stagesInGame)
-        {
-            movabelsInGame.Add(stage);
-        }
-    }
-
-    private void EnableMovementAndSetSpeedOfMovableObjects()
-    {
-        foreach (EnviromentMovementBase movable in movabelsInGame)
-        {
-            movable.EnableMovement();
-            movable.SetMovementSpeed(MovingSpeed);
-        }
-        player.EnableMovement();
-        player.SetMovementSpeed(MovingSpeed + playerSpeedBalancer);
     }
 
     private void SetupPlayingScreen()
@@ -201,24 +147,6 @@ public class GameManager : MonoBehaviour
     {
         spawnManager.DisableSpawning();
         spawnManager.gameObject.SetActive(false);
-    }
-
-
-    private void DisableMovementOfMovableObjects()
-    {
-        foreach (EnviromentMovementBase movable in movabelsInGame)
-        {
-            movable.DisableMovement();
-        }
-        player.DisableMovement();
-    }
-
-    private void IncreaseMovementSpeed()
-    {
-        MovingSpeed += speedIncrease;
-        speedupRound++;
-
-        EnableMovementAndSetSpeedOfMovableObjects();
     }
 
     private void DecreaseSpawningTime()

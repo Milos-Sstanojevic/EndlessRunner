@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private const string horizontalAxis = "Horizontal";
     private const string verticalAxis = "Vertical";
     private const float playerEdgePositionBackZ = -10.5f;
+    private const float offsetFromGround = 0.65f;
+    private const float flyingPosition = 4.65f;
     private const float playerEdgePositionFrontZ = -2;
     private const int collectablePointsWorth = 5;
     private const float asscendingSpeed = 5;
@@ -30,7 +32,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravityModifier;
     [SerializeField] private GameObject gunPosition;
     [SerializeField] private GameObject jetPosition;
-    [SerializeField] private ShootingController shootingController;
     private bool canJump = true;
     private bool isInAir = false;
     private bool movementEnabled;
@@ -59,38 +60,29 @@ public class PlayerController : MonoBehaviour
     {
         if (movementEnabled)
         {
-            PlayAnimationsWithGunOrFlyingAnimations();
-            ShootFromGun();
+            Shoot();
             characterAnimator.PlayRunAnimation();
             MoveLeftOrRight();
             Jump();
             KeepPlayerOnRoad();
-
-            if (jetOnBack?.HasJet == false && isInAir)
-            {
-                //playerRb.useGravity = true;
-                StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.position.x, zeroPosition + 0.65f, transform.position.z)));
-                jetOnBack = null;
-            }
-
-            if (jetOnBack?.HasJet == true)
-            {
-                KeepPlayerInCameraField();
-            }
+            PlayAnimationsWithGunOrFlyingAnimations();
         }
         else
         {
             characterAnimator.StopRunAnimation();
             characterAnimator.StopRunningWithGunAnimation();
         }
-    }
 
-    private void KeepPlayerInCameraField()
-    {
-        if (transform.position.z > -5f)
-            transform.position = new Vector3(transform.position.x, transform.position.y, -5f);
-        if (transform.position.y <= 4.65f)
-            transform.position = new Vector3(transform.position.x, 4.65f, transform.position.z);
+        if (jetOnBack?.HasJet == false && isInAir)
+        {
+            StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.position.x, zeroPosition + offsetFromGround, transform.position.z)));
+            jetOnBack = null;
+        }
+
+        if (jetOnBack?.HasJet == true)
+        {
+            KeepPlayerInCameraField();
+        }
     }
 
     private void PlayAnimationsWithGunOrFlyingAnimations()
@@ -114,10 +106,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ShootFromGun()
+    private void Shoot()
     {
         if (Input.GetKey(KeyCode.Mouse0) && gunInHands?.HasGun == true)
-            shootingController.ShootBullet();
+            gunInHands.ShootFromGun();
+    }
+
+    private void KeepPlayerInCameraField()
+    {
+        if (transform.position.z > -5f)
+            transform.position = new Vector3(transform.position.x, transform.position.y, -5f);
+        if (transform.position.y <= 4.65f)
+            transform.position = new Vector3(transform.position.x, 4.65f, transform.position.z);
     }
 
     private void MoveLeftOrRight()
@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
             characterAnimator.PlayDeadAnimation();
             audioManager.PlayDeathSound(deathSound);
 
-            ReleaseGunIfITsInHands();
+            ReleaseGunAndJetIfHaveOne();
         }
 
         if (other.gameObject.CompareTag(groundTag))
@@ -183,7 +183,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ReleaseGunIfITsInHands()
+    private void ReleaseGunAndJetIfHaveOne()
     {
         if (gunInHands != null)
         {
@@ -225,9 +225,8 @@ public class PlayerController : MonoBehaviour
         if (jetOnBack == null && !isInAir)
         {
             jetOnBack = jet;
-            StartCoroutine(SlowlyStartOrStopFlying(rotateAroundX, new Vector3(transform.position.x, zeroPosition + 4.65f, transform.position.z)));
+            StartCoroutine(SlowlyStartOrStopFlying(rotateAroundX, new Vector3(transform.position.x, zeroPosition + flyingPosition, transform.position.z)));
             jet.MoveOnPlayerBack(this, jetPosition.transform.position);
-            //playerRb.useGravity = false;
         }
         else
         {

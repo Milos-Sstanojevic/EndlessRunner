@@ -3,6 +3,8 @@ using UnityEngine.Pool;
 
 public class BulletPoolyingSystem : MonoBehaviour
 {
+    public static BulletPoolyingSystem Instance { get; private set; }
+
     private const int defaultCapacityForBullets = 10;
     private const int maximumCapacityForBullets = 20;
     private ObjectPool<BulletController> _poolBullet;
@@ -10,10 +12,22 @@ public class BulletPoolyingSystem : MonoBehaviour
     [SerializeField] private Transform parentBulletPool;
     [SerializeField] private Transform bulletSpawnPoint;
 
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         EventManager.Instance.OnBulletDestroyAction += DestroyBullet;
-
         CreateBulletPool();
     }
 
@@ -47,6 +61,7 @@ public class BulletPoolyingSystem : MonoBehaviour
 
     public BulletController GetBulletFromPool()
     {
+        Debug.Log("Uzimam iz poola");
         return _poolBullet.Get();
     }
 

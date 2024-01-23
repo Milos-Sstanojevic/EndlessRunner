@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    private const float rangeOfBullet = 10f;
+    private const float rangeOfBullet = 7f;
     private float bulletSpeed = 100;
     private int bulletDamage = 20;
     private void Update()

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Pool;
 
 public class PoolingSystem : MonoBehaviour
 {
+    public static PoolingSystem Instance { get; private set; }
     private const string obstacleTag = "Obstacle";
     private const string enemyTag = "Enemy";
     private const string collectableTag = "Collectable";
@@ -26,6 +26,18 @@ public class PoolingSystem : MonoBehaviour
     private List<CollectableBase> instantiatedCollectables;
     private List<EnviromentMovementBase> instantiatedObstacles;
 
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -84,7 +96,7 @@ public class PoolingSystem : MonoBehaviour
     private EnviromentMovementBase CreateObstacle()
     {
         int index = GenerateObstacleIndexWithProbability();
-        EnviromentMovementBase obs = Instantiate(obstacle[4]);
+        EnviromentMovementBase obs = Instantiate(obstacle[index]);
         obs.transform.SetParent(parentOfPool);
         instantiatedObstacles.Add(obs);
 
@@ -130,7 +142,7 @@ public class PoolingSystem : MonoBehaviour
     private CollectableBase CreateCollectable()
     {
         int index = GenerateCollectableIndexWithProbability();
-        CollectableBase coll = Instantiate(collectable[2]);
+        CollectableBase coll = Instantiate(collectable[1]);
         coll.transform.SetParent(parentOfPool);
         instantiatedCollectables.Add(coll);
         return coll;
