@@ -126,6 +126,15 @@ public class PlayerController : MonoBehaviour
         float verticalInput = Input.GetAxisRaw(verticalAxis);
         transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput, Space.World);
         transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput, Space.World);
+
+        if (jetOnBack?.HasJet == true)
+        {
+            transform.Rotate(0, 0, horizontalInput * -5, Space.World);
+        }
+        else
+        {
+            transform.eulerAngles = Vector3.zero;
+        }
     }
 
     private void Jump()

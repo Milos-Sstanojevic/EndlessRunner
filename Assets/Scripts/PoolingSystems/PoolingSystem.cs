@@ -142,7 +142,7 @@ public class PoolingSystem : MonoBehaviour
     private CollectableBase CreateCollectable()
     {
         int index = GenerateCollectableIndexWithProbability();
-        CollectableBase coll = Instantiate(collectable[1]);
+        CollectableBase coll = Instantiate(collectable[2]);
         coll.transform.SetParent(parentOfPool);
         instantiatedCollectables.Add(coll);
         return coll;
