@@ -9,7 +9,7 @@ public class GunController : CollectableBase
     [SerializeField] private GameObject muzzleParticleObject;
     private float lastShootTime;
     private float shootDelay = 0.1f;
-    private float range = 20;
+    private float range = 15;
     private bool enemyIsHit;
     public bool HasGun { get; private set; }
 
@@ -47,15 +47,11 @@ public class GunController : CollectableBase
             RaycastHit hit;
             BulletController bullet = BulletPoolyingSystem.Instance.GetBulletFromPool();
 
-            bullet.transform.position = muzzleParticleObject.transform.position;
-
-            //int enemyLayerMask = 1 << LayerMask.NameToLayer("Enemy");
+            bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
 
             if (Physics.Raycast(transform.position, Vector3.forward, out hit, range))
             {
                 enemyIsHit = false;
-                StartCoroutine(MakeTrail(bullet, hit.point));
-
                 EnemyController enemy = hit.transform.GetComponent<EnemyController>();
 
                 if (enemy != null)
@@ -63,6 +59,8 @@ public class GunController : CollectableBase
                     enemy.TakeDamage(bullet.GetBulletDamage());
                     enemyIsHit = true;
                 }
+
+                StartCoroutine(MakeTrail(bullet, hit.point));
 
                 lastShootTime = Time.time;
             }
@@ -90,22 +88,16 @@ public class GunController : CollectableBase
 
         bullet.transform.position = hitPoint;
 
-        if (enemyIsHit)
-        {
-            EventManager.Instance.OnBulletDestroyed(bullet);
-        }
+        EventManager.Instance.OnBulletDestroyed(bullet);
     }
 
     public void MoveToPlayerHand(PlayerController player, Vector3 gunPos)
     {
-        if (!HasGun)
-        {
-            transform.SetParent(player.transform);
-            transform.position = gunPos;
-            transform.eulerAngles = rotateAroundX;
-            HasGun = true;
-            StartCoroutine(GunExpiration());
-        }
+        transform.SetParent(player.transform);
+        transform.position = gunPos;
+        transform.eulerAngles = rotateAroundX;
+        HasGun = true;
+        StartCoroutine(GunExpiration());
     }
 
     private IEnumerator GunExpiration()

@@ -69,10 +69,6 @@ public class PoolingSystem : MonoBehaviour
             movable.transform.SetParent(parentOfPool);
             _poolCollectable.Release((CollectableBase)movable);
         }
-        else
-        {
-            Debug.Log("It just stage for now");
-        }
 
     }
 
@@ -96,7 +92,7 @@ public class PoolingSystem : MonoBehaviour
     private EnviromentMovementBase CreateObstacle()
     {
         int index = GenerateObstacleIndexWithProbability();
-        EnviromentMovementBase obs = Instantiate(obstacle[index]);
+        EnviromentMovementBase obs = Instantiate(obstacle[4]);
         obs.transform.SetParent(parentOfPool);
         instantiatedObstacles.Add(obs);
 
@@ -142,7 +138,7 @@ public class PoolingSystem : MonoBehaviour
     private CollectableBase CreateCollectable()
     {
         int index = GenerateCollectableIndexWithProbability();
-        CollectableBase coll = Instantiate(collectable[2]);
+        CollectableBase coll = Instantiate(collectable[1]);
         coll.transform.SetParent(parentOfPool);
         instantiatedCollectables.Add(coll);
         return coll;

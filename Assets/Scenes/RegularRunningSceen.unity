@@ -1236,7 +1236,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletController: {fileID: 842306070566031017, guid: d252798f8b7c82641a13f540ab606b87, type: 3}
   parentBulletPool: {fileID: 391682362}
-  bulletSpawnPoint: {fileID: 1029205969}
 --- !u!1 &895725762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2063,11 +2062,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1004919799}
   m_CullTransparentMesh: 1
---- !u!4 &1029205969 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5017437331676472709, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
-  m_PrefabInstance: {fileID: 8784078332744857191}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1049688335
 GameObject:
   m_ObjectHideFlags: 0
@@ -2772,7 +2766,7 @@ MonoBehaviour:
   - {fileID: 6977361175378971136, guid: 99b772da13d26f0458db8f85ca049843, type: 3}
   - {fileID: 3146250182552618409, guid: 4be5ffcd6406bc74699e4d81ad92609b, type: 3}
   - {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
-  - {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
+  - {fileID: 6640590951807829102, guid: ae500c0c575fd11428cd26b0446dfbd0, type: 3}
   collectable:
   - {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
   - {fileID: 8404797518885804989, guid: 5ff23b573a6415b4284cb6ad246dce3b, type: 3}
@@ -4292,6 +4286,10 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 427268135}
+    - target: {fileID: 8607800929553992835, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8803560237785177297, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
     m_RemovedGameObjects: []

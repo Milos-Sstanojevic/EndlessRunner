@@ -10,7 +10,6 @@ public class BulletPoolyingSystem : MonoBehaviour
     private ObjectPool<BulletController> _poolBullet;
     [SerializeField] private BulletController bulletController;
     [SerializeField] private Transform parentBulletPool;
-    [SerializeField] private Transform bulletSpawnPoint;
 
 
     private void Awake()
@@ -36,7 +35,6 @@ public class BulletPoolyingSystem : MonoBehaviour
         _poolBullet.Release(bullet);
     }
 
-
     public void CreateBulletPool()
     {
         _poolBullet = new ObjectPool<BulletController>(CreateBullet, bullet =>
@@ -54,14 +52,12 @@ public class BulletPoolyingSystem : MonoBehaviour
     private BulletController CreateBullet()
     {
         BulletController bullet = Instantiate(bulletController);
-        bullet.transform.SetPositionAndRotation(bulletSpawnPoint.position, Quaternion.identity);
         bullet.transform.SetParent(parentBulletPool);
         return bullet;
     }
 
     public BulletController GetBulletFromPool()
     {
-        Debug.Log("Uzimam iz poola");
         return _poolBullet.Get();
     }
 

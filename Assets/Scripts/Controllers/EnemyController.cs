@@ -1,19 +1,21 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyController : EnviromentMovementBase
 {
-    private static Vector3 faceTheOtherWay = new Vector3(0, -180, 0);
-    private const int enemyWorth = 25;
-    private const int fullHealth = 100;
-    private const int minimumHealth = 0;
     private const int negator = -1;
+    private int minimumHealth;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private AnimationManager enemyAnimator;
-    private int isOnLeftEdge = -1;
-    private float movementSpeed = 6.5f;
-    private int health = 100;
+    [SerializeField] private EnemyScriptableObject enemyScriptableObject;
+    private int isOnEdge = -1;
+    private int health;
+
+    private void Start()
+    {
+        health = enemyScriptableObject.health;
+        minimumHealth = enemyScriptableObject.minimumHealth;
+    }
 
     protected override void Update()
     {
@@ -27,9 +29,9 @@ public class EnemyController : EnviromentMovementBase
 
         if (health <= minimumHealth)
         {
-            health = fullHealth;
+            health = enemyScriptableObject.fullHealth;
             EventManager.Instance.OnEnviromentDestroyed(this);
-            EventManager.Instance.OnEnemyKilled(enemyWorth);
+            EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
         }
     }
 
@@ -37,8 +39,7 @@ public class EnemyController : EnviromentMovementBase
     {
         if (base.MovementEnabled == true)
         {
-            enemyAnimator.StartWalkAnimation();
-            transform.Translate(Vector3.left * isOnLeftEdge * movementSpeed * Time.deltaTime, Space.World);
+            enemyScriptableObject.MoveEnemy(this, enemyAnimator, isOnEdge);
             RotateEnemy();
         }
         else
@@ -47,15 +48,10 @@ public class EnemyController : EnviromentMovementBase
 
     private void RotateEnemy()
     {
-        if (transform.position.x <= -GlobalConstants.EdgePosX)
+        if (enemyScriptableObject.IsEnemyOnEdge(transform.position))
         {
-            transform.Rotate(faceTheOtherWay);
-            isOnLeftEdge *= negator;
-        }
-        if (transform.position.x >= GlobalConstants.EdgePosX)
-        {
-            transform.Rotate(-faceTheOtherWay);
-            isOnLeftEdge *= negator;
+            transform.Rotate(enemyScriptableObject.faceTheOtherWay * isOnEdge);
+            isOnEdge *= negator;
         }
     }
 

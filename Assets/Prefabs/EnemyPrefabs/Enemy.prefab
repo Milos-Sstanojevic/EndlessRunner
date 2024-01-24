@@ -748,7 +748,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: 5be2c6dc7d0cd11418701026bf971b37, type: 3}
   m_Controller: {fileID: 9100000, guid: 3a7661b9b5fbf724bafafac089110625, type: 2}
   m_CullingMode: 1
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -771,6 +771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 8031315488870881352}
   enemyAnimator: {fileID: 6482012536767241962}
+  enemyScriptableObject: {fileID: 11400000, guid: 4443f1bdcd68e34488a70f6125b9721c, type: 2}
 --- !u!54 &5208618901591304463
 Rigidbody:
   m_ObjectHideFlags: 0

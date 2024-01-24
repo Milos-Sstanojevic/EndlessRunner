@@ -49,11 +49,11 @@ public class JetController : CollectableBase
 
     public void PauseCoroutine()
     {
-        // Time.timeScale = 0f;
+        Time.timeScale = 0f;
     }
 
     public void UnpauseCoroutine()
     {
-        //Time.timeScale = 1f;
+        Time.timeScale = 1f;
     }
 }

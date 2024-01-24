@@ -127,6 +127,12 @@ public class PlayerController : MonoBehaviour
         transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput, Space.World);
         transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput, Space.World);
 
+        SpinWhileFlying(horizontalInput);
+
+    }
+
+    private void SpinWhileFlying(float horizontalInput)
+    {
         if (jetOnBack?.HasJet == true)
         {
             transform.Rotate(0, 0, horizontalInput * -5, Space.World);
@@ -197,10 +203,12 @@ public class PlayerController : MonoBehaviour
         if (gunInHands != null)
         {
             gunInHands.ReleaseGunInPool();
+            gunInHands = null;
         }
         if (jetOnBack != null)
         {
             jetOnBack.ReleaseJetToPool();
+            jetOnBack = null;
         }
     }
 
@@ -273,8 +281,15 @@ public class PlayerController : MonoBehaviour
     private int CollectGun(CollectableBase collectable)
     {
         GunController gun = (GunController)collectable;
-        gunInHands = gun;
-        gun.MoveToPlayerHand(this, gunPosition.transform.position);
+        if (gunInHands == null || gunInHands.HasGun == false)
+        {
+            gunInHands = gun;
+            gun.MoveToPlayerHand(this, gunPosition.transform.position);
+        }
+        else
+        {
+            gun.ReleaseGunInPool();
+        }
         return collectablePointsWorth * 2;
     }
 
