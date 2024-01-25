@@ -1,89 +1,52 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class PoolingSystemBase<T> : MonoBehaviour where T : EnviromentMovementBase
+public abstract class PoolingSystemBase<T> : MonoBehaviour where T : MonoBehaviour
 {
-    private const int defaultCapacityForPool = 40;
-    private const int maximumCapacityForPool = 100;
-    public static PoolingSystemBase<T> Instance { get; private set; }
-    [SerializeField] private Transform parentOfPool;
-    private ObjectPool<T> _pool;
-    private List<T> instantiatedObjects;
+    [SerializeField] private int defaultCapacity = 40;
+    [SerializeField] private int maxCapacity = 100;
+    private ObjectPool<T> objectPool;
+    [SerializeField] private T objectPrefab;
+    [SerializeField] private Transform spawnedObjectsHolder;
 
-    private void Awake()
+    protected virtual void Start()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        CreatePool();
     }
 
-    private void Start()
+    private void CreatePool()
     {
-        instantiatedObjects = new List<T>();
-        instantiatedObjects = CreateObjectPool();
+        objectPool = new ObjectPool<T>(SpawnObject, OnGetAction, OnReleaseAction, OnDestroyAction, true, defaultCapacity, maxCapacity);
     }
 
-    private void OnEnable()
+    private T SpawnObject()
     {
-        SubscribeToDestroyAction();
+        T obj = Instantiate(objectPrefab);
+        obj.transform.SetParent(spawnedObjectsHolder);
+        return obj;
     }
 
-    private void SubscribeToDestroyAction()
+    private void OnGetAction(T obj)
     {
-        EventManager.Instance.OnDestroyAction += DestroyObjects;
+        obj.gameObject.SetActive(true);
     }
 
-    private void DestroyObjects(EnviromentMovementBase obj)
+    private void OnReleaseAction(T obj)
     {
         obj.gameObject.SetActive(false);
-        obj.transform.SetParent(parentOfPool);
-        _pool.Release((T)obj);
     }
 
-    private List<T> CreateObjectPool()
+    private void OnDestroyAction(T obj)
     {
-        _pool = new ObjectPool<T>(CreateObject, obj =>
-        {
-            obj.gameObject.SetActive(true);
-        }, obj =>
-        {
-            obj.gameObject.SetActive(false);
-        }, obj =>
-        {
-            UnsubscribeFromDestroyAction();
-            Destroy(obj.gameObject);
-        }, true, defaultCapacityForPool, maximumCapacityForPool);
-
-        return instantiatedObjects;
+        Destroy(obj.gameObject);
     }
 
-    protected virtual T CreateObject()
+    protected void DestroyObject(T obj)
     {
-        return Instantiate(GetPrefab());
+        objectPool.Release(obj);
     }
 
-    protected virtual T GetPrefab()
-    {
-        return null; // To be implemented in the derived classes
-    }
-
-    private void OnDisable()
-    {
-        UnsubscribeFromDestroyAction();
-    }
-
-    private void UnsubscribeFromDestroyAction()
-    {
-        EventManager.Instance.OnDestroyAction -= DestroyObjects;
-    }
-
-    public T GetFromPool() => _pool.Get();
-
-    public List<T> GetInstantiatedObjects() => instantiatedObjects;
+    public T GetObjectFromPool() => objectPool.Get();
 }
