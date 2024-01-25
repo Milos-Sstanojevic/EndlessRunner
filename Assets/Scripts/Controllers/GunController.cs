@@ -12,6 +12,11 @@ public class GunController : CollectableBase
     private float range = 15;
     private bool enemyIsHit;
     public bool HasGun { get; private set; }
+    [SerializeField] private int active;
+    [SerializeField] private int inactive;
+    [SerializeField] private int all;
+    private int bulletsFiredInOneSecond = 0;
+    private float timer = 0f;
 
 
     protected override void Update()
@@ -21,6 +26,14 @@ public class GunController : CollectableBase
             base.Update();
         }
         ShootFromGun();
+
+        timer += Time.deltaTime;
+        if (timer >= 1f)
+        {
+            Debug.Log($"Bullets fired in last second: {bulletsFiredInOneSecond}");
+            bulletsFiredInOneSecond = 0;
+            timer = 0f;
+        }
     }
 
     public void ShootFromGun()
@@ -31,6 +44,8 @@ public class GunController : CollectableBase
             {
                 muzzleParticleObject.SetActive(true);
                 ShootBullet();
+
+                bulletsFiredInOneSecond++;
             }
 
             if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -46,6 +61,11 @@ public class GunController : CollectableBase
         {
             RaycastHit hit;
             BulletController bullet = BulletPoolyingSystem.Instance.GetObjectFromPool();
+
+            all = BulletPoolyingSystem.Instance.GetCountAll();
+            active = BulletPoolyingSystem.Instance.GetCountActive();
+            inactive = BulletPoolyingSystem.Instance.GetCountInactive();
+
 
             bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
 

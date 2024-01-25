@@ -574,6 +574,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 391682362}
+  - component: {fileID: 391682363}
   m_Layer: 0
   m_Name: BulletPool
   m_TagString: Untagged
@@ -596,6 +597,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &391682363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 391682361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b9538c67303504b94df2291ebce3af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 0
+  inactive: 0
+  all: 0
 --- !u!1 &423675333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,10 +1250,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d43a408514c8184996f67806345e450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCapacity: 40
-  maxCapacity: 100
+  defaultCapacity: 500
+  maxCapacity: 1000
   objectPrefab: {fileID: 842306070566031017, guid: d252798f8b7c82641a13f540ab606b87, type: 3}
   spawnedObjectsHolder: {fileID: 391682362}
+--- !u!1 &894698581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 894698582}
+  m_Layer: 0
+  m_Name: EnemyPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &894698582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894698581}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.338369, y: 3.0327015, z: 32.04423}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &895725762
 GameObject:
   m_ObjectHideFlags: 0
@@ -3943,6 +3990,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5340790431636367008, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
   m_PrefabInstance: {fileID: 6103018407880754161}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1886949386
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1886949387}
+  - component: {fileID: 1886949388}
+  m_Layer: 0
+  m_Name: EnemyPoolingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1886949387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886949386}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -19.215427, y: -24.032825, z: -32.870354}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1950996646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1886949388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886949386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f17d77a587dfb0246a042a00c811aa27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 30
+  maxCapacity: 50
+  objectPrefab: {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
+  spawnedObjectsHolder: {fileID: 894698582}
 --- !u!1 &1950996645
 GameObject:
   m_ObjectHideFlags: 0
@@ -3981,6 +4076,7 @@ Transform:
   - {fileID: 952731859}
   - {fileID: 801544851}
   - {fileID: 1342134739}
+  - {fileID: 1886949387}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1981790932
@@ -4308,3 +4404,4 @@ SceneRoots:
   - {fileID: 423675334}
   - {fileID: 1081107745}
   - {fileID: 391682362}
+  - {fileID: 894698582}

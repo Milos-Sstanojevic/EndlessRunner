@@ -43,7 +43,9 @@ public class MovementManager : MonoBehaviour
     public void GetSpaceshipsAndObstaclesInGame()
     {
         spaceshipsInGame = poolingSystem.GetInstanciatedCollectables();
-        obstaclesInGame = poolingSystem.GetInstanciatedObstacles();
+        obstaclesInGame = new List<EnviromentMovementBase>();
+        foreach (EnviromentMovementBase env in EnemyPoolingSystem.Instance.GetInstanciatedObstacles())
+            obstaclesInGame.Add(env);
 
         CreateListOfMovablesInGame();
     }

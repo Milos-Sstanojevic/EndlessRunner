@@ -45,7 +45,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleObstacleSpawning()
     {
-        EnviromentMovementBase obstacle = _pool.GetObstacleFromPool();
+        EnviromentMovementBase obstacle = EnemyPoolingSystem.Instance.GetObjectFromPool(); //verovatno ovde treba da se prebaci ona sansa
 
         if (obstacle.name.StartsWith(flagNameForDoubleObstacle))
         {
@@ -55,6 +55,7 @@ public class SpawnManager : MonoBehaviour
         {
             float randomXObst = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
             obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
+
         }
     }
 

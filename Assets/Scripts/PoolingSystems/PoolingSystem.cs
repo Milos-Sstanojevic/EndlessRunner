@@ -69,7 +69,6 @@ public class PoolingSystem : MonoBehaviour
             movable.transform.SetParent(parentOfPool);
             _poolCollectable.Release((CollectableBase)movable);
         }
-
     }
 
     private List<EnviromentMovementBase> CreateObstaclePool()

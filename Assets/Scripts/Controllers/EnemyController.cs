@@ -38,6 +38,7 @@ public class EnemyController : EnviromentMovementBase
 
     private void MoveLeftAndRight()
     {
+        Debug.Log(base.MovementEnabled);
         if (base.MovementEnabled == true)
         {
             enemyScriptableObject.MoveEnemy(this, enemyAnimator, isOnEdge);
@@ -57,12 +58,18 @@ public class EnemyController : EnviromentMovementBase
         }
         else if (!enemyScriptableObject.IsEnemyOnEdge(transform.position))
         {
-            hasRotated = false; // Reset the flag if the enemy is no longer on the edge
+            hasRotated = false;
         }
     }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
+    }
+
+    protected override void Destroy()
+    {
+        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+            EventManager.Instance.OnEnemyDestroyed(this);
     }
 }

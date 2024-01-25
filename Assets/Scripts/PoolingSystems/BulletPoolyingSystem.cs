@@ -1,12 +1,10 @@
-using UnityEngine;
-using UnityEngine.Pool;
-
 public class BulletPoolyingSystem : PoolingSystemBase<BulletController>
 {
     public static BulletPoolyingSystem Instance { get; private set; }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         if (Instance == null)
         {
             Instance = this;
@@ -17,14 +15,17 @@ public class BulletPoolyingSystem : PoolingSystemBase<BulletController>
         }
     }
 
-    protected override void Start()
+    private void OnEnable()
     {
-        base.Start();
-        EventManager.Instance.OnBulletDestroyAction += DestroyObject;
+        EventManager.Instance.OnBulletDestroyAction += DestroyObjects;
     }
+    // protected override void Start()
+    // {
+    //     base.Start();
+    // }
 
     private void OnDisable()
     {
-        EventManager.Instance.OnBulletDestroyAction -= DestroyObject;
+        EventManager.Instance.OnBulletDestroyAction -= DestroyObjects;
     }
 }

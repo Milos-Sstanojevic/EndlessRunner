@@ -13,8 +13,10 @@ public class EnviromentMovementBase : MonoBehaviour
 
     private void MoveObject()
     {
+
         if (MovementEnabled)
         {
+
             transform.Translate(Vector3.back * MovementSpeed * Time.deltaTime, Space.World);
         }
     }
@@ -34,7 +36,7 @@ public class EnviromentMovementBase : MonoBehaviour
         MovementSpeed = speed;
     }
 
-    public void Destroy()
+    protected virtual void Destroy()
     {
         if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
             EventManager.Instance.OnEnviromentDestroyed(this);
