@@ -10,6 +10,7 @@ public class EnemyController : EnviromentMovementBase
     [SerializeField] private EnemyScriptableObject enemyScriptableObject;
     private int isOnEdge = -1;
     private int health;
+    private bool hasRotated;
 
     private void Start()
     {
@@ -48,10 +49,15 @@ public class EnemyController : EnviromentMovementBase
 
     private void RotateEnemy()
     {
-        if (enemyScriptableObject.IsEnemyOnEdge(transform.position))
+        if (!hasRotated && enemyScriptableObject.IsEnemyOnEdge(transform.position))
         {
             transform.Rotate(enemyScriptableObject.faceTheOtherWay * isOnEdge);
             isOnEdge *= negator;
+            hasRotated = true;
+        }
+        else if (!enemyScriptableObject.IsEnemyOnEdge(transform.position))
+        {
+            hasRotated = false; // Reset the flag if the enemy is no longer on the edge
         }
     }
 
