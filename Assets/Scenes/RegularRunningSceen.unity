@@ -1234,8 +1234,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d43a408514c8184996f67806345e450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletController: {fileID: 842306070566031017, guid: d252798f8b7c82641a13f540ab606b87, type: 3}
-  parentBulletPool: {fileID: 391682362}
+  defaultCapacity: 40
+  maxCapacity: 100
+  objectPrefab: {fileID: 842306070566031017, guid: d252798f8b7c82641a13f540ab606b87, type: 3}
+  spawnedObjectsHolder: {fileID: 391682362}
 --- !u!1 &895725762
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,7 +45,7 @@ public class GunController : CollectableBase
         if (lastShootTime + shootDelay < Time.time)
         {
             RaycastHit hit;
-            BulletController bullet = BulletPoolyingSystem.Instance.GetBulletFromPool();
+            BulletController bullet = BulletPoolyingSystem.Instance.GetObjectFromPool();
 
             bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
 
