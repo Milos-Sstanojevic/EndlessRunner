@@ -31,7 +31,7 @@ public class EnemyController : EnviromentMovementBase
         if (health <= minimumHealth)
         {
             health = enemyScriptableObject.fullHealth;
-            EventManager.Instance.OnEnviromentDestroyed(this);
+            EventManager.Instance.OnEnemyDestroyed(this);
             EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
         }
     }

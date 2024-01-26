@@ -50,7 +50,7 @@ public class PoolingSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        SubscribeToDestroyAction();
+        //SubscribeToDestroyAction();
     }
 
     private void SubscribeToDestroyAction()
@@ -162,7 +162,7 @@ public class PoolingSystem : MonoBehaviour
 
     private void OnDisable()
     {
-        UnsubscribeFromDestroyAction();
+        //UnsubscribeFromDestroyAction();
     }
 
     private void UnsubscribeFromDestroyAction()

@@ -44,4 +44,9 @@ public class StageController : EnviromentMovementBase
             transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + stagePostitionOffset + errorOffset);
         }
     }
+
+    protected override void Destroy()
+    {
+        //nothing
+    }
 }

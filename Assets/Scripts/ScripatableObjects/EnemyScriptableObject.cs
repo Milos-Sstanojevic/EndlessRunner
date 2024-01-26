@@ -30,21 +30,6 @@ public class EnemyScriptableObject : ScriptableObject
         }
     }
 
-    public void DisplayAndUpdateHealth(EnemyController enemy, Slider healthSlider)
-    {
-
-        if (healthSlider.value != health)
-        {
-            healthSlider.value = health;
-        }
-
-        if (health <= minimumHealth)
-        {
-            health = fullHealth;
-            EventManager.Instance.OnEnviromentDestroyed(enemy);
-            EventManager.Instance.OnEnemyKilled(enemyWorth);
-        }
-    }
 
     public bool IsEnemyOnEdge(Vector3 position)
     {
