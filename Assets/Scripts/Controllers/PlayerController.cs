@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
         {
             Shoot();
             characterAnimator.PlayRunAnimation();
-            MoveLeftOrRight();
+            MovePlayer();
             Jump();
             KeepPlayerOnRoad();
             PlayAnimationsWithGunOrFlyingAnimations();
@@ -114,7 +114,7 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, 4.65f, transform.position.z);
     }
 
-    private void MoveLeftOrRight()
+    private void MovePlayer()
     {
         float horizontalInput = Input.GetAxisRaw(horizontalAxis);
         float verticalInput = Input.GetAxisRaw(verticalAxis);
@@ -171,12 +171,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag(obstacleTag) /*||  other.gameObject.CompareTag(enemyTag)*/)
+        if (/*other.gameObject.CompareTag(obstacleTag) ||*/  other.gameObject.CompareTag(enemyTag))
         {
             EventManager.Instance.OnPlayerDead();
 
             if (!IsPlayerOnGround())
-                transform.position = new Vector3(transform.position.x, zeroPosition, transform.position.z);
+                transform.position = new Vector3(transform.position.x, zeroPosition + 0.5f, transform.position.z);
 
             characterAnimator.PlayDeadAnimation();
             audioManager.PlayDeathSound(deathSound);
@@ -223,14 +223,21 @@ public class PlayerController : MonoBehaviour
 
     private int Collect(CollectableController collectable)
     {
-        if (collectable.GetComponent<JetController>() != null)
+        JetController jet = collectable.GetComponent<JetController>();
+        GunController gun = collectable.GetComponent<GunController>();
+
+        if (jet != null)
         {
-            JetController jet = collectable.GetComponent<JetController>();
+            if (gunInHands != null)
+            {
+                gunInHands.ReleaseGunInPool();
+                gunInHands = null;
+            }
+
             return CollectJet(jet);
         }
-        else if (collectable.GetComponent<GunController>() != null)
+        else if (gun != null)
         {
-            GunController gun = collectable.GetComponent<GunController>();
             return CollectGun(gun);
         }
         else
@@ -243,7 +250,7 @@ public class PlayerController : MonoBehaviour
     private int CollectGun(GunController collectable)
     {
         GunController gun = collectable;
-        if (gunInHands == null || gunInHands.HasGun == false)
+        if ((gunInHands == null || gunInHands.HasGun == false) && jetOnBack == null)
         {
             gunInHands = gun;
             gun.MoveToPlayerHand(this, gunPosition.transform.position);
@@ -297,9 +304,6 @@ public class PlayerController : MonoBehaviour
         transform.position = endPosition;
         transform.eulerAngles = endRotation;
     }
-
-
-
 
     private void OnDestroy()
     {

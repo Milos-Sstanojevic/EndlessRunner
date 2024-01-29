@@ -31,11 +31,13 @@ public class GunController : MonoBehaviour
             environmentComponent.enabled = true;
             collectableComponent.enabled = true;
         }
+        
         if (gunExpired)
         {
             EventManager.Instance.OnGunDestroyed(this);
             gunExpired = false;
         }
+
         ShootFromGun();
 
         Destroy();
@@ -132,7 +134,7 @@ public class GunController : MonoBehaviour
         HasGun = false;
         transform.eulerAngles = defaultOrientation;
         muzzleParticleObject.SetActive(false);
-        DeactivateAllBullets();//ovde je problem
+        DeactivateAllBullets();
         gunExpired = true;
     }
 
@@ -153,6 +155,8 @@ public class GunController : MonoBehaviour
     {
         transform.eulerAngles = defaultOrientation;
         muzzleParticleObject.SetActive(false);
+        HasGun = false;
+        DeactivateAllBullets();
         EventManager.Instance.OnGunDestroyed(this);
     }
 

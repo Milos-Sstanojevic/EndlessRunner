@@ -1,5 +1,6 @@
 
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,9 +8,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const int scoreStep = 100;
-    private const float minimumSpaceshipSpawningDelay = 0.3f;
-    private const float minimumObstacleSpawningDelay = 0.2f;
-    private const float spawningDelayDecreaser = 0.08f;
+    private const float minimumObstacleSpawningDelay = 0.5f;
+    private const float spacingDecreaser = 0.1f;
+    private const float minimumSpacing = 6f;
+    private const float spawningDelayDecreaser = 0.07f;
     private const float addPointsDelay = 0.5f;
     private const int oneScorePoint = 1;
     [SerializeField] private SpawnManager spawnManager;
@@ -151,23 +153,30 @@ public class GameManager : MonoBehaviour
 
     private void DecreaseSpawningTime()
     {
-        float spaceshipSpawnDelay = spawnManager.GetSpaceshipSpawnDelay();
-        float obstacleSpawnDelay = spawnManager.GetObstacleSpawnDelay();
+        float chunkSpawnDelay = spawnManager.GetChunkSpawnDelay();
+        float spacingBetweenObstacles = spawnManager.GetSpacingBetweenObstacles();
         float spawnDelay;
+        float spacing;
 
-        if (spaceshipSpawnDelay > minimumSpaceshipSpawningDelay)
+        if (chunkSpawnDelay > minimumObstacleSpawningDelay)
         {
-            spawnDelay = HandleDecreasingSpawnDelay(spaceshipSpawnDelay, minimumSpaceshipSpawningDelay);
+            spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay, minimumObstacleSpawningDelay);
+            spacing = HandleDecreasingSpacing(spacingBetweenObstacles, minimumSpacing);
 
-            spawnManager.SetSpaceshipSpawnDelay(spawnDelay);
+            spawnManager.SetChunkSpawnDelay(spawnDelay);
+        }
+    }
+
+    private float HandleDecreasingSpacing(float spacing, float minimumSpacing)
+    {
+        float space = spacing - spacingDecreaser;
+
+        if (space < minimumSpacing)
+        {
+            space = minimumSpacing;
         }
 
-        if (obstacleSpawnDelay > minimumObstacleSpawningDelay)
-        {
-            spawnDelay = HandleDecreasingSpawnDelay(obstacleSpawnDelay, minimumObstacleSpawningDelay);
-
-            spawnManager.SetObstacleSpawnDelay(spawnDelay);
-        }
+        return space;
     }
 
     private float HandleDecreasingSpawnDelay(float spawnDelay, float minimumSpawnDelay)

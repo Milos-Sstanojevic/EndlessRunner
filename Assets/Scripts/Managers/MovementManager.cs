@@ -107,7 +107,7 @@ public class MovementManager : MonoBehaviour
     {
         DisableMovementForObjects(obstaclesInGame);
         DisableMovementForObjects(jetsInGame, jet => jet.PauseCoroutine());
-        DisableMovementForObjects(gunsInGame, gun => gun.PauseCoroutine());
+        DisableMovementForObjects(gunsInGame, gun => gun.PauseCoroutine());     //razmisli opet ovde, najverovatnije da ne treba ovo pause uvek da se desi, pogotovo ne na game over
         DisableMovementForObjects(stagesInGame);
         DisableMovementForObjects(spaceshipsInGame);
         DisableMovementForObjects(enemiesInGame);

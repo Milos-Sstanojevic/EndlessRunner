@@ -380,14 +380,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5576771393723482401, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
-      propertyPath: isStage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6801298911083567851, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
-      propertyPath: spawnStagePoint
-      value: 
-      objectReference: {fileID: 453177301}
     - target: {fileID: 8323218390141226748, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
       propertyPath: m_Name
       value: Stage2
@@ -613,9 +605,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b9538c67303504b94df2291ebce3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
-  inactive: 0
-  all: 0
 --- !u!1 &423675333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1587,7 +1576,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.31317943, y: -0, z: -0, w: 0.949694}
-  m_LocalPosition: {x: -15.4074745, y: -30.944103, z: -31.921776}
+  m_LocalPosition: {x: -15.4074745, y: -30.944103, z: -32.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
