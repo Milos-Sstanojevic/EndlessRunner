@@ -4,13 +4,13 @@ using UnityEngine;
 public class EventManager : MonoBehaviour
 {
     public static EventManager Instance { get; private set; }
-    public event Action<CollectableBase, int> OnCollectAction;
-    public event Action<EnvironmentMovementBase> OnDestroyAction;
+    public event Action<CollectableController, int> OnCollectAction;
+    public event Action<EnvironmentMovementController> OnDestroyAction;
     public event Action<GunController> OnDestroyGunAction;
     public event Action<JetController> OnDestroyJetAction;
     public event Action<EnemyController> OnDestroyEnemyAction;
     public event Action<BulletController> OnBulletDestroyAction;
-    public event Action<CollectableBase> OnSpaceshipDestroyAction;
+    public event Action<CollectableController> OnSpaceshipDestroyAction;
     public event Action<int> OnEnemyKilledAction;
     public event Action OnPlayerDeadAction;
 
@@ -26,12 +26,12 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void OnCollectibleCollected(CollectableBase collectible, int pointsWorth)
+    public void OnCollectibleCollected(CollectableController collectible, int pointsWorth)
     {
         OnCollectAction?.Invoke(collectible, pointsWorth);
     }
 
-    public void OnEnviromentDestroyed(EnvironmentMovementBase movable)
+    public void OnEnviromentDestroyed(EnvironmentMovementController movable)
     {
         OnDestroyAction?.Invoke(movable);
     }
@@ -46,7 +46,7 @@ public class EventManager : MonoBehaviour
         OnDestroyJetAction?.Invoke(jet);
     }
 
-    public void OnSpaceshipDestroyed(CollectableBase spaceship)
+    public void OnSpaceshipDestroyed(CollectableController spaceship)
     {
         OnSpaceshipDestroyAction?.Invoke(spaceship);
     }

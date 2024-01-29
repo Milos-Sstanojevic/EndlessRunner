@@ -6,16 +6,16 @@ public class JetController : MonoBehaviour
     private const int jetTimeToLive = 5;
     private static Vector3 defaultJetOrientation = new Vector3(-90, 0, 0);
     [SerializeField] private GameObject engineParticleEffect;
-    private EnvironmentMovementBase environmentComponent;
-    private CollectableBase collectableComponent;
+    private EnvironmentMovementController environmentComponent;
+    private CollectableController collectableComponent;
     private ParticleSystemManager particleSystemManager;
     public bool HasJet { get; private set; }
 
     private void Awake()
     {
         particleSystemManager = GetComponent<ParticleSystemManager>();
-        environmentComponent = GetComponent<EnvironmentMovementBase>();
-        collectableComponent = GetComponent<CollectableBase>();
+        environmentComponent = GetComponent<EnvironmentMovementController>();
+        collectableComponent = GetComponent<CollectableController>();
     }
 
     private void Update()

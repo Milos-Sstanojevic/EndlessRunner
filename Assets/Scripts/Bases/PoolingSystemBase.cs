@@ -46,7 +46,7 @@ public abstract class PoolingSystemBase<T> : MonoBehaviour where T : MonoBehavio
         Destroy(obj.gameObject);
     }
 
-    protected void DestroyObjects(T obj)
+    public void DestroyObjects(T obj)
     {
         obj.transform.SetParent(spawnedObjectsHolder);
         objectPool.Release(obj);

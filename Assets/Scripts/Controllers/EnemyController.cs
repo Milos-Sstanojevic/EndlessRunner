@@ -11,11 +11,11 @@ public class EnemyController : MonoBehaviour
     private int isOnEdge = -1;
     private int health;
     private bool hasRotated;
-    private EnvironmentMovementBase environmentComponent;
+    private EnvironmentMovementController environmentComponent;
 
     private void Awake()
     {
-        environmentComponent = GetComponent<EnvironmentMovementBase>();
+        environmentComponent = GetComponent<EnvironmentMovementController>();
     }
 
     private void Start()

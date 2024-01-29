@@ -1,5 +1,5 @@
 
-public class SpaceshipPoolingSystem : PoolingSystemBase<CollectableBase>
+public class SpaceshipPoolingSystem : PoolingSystemBase<CollectableController>
 {
     public static SpaceshipPoolingSystem Instance { get; private set; }
 

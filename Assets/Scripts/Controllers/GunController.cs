@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GunController : MonoBehaviour
@@ -12,18 +13,14 @@ public class GunController : MonoBehaviour
     private float range = 15;
     private bool enemyIsHit;
     public bool HasGun { get; private set; }
-    [SerializeField] private int active;
-    [SerializeField] private int inactive;
-    [SerializeField] private int all;
-    private EnvironmentMovementBase environmentComponent;
-    private CollectableBase collectableComponent;
-    private int bulletsFiredInOneSecond = 0;
-    private float timer = 0f;
+    private EnvironmentMovementController environmentComponent;
+    private CollectableController collectableComponent;
+
 
     private void Awake()
     {
-        environmentComponent = GetComponent<EnvironmentMovementBase>();
-        collectableComponent = GetComponent<CollectableBase>();
+        environmentComponent = GetComponent<EnvironmentMovementController>();
+        collectableComponent = GetComponent<CollectableController>();
     }
 
     private void Update()
@@ -34,14 +31,6 @@ public class GunController : MonoBehaviour
             collectableComponent.enabled = true;
         }
         ShootFromGun();
-
-        timer += Time.deltaTime;
-        if (timer >= 1f)
-        {
-            Debug.Log($"Bullets fired in last second: {bulletsFiredInOneSecond}");
-            bulletsFiredInOneSecond = 0;
-            timer = 0f;
-        }
 
         Destroy();
     }
@@ -60,8 +49,6 @@ public class GunController : MonoBehaviour
             {
                 muzzleParticleObject.SetActive(true);
                 ShootBullet();
-
-                bulletsFiredInOneSecond++;
             }
 
             if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -77,11 +64,6 @@ public class GunController : MonoBehaviour
         {
             RaycastHit hit;
             BulletController bullet = BulletPoolyingSystem.Instance.GetObjectFromPool();
-
-            all = BulletPoolyingSystem.Instance.GetCountAll();
-            active = BulletPoolyingSystem.Instance.GetCountActive();
-            inactive = BulletPoolyingSystem.Instance.GetCountInactive();
-
 
             bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
 
@@ -144,7 +126,22 @@ public class GunController : MonoBehaviour
         HasGun = false;
         transform.eulerAngles = defaultOrientation;
         muzzleParticleObject.SetActive(false);
+        DeactivateAllBullets();//ovde je problem
         EventManager.Instance.OnGunDestroyed(this);
+    }
+
+
+    private void DeactivateAllBullets()
+    {
+        List<BulletController> bullets = BulletPoolyingSystem.Instance.GetInstantiatedObjects();
+        foreach (BulletController bullet in bullets)
+        {
+            if (bullet.enabled == true)
+            {
+                Debug.Log("Deaktiviram");
+                EventManager.Instance.OnBulletDestroyed(bullet);
+            }
+        }
     }
 
     public void ReleaseGunInPool()
@@ -163,6 +160,4 @@ public class GunController : MonoBehaviour
     {
         Time.timeScale = 1f;
     }
-
-
 }

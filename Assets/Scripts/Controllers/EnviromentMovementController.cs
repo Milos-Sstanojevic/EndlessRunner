@@ -1,20 +1,20 @@
 using UnityEngine;
 
-public class EnvironmentMovementBase : MonoBehaviour
+public class EnvironmentMovementController : MonoBehaviour
 {
     public bool MovementEnabled { get; private set; }
     public float MovementSpeed { get; private set; }
     [SerializeField] private bool isStage;
     private GunController gun;
     private JetController jet;
-    private CollectableBase spaceship;
+    private CollectableController spaceship;
     private EnemyController enemy;
 
     private void Awake()
     {
         gun = GetComponent<GunController>();
         jet = GetComponent<JetController>();
-        spaceship = GetComponent<CollectableBase>();
+        spaceship = GetComponent<CollectableController>();
         enemy = GetComponent<EnemyController>();
     }
 
@@ -53,24 +53,6 @@ public class EnvironmentMovementBase : MonoBehaviour
     {
         if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
         {
-            //svaki od ovih eventa bi mogao da ide u svoju skriptu a ovde samo da se pita da li su svi gun jet i spaceship i enemy null i ako jesu pozovese defaultni enviroment action
-            // if (gun != null)
-            // {
-            //     EventManager.Instance.OnGunDestroyed(gun);
-            // }
-            // else if (jet != null)
-            // {
-            //     EventManager.Instance.OnJetDestroyed(jet);
-            // }
-            // else if (spaceship != null)
-            // {
-            //     EventManager.Instance.OnSpaceshipDestroyed(spaceship);
-            // }
-            // else if (enemy != null)
-            // {
-            //     EventManager.Instance.OnEnemyDestroyed(enemy);
-            // }
-
             if (gun == null && jet == null && spaceship == null && enemy == null)
             {
                 EventManager.Instance.OnEnviromentDestroyed(this);

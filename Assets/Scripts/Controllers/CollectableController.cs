@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CollectableBase : MonoBehaviour
+public class CollectableController : MonoBehaviour
 {
     private float RotationSpeed = 80;
 

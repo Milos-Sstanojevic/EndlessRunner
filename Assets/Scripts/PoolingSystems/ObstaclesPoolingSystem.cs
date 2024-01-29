@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstaclesPoolingSystem : PoolingSystemBase<EnvironmentMovementBase>
+public class ObstaclesPoolingSystem : PoolingSystemBase<EnvironmentMovementController>
 {
     public static ObstaclesPoolingSystem Instance { get; private set; }
 
-    [SerializeField] private EnvironmentMovementBase leftAndRightObstacle;
-    [SerializeField] private EnvironmentMovementBase leftObstacle;
-    [SerializeField] private EnvironmentMovementBase rightObstacle;
-    [SerializeField] private EnvironmentMovementBase roadblockObstacle;
+    [SerializeField] private EnvironmentMovementController leftAndRightObstacle;
+    [SerializeField] private EnvironmentMovementController leftObstacle;
+    [SerializeField] private EnvironmentMovementController rightObstacle;
+    [SerializeField] private EnvironmentMovementController roadblockObstacle;
 
     protected override void Awake()
     {

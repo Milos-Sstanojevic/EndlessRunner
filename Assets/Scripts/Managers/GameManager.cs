@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
         uiManager.SetScoreScreenInactive();
     }
 
-    public void CollectCollectable(CollectableBase collectible, int pointsWorth)
+    public void CollectCollectable(CollectableController collectible, int pointsWorth)
     {
         uiManager.SetScoreOnScoreScreen(pointsWorth);
     }

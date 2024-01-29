@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (/*other.gameObject.CompareTag(obstacleTag) ||*/ other.gameObject.CompareTag(enemyTag))
+        if (other.gameObject.CompareTag(obstacleTag) /*||  other.gameObject.CompareTag(enemyTag)*/)
         {
             EventManager.Instance.OnPlayerDead();
 
@@ -210,7 +210,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        CollectableBase collectable = other.GetComponent<CollectableBase>();
+        CollectableController collectable = other.GetComponent<CollectableController>();
 
         if (collectable != null)
         {
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private int Collect(CollectableBase collectable)
+    private int Collect(CollectableController collectable)
     {
         if (collectable.GetComponent<JetController>() != null)
         {
