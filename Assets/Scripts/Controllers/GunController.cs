@@ -13,6 +13,7 @@ public class GunController : MonoBehaviour
     private float range = 15;
     private bool enemyIsHit;
     public bool HasGun { get; private set; }
+    private bool gunExpired;
     private EnvironmentMovementController environmentComponent;
     private CollectableController collectableComponent;
 
@@ -29,6 +30,11 @@ public class GunController : MonoBehaviour
         {
             environmentComponent.enabled = true;
             collectableComponent.enabled = true;
+        }
+        if (gunExpired)
+        {
+            EventManager.Instance.OnGunDestroyed(this);
+            gunExpired = false;
         }
         ShootFromGun();
 
@@ -127,7 +133,7 @@ public class GunController : MonoBehaviour
         transform.eulerAngles = defaultOrientation;
         muzzleParticleObject.SetActive(false);
         DeactivateAllBullets();//ovde je problem
-        EventManager.Instance.OnGunDestroyed(this);
+        gunExpired = true;
     }
 
 
@@ -136,9 +142,8 @@ public class GunController : MonoBehaviour
         List<BulletController> bullets = BulletPoolyingSystem.Instance.GetInstantiatedObjects();
         foreach (BulletController bullet in bullets)
         {
-            if (bullet.enabled == true)
+            if (bullet.gameObject.activeSelf)
             {
-                Debug.Log("Deaktiviram");
                 EventManager.Instance.OnBulletDestroyed(bullet);
             }
         }
