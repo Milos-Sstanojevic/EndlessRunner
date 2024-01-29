@@ -1,9 +1,12 @@
-using System.Collections.Generic;
+
+using UnityEngine;
 
 public class EnemyPoolingSystem : PoolingSystemBase<EnemyController>
 {
     public static EnemyPoolingSystem Instance { get; private set; }
-    private List<EnemyController> instantiatedObstacles;
+
+    [SerializeField] private EnemyController flyingEnemy;
+    [SerializeField] private EnemyController groundEnemy;
 
     protected override void Awake()
     {
@@ -16,6 +19,7 @@ public class EnemyPoolingSystem : PoolingSystemBase<EnemyController>
         {
             Destroy(gameObject);
         }
+
     }
 
     private void OnEnable()
@@ -23,24 +27,18 @@ public class EnemyPoolingSystem : PoolingSystemBase<EnemyController>
         EventManager.Instance.OnDestroyEnemyAction += DestroyObjects;
     }
 
-    private void Start()
-    {
-        instantiatedObstacles = new List<EnemyController>();
-    }
-
-    protected override EnemyController SpawnObject()
-    {
-        EnemyController obj = base.SpawnObject();
-        instantiatedObstacles.Add(obj);
-        return obj;
-    }
-
     private void OnDisable()
     {
         EventManager.Instance.OnDestroyEnemyAction -= DestroyObjects;
     }
 
+    public void SetFlyingEnemyAsBasePrefab()
+    {
+        base.objectPrefab = flyingEnemy;
+    }
 
-    public List<EnemyController> GetInstanciatedObstacles() => instantiatedObstacles;
-
+    public void SetGroundEnemyAsBasePrefab()
+    {
+        base.objectPrefab = groundEnemy;
+    }
 }

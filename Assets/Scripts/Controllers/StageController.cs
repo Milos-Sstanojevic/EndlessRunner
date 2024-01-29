@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class StageController : EnviromentMovementBase
+public class StageController : MonoBehaviour
 {
+    private const string groundTag = "Ground";
     private const float stagePostitionOffset = 14.91158f;
     private float totalStageLength;
     private GameObject spawnStagePoint;
@@ -9,6 +10,7 @@ public class StageController : EnviromentMovementBase
     private void Awake()
     {
         spawnStagePoint = GameObject.FindGameObjectWithTag("EndOfRoad");
+
         CalculateTotalStageLength();
     }
 
@@ -18,7 +20,7 @@ public class StageController : EnviromentMovementBase
 
         foreach (Transform child in transform)
         {
-            if (child.CompareTag("Ground"))
+            if (child.CompareTag(groundTag))
             {
                 MeshCollider collider = child.GetComponent<MeshCollider>();
 
@@ -30,9 +32,8 @@ public class StageController : EnviromentMovementBase
         }
     }
 
-    protected override void Update()
+    private void Update()
     {
-        base.Update();
         MoveStageToTheEnd();
     }
 
@@ -43,10 +44,5 @@ public class StageController : EnviromentMovementBase
             float errorOffset = totalStageLength + transform.position.z;
             transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + stagePostitionOffset + errorOffset);
         }
-    }
-
-    protected override void Destroy()
-    {
-        //nothing
     }
 }

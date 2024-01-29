@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5507666528279299201}
   - component: {fileID: 7561113041584329290}
   - component: {fileID: 1500872678389918474}
+  - component: {fileID: 6841406600436158523}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Collectable
@@ -102,7 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a94452cdaca25564ba8896f78c134a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationSpeed: 60
 --- !u!135 &7561113041584329290
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -220,3 +220,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6841406600436158523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8515461803559923569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStage: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyController : EnviromentMovementBase
+public class EnemyController : MonoBehaviour
 {
     private const int negator = -1;
     private int minimumHealth;
@@ -11,6 +11,12 @@ public class EnemyController : EnviromentMovementBase
     private int isOnEdge = -1;
     private int health;
     private bool hasRotated;
+    private EnvironmentMovementBase environmentComponent;
+
+    private void Awake()
+    {
+        environmentComponent = GetComponent<EnvironmentMovementBase>();
+    }
 
     private void Start()
     {
@@ -18,9 +24,8 @@ public class EnemyController : EnviromentMovementBase
         minimumHealth = enemyScriptableObject.minimumHealth;
     }
 
-    protected override void Update()
+    private void Update()
     {
-        base.Update();
         MoveLeftAndRight();
 
         if (healthSlider.value != health)
@@ -34,17 +39,18 @@ public class EnemyController : EnviromentMovementBase
             EventManager.Instance.OnEnemyDestroyed(this);
             EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
         }
+
+        Destroy();
     }
 
     private void MoveLeftAndRight()
     {
-        Debug.Log(base.MovementEnabled);
-        if (base.MovementEnabled == true)
+        if (environmentComponent.MovementEnabled == true)
         {
             enemyScriptableObject.MoveEnemy(this, enemyAnimator, isOnEdge);
             RotateEnemy();
         }
-        else
+        else if (enemyAnimator != null)
             enemyAnimator.StopWalkAnimation();
     }
 
@@ -67,7 +73,7 @@ public class EnemyController : EnviromentMovementBase
         health -= damage;
     }
 
-    protected override void Destroy()
+    private void Destroy()
     {
         if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
             EventManager.Instance.OnEnemyDestroyed(this);

@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -7,12 +7,14 @@ public abstract class PoolingSystemBase<T> : MonoBehaviour where T : MonoBehavio
     [SerializeField] private int defaultCapacity = 40;
     [SerializeField] private int maxCapacity = 100;
     private ObjectPool<T> objectPool;
-    [SerializeField] private T objectPrefab;
+    [SerializeField] protected T objectPrefab;
     [SerializeField] private Transform spawnedObjectsHolder;
+    private List<T> instantiatedObjects;
 
     protected virtual void Awake()
     {
         CreatePool();
+        instantiatedObjects = new List<T>();
     }
 
     private void CreatePool()
@@ -24,6 +26,7 @@ public abstract class PoolingSystemBase<T> : MonoBehaviour where T : MonoBehavio
     {
         T obj = Instantiate(objectPrefab);
         obj.transform.SetParent(spawnedObjectsHolder);
+        instantiatedObjects.Add(obj);
         return obj;
     }
 
@@ -39,14 +42,18 @@ public abstract class PoolingSystemBase<T> : MonoBehaviour where T : MonoBehavio
 
     private void OnDestroyAction(T obj)
     {
+        instantiatedObjects.Remove(obj);
         Destroy(obj.gameObject);
     }
 
     protected void DestroyObjects(T obj)
     {
+        obj.transform.SetParent(spawnedObjectsHolder);
         objectPool.Release(obj);
     }
 
+
+    public List<T> GetInstantiatedObjects() => instantiatedObjects;
     public T GetObjectFromPool() => objectPool.Get();
     public int GetCountAll() => objectPool.CountAll;
     public int GetCountInactive() => objectPool.CountInactive;

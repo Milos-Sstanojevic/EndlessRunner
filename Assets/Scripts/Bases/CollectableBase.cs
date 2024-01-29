@@ -1,19 +1,24 @@
 using UnityEngine;
 
-public class CollectableBase : EnviromentMovementBase
+public class CollectableBase : MonoBehaviour
 {
-    protected float RotationSpeed = 80;
+    private float RotationSpeed = 80;
 
-    protected override void Update()
+    private void Update()
     {
-        base.Update();
         RotateCollectable();
+        Destroy();
     }
 
     private void RotateCollectable()
     {
-        if (base.MovementEnabled == true)
-            transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.up, Space.World);
+        transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.up, Space.World);
+    }
+
+    private void Destroy()
+    {
+        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+            EventManager.Instance.OnSpaceshipDestroyed(this);
     }
 
 }

@@ -1,6 +1,7 @@
-public class BulletPoolyingSystem : PoolingSystemBase<BulletController>
+
+public class GunPoolingSystem : PoolingSystemBase<GunController>
 {
-    public static BulletPoolyingSystem Instance { get; private set; }
+    public static GunPoolingSystem Instance { get; private set; }
 
     protected override void Awake()
     {
@@ -13,15 +14,16 @@ public class BulletPoolyingSystem : PoolingSystemBase<BulletController>
         {
             Destroy(gameObject);
         }
+
     }
 
     private void OnEnable()
     {
-        EventManager.Instance.OnBulletDestroyAction += DestroyObjects;
+        EventManager.Instance.OnDestroyGunAction += DestroyObjects;
     }
 
     private void OnDisable()
     {
-        EventManager.Instance.OnBulletDestroyAction -= DestroyObjects;
+        EventManager.Instance.OnDestroyGunAction -= DestroyObjects;
     }
 }

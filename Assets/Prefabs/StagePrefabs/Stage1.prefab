@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5340790431636367008}
   - component: {fileID: 2626585316715121748}
   - component: {fileID: 6801298911083567851}
+  - component: {fileID: 5576771393723482401}
   m_Layer: 0
   m_Name: Stage1
   m_TagString: Untagged
@@ -103,6 +104,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f367891c72010164cae9714da7784f09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5576771393723482401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8323218390141226748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStage: 1
 --- !u!1001 &201131710052138065
 PrefabInstance:
   m_ObjectHideFlags: 0

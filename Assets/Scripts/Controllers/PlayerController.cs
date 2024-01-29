@@ -36,7 +36,6 @@ public class PlayerController : MonoBehaviour
     private bool isInAir = false;
     private bool movementEnabled;
     private float movementSpeed;
-    private Dictionary<Type, Func<CollectableBase, int>> collectableHandlers;
 
     private void Awake()
     {
@@ -49,11 +48,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         Physics.gravity *= gravityModifier;
-        collectableHandlers = new Dictionary<Type, Func<CollectableBase, int>>()
-        {
-            {typeof(GunController),CollectGun},
-            {typeof(JetController),CollectJet}
-        };
     }
 
     private void Update()
@@ -177,7 +171,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag(obstacleTag) /*|| other.gameObject.CompareTag(enemyTag)*/)
+        if (/*other.gameObject.CompareTag(obstacleTag) ||*/ other.gameObject.CompareTag(enemyTag))
         {
             EventManager.Instance.OnPlayerDead();
 
@@ -220,24 +214,50 @@ public class PlayerController : MonoBehaviour
 
         if (collectable != null)
         {
-            int pointsWorth = collectablePointsWorth;
-            if (collectableHandlers.TryGetValue(collectable.GetType(), out var collectFunction))
-            {
-                pointsWorth = collectFunction(collectable);
-            }
-            else
-            {
-                EventManager.Instance.OnEnviromentDestroyed(collectable);
-            }
+            int pointsWorth = Collect(collectable);
 
             audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
             EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
         }
     }
 
-    private int CollectJet(CollectableBase collectable)
+    private int Collect(CollectableBase collectable)
     {
-        JetController jet = (JetController)collectable;
+        if (collectable.GetComponent<JetController>() != null)
+        {
+            JetController jet = collectable.GetComponent<JetController>();
+            return CollectJet(jet);
+        }
+        else if (collectable.GetComponent<GunController>() != null)
+        {
+            GunController gun = collectable.GetComponent<GunController>();
+            return CollectGun(gun);
+        }
+        else
+        {
+            EventManager.Instance.OnSpaceshipDestroyed(collectable);
+            return collectablePointsWorth;
+        }
+    }
+
+    private int CollectGun(GunController collectable)
+    {
+        GunController gun = collectable;
+        if (gunInHands == null || gunInHands.HasGun == false)
+        {
+            gunInHands = gun;
+            gun.MoveToPlayerHand(this, gunPosition.transform.position);
+        }
+        else
+        {
+            gun.ReleaseGunInPool();
+        }
+        return collectablePointsWorth * 2;
+    }
+
+    private int CollectJet(JetController collectable)
+    {
+        JetController jet = collectable;
 
         if (jetOnBack == null && !isInAir)
         {
@@ -278,20 +298,7 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = endRotation;
     }
 
-    private int CollectGun(CollectableBase collectable)
-    {
-        GunController gun = (GunController)collectable;
-        if (gunInHands == null || gunInHands.HasGun == false)
-        {
-            gunInHands = gun;
-            gun.MoveToPlayerHand(this, gunPosition.transform.position);
-        }
-        else
-        {
-            gun.ReleaseGunInPool();
-        }
-        return collectablePointsWorth * 2;
-    }
+
 
 
     private void OnDestroy()

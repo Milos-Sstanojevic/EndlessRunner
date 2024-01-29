@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class GunController : CollectableBase
+public class GunController : MonoBehaviour
 {
     private const int gunTimeToLive = 5;
     private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
@@ -15,15 +15,23 @@ public class GunController : CollectableBase
     [SerializeField] private int active;
     [SerializeField] private int inactive;
     [SerializeField] private int all;
+    private EnvironmentMovementBase environmentComponent;
+    private CollectableBase collectableComponent;
     private int bulletsFiredInOneSecond = 0;
     private float timer = 0f;
 
+    private void Awake()
+    {
+        environmentComponent = GetComponent<EnvironmentMovementBase>();
+        collectableComponent = GetComponent<CollectableBase>();
+    }
 
-    protected override void Update()
+    private void Update()
     {
         if (!HasGun)
         {
-            base.Update();
+            environmentComponent.enabled = true;
+            collectableComponent.enabled = true;
         }
         ShootFromGun();
 
@@ -34,6 +42,14 @@ public class GunController : CollectableBase
             bulletsFiredInOneSecond = 0;
             timer = 0f;
         }
+
+        Destroy();
+    }
+
+    private void Destroy()
+    {
+        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+            EventManager.Instance.OnGunDestroyed(this);
     }
 
     public void ShootFromGun()
@@ -117,6 +133,8 @@ public class GunController : CollectableBase
         transform.position = gunPos;
         transform.eulerAngles = rotateAroundX;
         HasGun = true;
+        environmentComponent.enabled = false;
+        collectableComponent.enabled = false;
         StartCoroutine(GunExpiration());
     }
 
@@ -126,14 +144,25 @@ public class GunController : CollectableBase
         HasGun = false;
         transform.eulerAngles = defaultOrientation;
         muzzleParticleObject.SetActive(false);
-        EventManager.Instance.OnEnviromentDestroyed(this);
+        EventManager.Instance.OnGunDestroyed(this);
     }
 
     public void ReleaseGunInPool()
     {
         transform.eulerAngles = defaultOrientation;
         muzzleParticleObject.SetActive(false);
-        EventManager.Instance.OnEnviromentDestroyed(this);
+        EventManager.Instance.OnGunDestroyed(this);
     }
+
+    public void PauseCoroutine()
+    {
+        Time.timeScale = 0f;
+    }
+
+    public void UnpauseCoroutine()
+    {
+        Time.timeScale = 1f;
+    }
+
 
 }

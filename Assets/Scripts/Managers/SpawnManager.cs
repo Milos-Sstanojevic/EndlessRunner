@@ -7,7 +7,6 @@ public class SpawnManager : MonoBehaviour
     private const int offsetZ = 3;
     private const float posY = 4f;
     private const float posZ = 35f;
-    [SerializeField] private PoolingSystem _pool;
     private float obstacleSpawnDelay = 1f;
     private float spaceshipSpawnDelay = 2f;
     private bool canSpawn;
@@ -38,30 +37,42 @@ public class SpawnManager : MonoBehaviour
         while (canSpawn)
         {
             yield return new WaitForSeconds(spaceshipSpawnDelay);
-            HandleSpaceshipSpawning();
+            HandleCollectableSpawning();
         }
     }
 
 
     private void HandleObstacleSpawning()
     {
-        EnviromentMovementBase obstacle = EnemyPoolingSystem.Instance.GetObjectFromPool(); //verovatno ovde treba da se prebaci ona sansa
+        // ObstaclesPoolingSystem.Instance.SetRoadblockAsBasePrefab();
+        // EnvironmentMovementBase obstacleRoadblock = ObstaclesPoolingSystem.Instance.GetObjectFromPool(); //verovatno ovde treba da se prebaci ona sansa
 
-        if (obstacle.name.StartsWith(flagNameForDoubleObstacle))
-        {
-            obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y, posZ);
-        }
-        else
-        {
-            float randomXObst = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
-            obstacle.transform.position = new Vector3(randomXObst, obstacle.transform.position.y, posZ);
+        // ObstaclesPoolingSystem.Instance.SetDoubleLeftAsBasePrefab();
+        // EnvironmentMovementBase obstacleLeft = ObstaclesPoolingSystem.Instance.GetObjectFromPool();
 
-        }
+        EnemyPoolingSystem.Instance.SetFlyingEnemyAsBasePrefab();
+        EnemyController flyingEnemy = EnemyPoolingSystem.Instance.GetObjectFromPool();
+
+        EnemyPoolingSystem.Instance.SetGroundEnemyAsBasePrefab();
+        EnemyController groundEnemy = EnemyPoolingSystem.Instance.GetObjectFromPool();
+
+        // obstacleLeft.transform.position = new Vector3(obstacleLeft.transform.position.x, obstacleLeft.transform.position.y, posZ);
+
+        flyingEnemy.transform.position = new Vector3(flyingEnemy.transform.position.x, flyingEnemy.transform.position.y, posZ);
+
+
+        groundEnemy.transform.position = new Vector3(groundEnemy.transform.position.x, groundEnemy.transform.position.y, posZ);
+
+        // float randomXObst = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
+        // obstacleRoadblock.transform.position = new Vector3(randomXObst, obstacleRoadblock.transform.position.y, posZ);
+
     }
 
-    private void HandleSpaceshipSpawning()
+    private void HandleCollectableSpawning()
     {
-        CollectableBase spaceship = _pool.GetCollectableFromPool();
+        //GunController gun = GunPoolingSystem.Instance.GetObjectFromPool();
+        //JetController jet = JetPoolingSystem.Instance.GetObjectFromPool();
+        CollectableBase spaceship = SpaceshipPoolingSystem.Instance.GetObjectFromPool();
 
         float randomXShip = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
         float randomY = Random.Range(1f, posY);

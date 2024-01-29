@@ -380,6 +380,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5576771393723482401, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
+      propertyPath: isStage
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6801298911083567851, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
       propertyPath: spawnStagePoint
       value: 
@@ -897,6 +901,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 490648334}
   m_CullTransparentMesh: 1
+--- !u!1 &611313580
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 611313581}
+  m_Layer: 0
+  m_Name: JetPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &611313581
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611313580}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.84265834, y: 0.94098806, z: -92.456276}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1278,8 +1313,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 894698581}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.338369, y: 3.0327015, z: 32.04423}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.3383694, y: 3.0327032, z: 32.04423}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1707,6 +1742,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965624143}
   m_CullTransparentMesh: 1
+--- !u!1 &973170631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 973170632}
+  m_Layer: 0
+  m_Name: EnemyPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &973170632
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973170631}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2764766, y: -3.2088318, z: 1.8093987}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &981399728
 GameObject:
   m_ObjectHideFlags: 0
@@ -2111,6 +2177,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1004919799}
   m_CullTransparentMesh: 1
+--- !u!1 &1006517344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1006517345}
+  - component: {fileID: 1006517346}
+  m_Layer: 0
+  m_Name: JetPoolingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1006517345
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006517344}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -14.564816, y: -35.893116, z: -110.26805}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1950996646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1006517346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006517344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1e858c6c3636a94796553c98e0e5dec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 40
+  maxCapacity: 100
+  objectPrefab: {fileID: 3609463062443591020, guid: 0c2ab57f90c18b2448ece3c747987c16, type: 3}
+  spawnedObjectsHolder: {fileID: 611313581}
 --- !u!1 &1049688335
 GameObject:
   m_ObjectHideFlags: 0
@@ -2765,6 +2879,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235624367}
   m_CullTransparentMesh: 1
+--- !u!1 &1239510492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1239510493}
+  - component: {fileID: 1239510494}
+  m_Layer: 0
+  m_Name: GunPoolingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1239510493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239510492}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -14.405725, y: -17.22109, z: -174.2813}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1950996646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1239510494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239510492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e0f074d4faff04da05092e98b6a437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 40
+  maxCapacity: 100
+  objectPrefab: {fileID: 8404797518885804989, guid: 5ff23b573a6415b4284cb6ad246dce3b, type: 3}
+  spawnedObjectsHolder: {fileID: 2118036196}
 --- !u!1 &1243810416
 GameObject:
   m_ObjectHideFlags: 0
@@ -2809,17 +2971,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d6c4de9a1990438b4d2b1385b6506, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentOfPool: {fileID: 1081107745}
-  obstacle:
-  - {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
-  - {fileID: 6977361175378971136, guid: 99b772da13d26f0458db8f85ca049843, type: 3}
-  - {fileID: 3146250182552618409, guid: 4be5ffcd6406bc74699e4d81ad92609b, type: 3}
-  - {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
-  - {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
-  collectable:
-  - {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
-  - {fileID: 8404797518885804989, guid: 5ff23b573a6415b4284cb6ad246dce3b, type: 3}
-  - {fileID: 3609463062443591020, guid: 0c2ab57f90c18b2448ece3c747987c16, type: 3}
 --- !u!114 &1244077504 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5072763247599114993, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
@@ -2836,6 +2987,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4352061271246996191, guid: 7e9b51cbc14a5154eb8afb1f16317679, type: 3}
   m_PrefabInstance: {fileID: 8784078332744857191}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1245102169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1245102170}
+  - component: {fileID: 1245102171}
+  m_Layer: 0
+  m_Name: SpaceshipPoolingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1245102170
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245102169}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -23.44973, y: -24.93338, z: -31.46619}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1950996646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1245102171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245102169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 187068e2b50b86541a1532ef8be92b84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 40
+  maxCapacity: 100
+  objectPrefab: {fileID: 5507666528279299201, guid: 87c510094545ccf46abf31622be366cc, type: 3}
+  spawnedObjectsHolder: {fileID: 1295313822}
 --- !u!1 &1282098889
 GameObject:
   m_ObjectHideFlags: 0
@@ -2969,6 +3168,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282098889}
   m_CullTransparentMesh: 1
+--- !u!1 &1295313821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1295313822}
+  m_Layer: 0
+  m_Name: SpaceshipPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1295313822
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295313821}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.042256, y: 11.900722, z: -13.654413}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1335356316
 GameObject:
   m_ObjectHideFlags: 0
@@ -3092,7 +3322,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1244077504}
-  poolingSystem: {fileID: 1243810419}
   stagesInGame:
   - {fileID: 1838649009}
   - {fileID: 2096471297}
@@ -3870,6 +4099,56 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1741032795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1741032796}
+  - component: {fileID: 1741032797}
+  m_Layer: 0
+  m_Name: EnemyPoolingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1741032796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741032795}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -16.68395, y: -40.042934, z: -16.002378}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1950996646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1741032797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741032795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f17d77a587dfb0246a042a00c811aa27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 40
+  maxCapacity: 100
+  objectPrefab: {fileID: 0}
+  spawnedObjectsHolder: {fileID: 973170632}
+  flyingEnemy: {fileID: 7236899872907980071, guid: ae500c0c575fd11428cd26b0446dfbd0, type: 3}
+  groundEnemy: {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
 --- !u!1 &1748329537
 GameObject:
   m_ObjectHideFlags: 0
@@ -3974,6 +4253,89 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1950996646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1753139085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1753139086}
+  m_Layer: 0
+  m_Name: ObstaclesPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1753139086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753139085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.12027146, y: -2.6287415, z: 14.423834}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1824557726
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1824557727}
+  - component: {fileID: 1824557728}
+  m_Layer: 0
+  m_Name: ObstaclesPoolingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1824557727
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824557726}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -15.287203, y: -39.462845, z: -3.3879433}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1950996646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1824557728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824557726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 517227aac7aed1b4b90ac65d21dbe6ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 40
+  maxCapacity: 100
+  objectPrefab: {fileID: 0}
+  spawnedObjectsHolder: {fileID: 1753139086}
+  leftAndRightObstacle: {fileID: 6977361175378971136, guid: 99b772da13d26f0458db8f85ca049843, type: 3}
+  leftObstacle: {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
+  rightObstacle: {fileID: 3146250182552618409, guid: 4be5ffcd6406bc74699e4d81ad92609b, type: 3}
+  roadblockObstacle: {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
 --- !u!114 &1838649009 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6801298911083567851, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
@@ -4029,7 +4391,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886949386}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f17d77a587dfb0246a042a00c811aa27, type: 3}
   m_Name: 
@@ -4038,6 +4400,8 @@ MonoBehaviour:
   maxCapacity: 50
   objectPrefab: {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
   spawnedObjectsHolder: {fileID: 894698582}
+  flyingEnemy: {fileID: 0}
+  groundEnemy: {fileID: 0}
 --- !u!1 &1950996645
 GameObject:
   m_ObjectHideFlags: 0
@@ -4077,6 +4441,11 @@ Transform:
   - {fileID: 801544851}
   - {fileID: 1342134739}
   - {fileID: 1886949387}
+  - {fileID: 1824557727}
+  - {fileID: 1239510493}
+  - {fileID: 1006517345}
+  - {fileID: 1245102170}
+  - {fileID: 1741032796}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1981790932
@@ -4223,7 +4592,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f9676c77acf6547bdb87246499328f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pool: {fileID: 1243810419}
 --- !u!4 &2076377577
 Transform:
   m_ObjectHideFlags: 0
@@ -4255,6 +4623,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5340790431636367008, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
   m_PrefabInstance: {fileID: 57081723}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2118036195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2118036196}
+  m_Layer: 0
+  m_Name: GunPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2118036196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118036195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.0017496, y: 19.613012, z: -156.46951}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6103018407880754161
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4303,10 +4702,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6801298911083567851, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
-      propertyPath: spawnStagePoint
-      value: 
-      objectReference: {fileID: 453177301}
     - target: {fileID: 8323218390141226748, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
       propertyPath: m_Name
       value: Stage1
@@ -4405,3 +4800,8 @@ SceneRoots:
   - {fileID: 1081107745}
   - {fileID: 391682362}
   - {fileID: 894698582}
+  - {fileID: 1753139086}
+  - {fileID: 2118036196}
+  - {fileID: 611313581}
+  - {fileID: 1295313822}
+  - {fileID: 973170632}

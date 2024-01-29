@@ -9781,6 +9781,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2878773129783973844}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3590230177244468710}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -49817474904436873}
   m_SourcePrefab: {fileID: 100100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
 --- !u!1 &183490728635858045 stripped
 GameObject:
@@ -9840,6 +9846,31 @@ MonoBehaviour:
   jetEngineParticles:
   - {fileID: 1564374173742707355}
   - {fileID: 1721335608948306727}
+--- !u!114 &3590230177244468710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183490728635858045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStage: 0
+--- !u!114 &-49817474904436873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183490728635858045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a94452cdaca25564ba8896f78c134a2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &183490728636014685 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 247766e192f437c4680b63372b7cb017, type: 3}

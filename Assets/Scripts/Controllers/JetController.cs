@@ -1,25 +1,32 @@
 using System.Collections;
 using UnityEngine;
 
-public class JetController : CollectableBase
+public class JetController : MonoBehaviour
 {
     private const int jetTimeToLive = 5;
     private static Vector3 defaultJetOrientation = new Vector3(-90, 0, 0);
     [SerializeField] private GameObject engineParticleEffect;
+    private EnvironmentMovementBase environmentComponent;
+    private CollectableBase collectableComponent;
     private ParticleSystemManager particleSystemManager;
     public bool HasJet { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
         particleSystemManager = GetComponent<ParticleSystemManager>();
+        environmentComponent = GetComponent<EnvironmentMovementBase>();
+        collectableComponent = GetComponent<CollectableBase>();
     }
 
-    protected override void Update()
+    private void Update()
     {
         if (!HasJet)
         {
-            base.Update();
+            environmentComponent.enabled = true;
+            collectableComponent.enabled = true;
         }
+
+        Destroy();
     }
 
     public void MoveOnPlayerBack(PlayerController player, Vector3 jetPosition)
@@ -29,6 +36,8 @@ public class JetController : CollectableBase
         engineParticleEffect.SetActive(true);
         particleSystemManager.PlayJetEngineParticleEffect();
         HasJet = true;
+        environmentComponent.enabled = false;
+        collectableComponent.enabled = false;
         transform.position = jetPosition;
         StartCoroutine(JetExpiration());
     }
@@ -39,12 +48,12 @@ public class JetController : CollectableBase
         engineParticleEffect.SetActive(false);
         HasJet = false;
         transform.eulerAngles = defaultJetOrientation;
-        EventManager.Instance.OnEnviromentDestroyed(this);
+        EventManager.Instance.OnJetDestroyed(this);
     }
 
     public void ReleaseJetToPool()
     {
-        EventManager.Instance.OnEnviromentDestroyed(this);
+        EventManager.Instance.OnJetDestroyed(this);
     }
 
     public void PauseCoroutine()
@@ -55,5 +64,11 @@ public class JetController : CollectableBase
     public void UnpauseCoroutine()
     {
         Time.timeScale = 1f;
+    }
+
+    private void Destroy()
+    {
+        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+            EventManager.Instance.OnJetDestroyed(this);
     }
 }
