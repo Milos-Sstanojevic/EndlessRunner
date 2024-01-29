@@ -18,9 +18,13 @@ public class EnemyController : MonoBehaviour
         environmentComponent = GetComponent<EnvironmentMovementController>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         health = enemyScriptableObject.health;
+    }
+
+    private void Start()
+    {
         minimumHealth = enemyScriptableObject.minimumHealth;
     }
 
