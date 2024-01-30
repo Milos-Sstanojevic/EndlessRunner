@@ -1,6 +1,6 @@
-public class BulletPoolyingSystem : PoolingSystemBase<BulletController>
+public class BulletPoolingSystem : PoolingSystemBase<BulletController>
 {
-    public static BulletPoolyingSystem Instance { get; private set; }
+    public static BulletPoolingSystem Instance { get; private set; }
 
     protected override void Awake()
     {

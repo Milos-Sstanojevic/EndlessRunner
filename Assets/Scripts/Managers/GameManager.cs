@@ -1,6 +1,5 @@
 
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     private const int scoreStep = 100;
     private const float minimumObstacleSpawningDelay = 0.5f;
-    private const float spacingDecreaser = 0.1f;
+    private const float spacingDecreaser = 0.14f;
     private const float minimumSpacing = 6f;
     private const float spawningDelayDecreaser = 0.07f;
     private const float addPointsDelay = 0.5f;
@@ -164,6 +163,7 @@ public class GameManager : MonoBehaviour
             spacing = HandleDecreasingSpacing(spacingBetweenObstacles, minimumSpacing);
 
             spawnManager.SetChunkSpawnDelay(spawnDelay);
+            spawnManager.SetSpacingBetweenObstacles(spacing);
         }
     }
 

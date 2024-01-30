@@ -31,7 +31,7 @@ public class GunController : MonoBehaviour
             environmentComponent.enabled = true;
             collectableComponent.enabled = true;
         }
-        
+
         if (gunExpired)
         {
             EventManager.Instance.OnGunDestroyed(this);
@@ -71,7 +71,7 @@ public class GunController : MonoBehaviour
         if (lastShootTime + shootDelay < Time.time)
         {
             RaycastHit hit;
-            BulletController bullet = BulletPoolyingSystem.Instance.GetObjectFromPool();
+            BulletController bullet = BulletPoolingSystem.Instance.GetObjectFromPool();
 
             bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
 
@@ -141,7 +141,7 @@ public class GunController : MonoBehaviour
 
     private void DeactivateAllBullets()
     {
-        List<BulletController> bullets = BulletPoolyingSystem.Instance.GetInstantiatedObjects();
+        List<BulletController> bullets = BulletPoolingSystem.Instance.GetInstantiatedObjects();
         foreach (BulletController bullet in bullets)
         {
             if (bullet.gameObject.activeSelf)

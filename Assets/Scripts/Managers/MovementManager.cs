@@ -14,6 +14,7 @@ public class MovementManager : MonoBehaviour
     private List<JetController> jetsInGame;
     private List<CollectableController> spaceshipsInGame;
     private List<EnemyController> enemiesInGame;
+    private List<ChunkController> chunksInGame;
     private float speed;
 
     private void Awake()
@@ -36,6 +37,8 @@ public class MovementManager : MonoBehaviour
         spaceshipsInGame = new List<CollectableController>();
         enemiesInGame = new List<EnemyController>();
 
+        chunksInGame = new List<ChunkController>();
+
         speed = 8;
     }
 
@@ -51,6 +54,7 @@ public class MovementManager : MonoBehaviour
         jetsInGame = JetPoolingSystem.Instance.GetInstantiatedObjects();
         spaceshipsInGame = SpaceshipPoolingSystem.Instance.GetInstantiatedObjects();
         enemiesInGame = EnemyPoolingSystem.Instance.GetInstantiatedObjects();
+        chunksInGame = ChunkPoolingSystem.Instance.GetInstantiatedObjects();
     }
 
     private void PerformActionOnObjects<T>(List<T> objects, Action<T> action) where T : MonoBehaviour
@@ -64,14 +68,28 @@ public class MovementManager : MonoBehaviour
             }
         }
     }
+
     public void EnableMovement()
     {
-        EnableMovementForObjects(obstaclesInGame);
-        EnableMovementForObjects(gunsInGame, gun => gun.UnpauseCoroutine());
+        EnableMovementForObjects(chunksInGame);
+        foreach (ChunkController chunk in chunksInGame)
+        {
+            foreach (Transform child in chunk.transform)
+            {
+                EnvironmentMovementController movement = child.GetComponent<EnvironmentMovementController>();
+                if (movement != null)
+                {
+                    movement.EnableMovement();
+                }
+            }
+        }
+
+        // EnableMovementForObjects(obstaclesInGame);
+        // EnableMovementForObjects(gunsInGame, gun => gun.UnpauseCoroutine());
         EnableMovementForObjects(stagesInGame);
-        EnableMovementForObjects(jetsInGame, jet => jet.UnpauseCoroutine());
-        EnableMovementForObjects(spaceshipsInGame);
-        EnableMovementForObjects(enemiesInGame);
+        // EnableMovementForObjects(jetsInGame, jet => jet.UnpauseCoroutine());
+        // EnableMovementForObjects(spaceshipsInGame);
+        // EnableMovementForObjects(enemiesInGame);
 
         player.EnableMovement();
     }
@@ -87,12 +105,25 @@ public class MovementManager : MonoBehaviour
 
     public void SetMovementSpeed()
     {
-        SetMovementSpeedForObjects(obstaclesInGame);
+        SetMovementSpeedForObjects(chunksInGame);
+        // foreach (ChunkController chunk in chunksInGame)
+        // {
+        //     foreach (Transform child in chunk.transform)
+        //     {
+        //         EnvironmentMovementController movement = child.GetComponent<EnvironmentMovementController>();
+        //         if (movement != null)
+        //         {
+        //             movement.SetMovementSpeed(speed);
+        //         }
+        //     }
+        // }
+
+        // SetMovementSpeedForObjects(obstaclesInGame);
         SetMovementSpeedForObjects(stagesInGame);
-        SetMovementSpeedForObjects(gunsInGame);
-        SetMovementSpeedForObjects(jetsInGame);
-        SetMovementSpeedForObjects(spaceshipsInGame);
-        SetMovementSpeedForObjects(enemiesInGame);
+        // SetMovementSpeedForObjects(gunsInGame);
+        // SetMovementSpeedForObjects(jetsInGame);
+        // SetMovementSpeedForObjects(spaceshipsInGame);
+        // SetMovementSpeedForObjects(enemiesInGame);
 
         player.SetMovementSpeed(speed + playerSpeedBalancer);
     }
@@ -105,12 +136,25 @@ public class MovementManager : MonoBehaviour
 
     public void DisableMovementOfMovableObjects()
     {
-        DisableMovementForObjects(obstaclesInGame);
-        DisableMovementForObjects(jetsInGame, jet => jet.PauseCoroutine());
-        DisableMovementForObjects(gunsInGame, gun => gun.PauseCoroutine());     //razmisli opet ovde, najverovatnije da ne treba ovo pause uvek da se desi, pogotovo ne na game over
+        DisableMovementForObjects(chunksInGame);
+        foreach (ChunkController chunk in chunksInGame)
+        {
+            foreach (Transform child in chunk.transform)
+            {
+                EnvironmentMovementController movement = child.GetComponent<EnvironmentMovementController>();
+                if (movement != null)
+                {
+                    movement.DisableMovement();
+                }
+            }
+        }
+
         DisableMovementForObjects(stagesInGame);
-        DisableMovementForObjects(spaceshipsInGame);
-        DisableMovementForObjects(enemiesInGame);
+        // DisableMovementForObjects(obstaclesInGame);
+        // DisableMovementForObjects(jetsInGame, jet => jet.PauseCoroutine());
+        // DisableMovementForObjects(gunsInGame, gun => gun.PauseCoroutine());
+        // DisableMovementForObjects(spaceshipsInGame);
+        // DisableMovementForObjects(enemiesInGame);
 
         player.DisableMovement();
     }

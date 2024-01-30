@@ -1,23 +1,25 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    private const int numberOfEnemiesPerChunk = 5;
     private const int numberOfCollectablesPerChunk = 3;
+    private const int chanceForRegularChunk = 30;
+    private const int chanceForTwoEnemiesChunk = 60;
+    private const int chanceForFlyingEnemyChunk = 90;
     private const int chanceForSpaceship = 85;
-    private const int chanceForGroundEnemy = 50;
-    private const int chanceForRoadblock = 30;
-    private const int chanceForDoubleRight = 60;
-    private const int chanceForDoubleLeft = 90;
-    private const int chanceForObstacle = 75;
+    private const int chanceForJet = 100;
+    private const int chanceForRoadblock = 20;
+    private const int chanceForDoubleRight = 36;
+    private const int chanceForDoubleLeft = 52;
+    private const int chanceForDoubleMid = 68;
+    private const int chanceForGroundEnemy = 84;
+    private const int chanceForFlyingEnemy = 100;
     private const int hundredPercent = 101;
     private const int zeroPercent = 0;
-    private const float offsetZ = 5f;
-    private const float posY = 4f;
     private const float posZ = 35f;
-    private const float gunSpawnOffset = 4f;
-    private float chunkSpawnDelay = 6f;
+    private float chunkSpawnDelay = 5.7f;
     private bool canSpawn;
     private float spacingBetweenObstacles = 10f;
     private bool spawnedEnemy;
@@ -36,213 +38,153 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+
     private void SpawnChunk()
     {
-        HandleObstacleSpawning();
-        HandleCollectableSpawning();
-    }
+        int indexForChunk = Random.Range(zeroPercent, hundredPercent);
 
-    private void HandleObstacleSpawning()
-    {
-        float zOffsetFromEachOther = 0f;
-        for (int i = 0; i < numberOfEnemiesPerChunk; i++)
+        // if (indexForChunk <= chanceForRegularChunk)
+        // {
+        //     ChunkPoolingSystem.Instance.SetCompleteChunkAsBase();
+        // }
+        // else if (chanceForRegularChunk < indexForChunk && indexForChunk <= chanceForTwoEnemiesChunk)
+        // {
+        //     ChunkPoolingSystem.Instance.SetChunkWithTwoEnemiesAsBase();
+        // }
+        // else if (chanceForTwoEnemiesChunk < indexForChunk && indexForChunk <= chanceForFlyingEnemyChunk)
+        // {
+        //     ChunkPoolingSystem.Instance.SetChunkWithFlyingEnemyAsBase();
+        // }
+        // else
+        // {
+        ChunkPoolingSystem.Instance.SetChunkWithRandomObstaclesAsBase();
+        //}
+
+        ChunkController chunk = ChunkPoolingSystem.Instance.GetObjectFromPool();
+
+        List<GameObject> randomObstaclesOnChunk = chunk.GetPositionsForRandomObstaclesOnChunk();
+        List<GameObject> randomCollectablesOnChunk = chunk.GetPositionsForRandomCollectablesOnChunk();
+
+        if (randomObstaclesOnChunk.Count != 0 && randomCollectablesOnChunk.Count != 0)
         {
-            int indexForEnemyOrObstacle = Random.Range(zeroPercent, hundredPercent);
+            spawnedEnemy = false;
+            HandleObstacleSpawning(randomObstaclesOnChunk, chunk);
+            HandleCollectableSpawning(randomCollectablesOnChunk, chunk);
 
-            if (indexForEnemyOrObstacle <= chanceForObstacle)
-            {
-                int indexForObstacle = GenerateObstacleIndexWithProbability();
-                SpawnPickedObstacle(indexForObstacle, zOffsetFromEachOther);
-            }
-            else
-            {
-                int indexForEnemy = GenerateEnemyIndexWithProbability();
-                SpawnPickedEnemy(indexForEnemy, zOffsetFromEachOther);
-                spawnedEnemy = true;
-            }
-            zOffsetFromEachOther += spacingBetweenObstacles;
         }
+
+        chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, posZ);
     }
 
-    private void HandleCollectableSpawning()
+    //In inspector, always set position for gun spawning first in list
+    private void HandleCollectableSpawning(List<GameObject> randomCollectablesOnChunk, ChunkController chunk)
     {
-        float zOffsetFromEachOther = 0f;
-        float lastCollectableSpawnOffset = 0f;
-
-        for (int i = 0; i < numberOfCollectablesPerChunk; i++)
+        foreach (GameObject collectablePos in randomCollectablesOnChunk)
         {
-            float randomX = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
-            float randomY = Random.Range(1f, posY);
+            int index = Random.Range(zeroPercent, hundredPercent);
+            int[] collectableChances ={
+                chanceForSpaceship,
+                chanceForJet
+            };
 
-            if (spawnedEnemy && i == 0)
+            System.Action<Vector3, ChunkController>[] collectableSpawnFunctions ={
+                SpawnSpaceship,
+                SpawnJet
+            };
+
+            if (spawnedEnemy == true)
             {
-                SpawnGun(randomX, randomY, zOffsetFromEachOther + lastCollectableSpawnOffset - gunSpawnOffset);
+                SpawnGun(collectablePos.transform.position, chunk);
                 spawnedEnemy = false;
             }
             else
             {
-                int indexForSpaceship = Random.Range(zeroPercent, hundredPercent);
-                if (indexForSpaceship < chanceForSpaceship)
+                for (int i = 0; i < collectableChances.Length; i++)
                 {
-                    SpawnSpaceship(randomX, randomY, zOffsetFromEachOther);
+                    if (index <= collectableChances[i])
+                    {
+                        collectableSpawnFunctions[i].Invoke(collectablePos.transform.position, chunk);
+                    }
                 }
-                else
+            }
+        }
+    }
+
+    private void HandleObstacleSpawning(List<GameObject> randomObstaclesOnChunk, ChunkController chunk)
+    {
+        foreach (GameObject obstaclePos in randomObstaclesOnChunk)
+        {
+            int index = Random.Range(zeroPercent, hundredPercent);
+            int[] obstaclesChances ={
+                    chanceForRoadblock,
+                    chanceForDoubleRight,
+                    chanceForDoubleLeft,
+                    chanceForDoubleMid,
+                    chanceForGroundEnemy,
+                    chanceForFlyingEnemy
+                };
+
+            System.Action[] obstacleSetPrefabFunctions ={
+                    ObstaclesPoolingSystem.Instance.SetRoadblockAsBasePrefab,
+                    ObstaclesPoolingSystem.Instance.SetDoubleRightAsBasePrefab,
+                    ObstaclesPoolingSystem.Instance.SetDoubleLeftAsBasePrefab,
+                    ObstaclesPoolingSystem.Instance.SetLeftAndRightAsBasePrefab,
+                    EnemyPoolingSystem.Instance.SetGroundEnemyAsBasePrefab,
+                    EnemyPoolingSystem.Instance.SetFlyingEnemyAsBasePrefab
+                };
+
+            bool isEnemy = false;
+
+            for (int i = 0; i < obstaclesChances.Length; i++)
+            {
+                if (i > 3)
                 {
-                    SpawnJet(randomX, randomY, zOffsetFromEachOther);
+                    isEnemy = true;
+                }
+
+                if (index <= obstaclesChances[i])
+                {
+                    obstacleSetPrefabFunctions[i].Invoke();
+                    break;
                 }
             }
 
-            zOffsetFromEachOther += spacingBetweenObstacles;
-            lastCollectableSpawnOffset = zOffsetFromEachOther;
+            if (isEnemy)
+            {
+                EnemyController enemy = EnemyPoolingSystem.Instance.GetObjectFromPool();
+                enemy.transform.position = obstaclePos.transform.position;
+                spawnedEnemy = true;
+                enemy.transform.SetParent(chunk.transform);
+            }
+            else
+            {
+                EnvironmentMovementController obstacle = ObstaclesPoolingSystem.Instance.GetObjectFromPool();
+                obstacle.transform.position = obstaclePos.transform.position;
+                obstacle.transform.SetParent(chunk.transform);
+                chunk.AddObjectToList(obstacle.gameObject);
+            }
         }
     }
 
-    //nisam siguran da li da napravim kao Template funkciju dole
-    private void SpawnGun(float randomX, float randomY, float zOffsetFromEachOther)
+    private void SpawnGun(Vector3 positionToSpawn, ChunkController chunk)
     {
         GunController gun = GunPoolingSystem.Instance.GetObjectFromPool();
-        gun.transform.position = new Vector3(randomX, randomY, posZ + zOffsetFromEachOther);
+        gun.transform.position = positionToSpawn;
+        gun.transform.SetParent(chunk.transform);
     }
 
-    private void SpawnJet(float randomX, float randomY, float zOffsetFromEachOther)
+    private void SpawnJet(Vector3 positionToSpawn, ChunkController chunk)
     {
         JetController jet = JetPoolingSystem.Instance.GetObjectFromPool();
-        jet.transform.position = new Vector3(randomX, randomY, posZ + offsetZ + zOffsetFromEachOther);
+        jet.transform.position = positionToSpawn;
+        jet.transform.SetParent(chunk.transform);
     }
 
-    private void SpawnSpaceship(float randomX, float randomY, float zOffsetFromEachOther)
+    private void SpawnSpaceship(Vector3 positionToSpawn, ChunkController chunk)
     {
         CollectableController spaceship = SpaceshipPoolingSystem.Instance.GetObjectFromPool();
-        spaceship.transform.position = new Vector3(randomX, randomY, posZ + offsetZ + zOffsetFromEachOther);
-    }
-
-    private int GenerateEnemyIndexWithProbability()
-    {
-        int indexForEnemy = Random.Range(zeroPercent, hundredPercent);
-        int[] enemyChances ={
-            chanceForGroundEnemy
-        };
-
-        for (int i = 0; i < enemyChances.Length; i++)
-        {
-            if (indexForEnemy < enemyChances[i])
-                return i;
-        }
-
-        return enemyChances.Length;
-    }
-
-    private int GenerateObstacleIndexWithProbability()
-    {
-        int indexForObstacle = Random.Range(zeroPercent, hundredPercent);
-        int[] obstaclesChances ={
-            chanceForRoadblock,
-            chanceForDoubleRight,
-            chanceForDoubleLeft
-        };
-
-        for (int i = 0; i < obstaclesChances.Length; i++)
-        {
-            if (indexForObstacle < obstaclesChances[i])
-                return i;
-        }
-
-        return obstaclesChances.Length;
-    }
-
-    private void SpawnPickedEnemy(int index, float zOffset)
-    {
-        System.Action<float>[] enemySpawnFunctions ={
-            SpawnGroundEnemy
-        };
-
-        if (index == enemySpawnFunctions.Length)
-        {
-            float randomX = Random.Range(-GlobalConstants.EdgePosX, GlobalConstants.EdgePosX);
-            SpawnFlyingEnemy(randomX, zOffset);
-        }
-        else
-        {
-            enemySpawnFunctions[index].Invoke(zOffset);
-        }
-    }
-
-    private void SpawnPickedObstacle(int index, float zOffset)
-    {
-        System.Action<float>[] obstacleSpawnFunctions ={
-            SpawnRoadblock,
-            SpawnDoubleLeft,
-            SpawnDoubleRight
-        };
-
-        if (index == obstacleSpawnFunctions.Length)
-        {
-            SpawnLeftAndRight(zOffset);
-        }
-        else
-        {
-            obstacleSpawnFunctions[index].Invoke(zOffset);
-        }
-    }
-
-    private void SpawnGroundEnemy(float zOffset)
-    {
-        EnemyPoolingSystem.Instance.SetGroundEnemyAsBasePrefab();
-        EnemyController groundEnemy = EnemyPoolingSystem.Instance.GetObjectFromPool();
-
-        groundEnemy.transform.position = new Vector3(groundEnemy.transform.position.x, groundEnemy.transform.position.y, posZ + zOffset);
-    }
-
-    private void SpawnFlyingEnemy(float randomX, float zOffset)
-    {
-        EnemyPoolingSystem.Instance.SetFlyingEnemyAsBasePrefab();
-        EnemyController flyingEnemy = EnemyPoolingSystem.Instance.GetObjectFromPool();
-
-        flyingEnemy.transform.position = new Vector3(randomX, flyingEnemy.transform.position.y, posZ + zOffset);
-    }
-
-    private void SpawnRoadblock(float zOffset)
-    {
-        SpawnObstacle<EnvironmentMovementController>(
-            () => ObstaclesPoolingSystem.Instance.SetRoadblockAsBasePrefab(),
-            () => ObstaclesPoolingSystem.Instance.GetObjectFromPool(),
-            zOffset
-        );
-    }
-
-    private void SpawnDoubleLeft(float zOffset)
-    {
-        SpawnObstacle<EnvironmentMovementController>(
-            () => ObstaclesPoolingSystem.Instance.SetDoubleLeftAsBasePrefab(),
-            () => ObstaclesPoolingSystem.Instance.GetObjectFromPool(),
-            zOffset
-        );
-    }
-
-    private void SpawnDoubleRight(float zOffset)
-    {
-        SpawnObstacle<EnvironmentMovementController>(
-            () => ObstaclesPoolingSystem.Instance.SetDoubleRightAsBasePrefab(),
-            () => ObstaclesPoolingSystem.Instance.GetObjectFromPool(),
-            zOffset
-        );
-    }
-
-    private void SpawnLeftAndRight(float zOffset)
-    {
-        SpawnObstacle<EnvironmentMovementController>(
-            () => ObstaclesPoolingSystem.Instance.SetLeftAndRightAsBasePrefab(),
-            () => ObstaclesPoolingSystem.Instance.GetObjectFromPool(),
-            zOffset
-        );
-    }
-
-    private void SpawnObstacle<T>(System.Action setPrefabAction, System.Func<EnvironmentMovementController> getObjectAction, float zOffset) where T : EnvironmentMovementController
-    {
-        setPrefabAction.Invoke();
-        EnvironmentMovementController obstacle = getObjectAction.Invoke();
-
-        obstacle.transform.position = new Vector3(obstacle.transform.position.x, obstacle.transform.position.y, posZ + zOffset);
+        spaceship.transform.position = positionToSpawn;
+        spaceship.transform.SetParent(chunk.transform);
     }
 
     public void EnableSpawning()

@@ -11,6 +11,7 @@ public class EventManager : MonoBehaviour
     public event Action<EnemyController> OnDestroyEnemyAction;
     public event Action<BulletController> OnBulletDestroyAction;
     public event Action<CollectableController> OnSpaceshipDestroyAction;
+    public event Action<ChunkController> OnChunkDestroyAction;
     public event Action<int> OnEnemyKilledAction;
     public event Action OnPlayerDeadAction;
 
@@ -26,12 +27,17 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public void OnChunkDestroyed(ChunkController chunk)
+    {
+        OnChunkDestroyAction?.Invoke(chunk);
+    }
+
     public void OnCollectibleCollected(CollectableController collectible, int pointsWorth)
     {
         OnCollectAction?.Invoke(collectible, pointsWorth);
     }
 
-    public void OnEnviromentDestroyed(EnvironmentMovementController movable)
+    public void OnEnvironmentDestroyed(EnvironmentMovementController movable)
     {
         OnDestroyAction?.Invoke(movable);
     }

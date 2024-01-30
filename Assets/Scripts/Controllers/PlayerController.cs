@@ -25,10 +25,6 @@ public class PlayerController : MonoBehaviour
     private AnimationManager characterAnimator;
     private ParticleSystemManager playerParticleSystem;
     [SerializeField] private float jumpForce;
-    [SerializeField] private AudioClip jumpSound;
-    [SerializeField] private AudioClip deathSound;
-    [SerializeField] private AudioClip spaceshipCollectedSound;
-    [SerializeField] private AudioManager audioManager;
     [SerializeField] private float gravityModifier;
     [SerializeField] private GameObject gunPosition;
     [SerializeField] private GameObject jetPosition;
@@ -122,7 +118,6 @@ public class PlayerController : MonoBehaviour
         transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput, Space.World);
 
         SpinWhileFlying(horizontalInput);
-
     }
 
     private void SpinWhileFlying(float horizontalInput)
@@ -143,7 +138,7 @@ public class PlayerController : MonoBehaviour
         {
             playerParticleSystem.PlayJumpingParticleEffect();
             characterAnimator.PlayJumpAnimation();
-            audioManager.PlayJumpSound(jumpSound);
+            AudioManager.Instance.PlayJumpSound();
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             canJump = false;
         }
@@ -179,7 +174,7 @@ public class PlayerController : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, zeroPosition + 0.5f, transform.position.z);
 
             characterAnimator.PlayDeadAnimation();
-            audioManager.PlayDeathSound(deathSound);
+            AudioManager.Instance.PlayDeathSound();
 
             ReleaseGunAndJetIfHaveOne();
         }
@@ -216,7 +211,7 @@ public class PlayerController : MonoBehaviour
         {
             int pointsWorth = Collect(collectable);
 
-            audioManager.PlaySpaceshipCollectedSound(spaceshipCollectedSound);
+            AudioManager.Instance.PlaySpaceshipCollectedSound();
             EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
         }
     }
@@ -228,7 +223,7 @@ public class PlayerController : MonoBehaviour
 
         if (jet != null)
         {
-            if (gunInHands != null)
+            if (gunInHands != null && gunInHands.HasGun)
             {
                 gunInHands.ReleaseGunInPool();
                 gunInHands = null;
