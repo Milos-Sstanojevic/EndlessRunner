@@ -105,8 +105,8 @@ public class GameManager : MonoBehaviour
         if (CurrentState == GameStates.Playing)
         {
             EnableSpawnManager();
-            MovementManager.Instance.EnableMovement();
-            MovementManager.Instance.SetMovementSpeed();
+            MovementManager.Instance.EnableMovementOfObjects();
+            MovementManager.Instance.SetMovementSpeedOfObjects();
             SetupPlayingScreen();
         }
     }

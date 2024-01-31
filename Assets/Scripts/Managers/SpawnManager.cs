@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -18,15 +19,18 @@ public class SpawnManager : MonoBehaviour
     private const int chanceForFlyingEnemy = 100;
     private const int hundredPercent = 101;
     private const int zeroPercent = 0;
-    private const float posZ = 35f;
+    private const float posZ = 50f;
     private float chunkSpawnDelay = 5.7f;
     private bool canSpawn;
     private float spacingBetweenObstacles = 10f;
     private bool spawnedEnemy;
+    private Vector3 endOfPreviousChunk;
+    private ChunkController chunk;
 
     private void OnEnable()
     {
         StartCoroutine(SpawnObstacle());
+        endOfPreviousChunk = Vector3.zero;
     }
 
     public IEnumerator SpawnObstacle()
@@ -41,6 +45,11 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnChunk()
     {
+        if (chunk != null)
+        {
+            endOfPreviousChunk = chunk.GetEndOfChunk();
+        }
+
         int indexForChunk = Random.Range(zeroPercent, hundredPercent);
 
         // if (indexForChunk <= chanceForRegularChunk)
@@ -60,7 +69,7 @@ public class SpawnManager : MonoBehaviour
         ChunkPoolingSystem.Instance.SetChunkWithRandomObstaclesAsBase();
         //}
 
-        ChunkController chunk = ChunkPoolingSystem.Instance.GetObjectFromPool();
+        chunk = ChunkPoolingSystem.Instance.GetObjectFromPool();
 
         List<GameObject> randomObstaclesOnChunk = chunk.GetPositionsForRandomObstaclesOnChunk();
         List<GameObject> randomCollectablesOnChunk = chunk.GetPositionsForRandomCollectablesOnChunk();
@@ -72,8 +81,10 @@ public class SpawnManager : MonoBehaviour
             HandleCollectableSpawning(randomCollectablesOnChunk, chunk);
 
         }
-
-        chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, posZ);
+        if (endOfPreviousChunk == Vector3.zero)
+            chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, posZ);
+        else
+            chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, endOfPreviousChunk.z + 15f);
     }
 
     //In inspector, always set position for gun spawning first in list
@@ -155,6 +166,7 @@ public class SpawnManager : MonoBehaviour
                 enemy.transform.position = obstaclePos.transform.position;
                 spawnedEnemy = true;
                 enemy.transform.SetParent(chunk.transform);
+                chunk.AddObjectToList(enemy.gameObject);
             }
             else
             {
@@ -171,6 +183,7 @@ public class SpawnManager : MonoBehaviour
         GunController gun = GunPoolingSystem.Instance.GetObjectFromPool();
         gun.transform.position = positionToSpawn;
         gun.transform.SetParent(chunk.transform);
+        chunk.AddObjectToList(gun.gameObject);
     }
 
     private void SpawnJet(Vector3 positionToSpawn, ChunkController chunk)
@@ -178,6 +191,7 @@ public class SpawnManager : MonoBehaviour
         JetController jet = JetPoolingSystem.Instance.GetObjectFromPool();
         jet.transform.position = positionToSpawn;
         jet.transform.SetParent(chunk.transform);
+        chunk.AddObjectToList(jet.gameObject);
     }
 
     private void SpawnSpaceship(Vector3 positionToSpawn, ChunkController chunk)
@@ -185,6 +199,7 @@ public class SpawnManager : MonoBehaviour
         CollectableController spaceship = SpaceshipPoolingSystem.Instance.GetObjectFromPool();
         spaceship.transform.position = positionToSpawn;
         spaceship.transform.SetParent(chunk.transform);
+        chunk.AddObjectToList(spaceship.gameObject);
     }
 
     public void EnableSpawning()

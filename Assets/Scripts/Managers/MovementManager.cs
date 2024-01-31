@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MovementManager : MonoBehaviour
@@ -9,12 +10,8 @@ public class MovementManager : MonoBehaviour
     private const float playerSpeedBalancer = 1;
     [SerializeField] private PlayerController player;
     [SerializeField] private List<StageController> stagesInGame;
-    private List<EnvironmentMovementController> obstaclesInGame;
-    private List<GunController> gunsInGame;
-    private List<JetController> jetsInGame;
-    private List<CollectableController> spaceshipsInGame;
-    private List<EnemyController> enemiesInGame;
     private List<ChunkController> chunksInGame;
+    private List<EnvironmentMovementController> objectsMovements;
     private float speed;
 
     private void Awake()
@@ -31,13 +28,9 @@ public class MovementManager : MonoBehaviour
 
     private void Start()
     {
-        obstaclesInGame = new List<EnvironmentMovementController>();
-        gunsInGame = new List<GunController>();
-        jetsInGame = new List<JetController>();
-        spaceshipsInGame = new List<CollectableController>();
-        enemiesInGame = new List<EnemyController>();
-
         chunksInGame = new List<ChunkController>();
+        objectsMovements = new List<EnvironmentMovementController>();
+
 
         speed = 8;
     }
@@ -49,129 +42,80 @@ public class MovementManager : MonoBehaviour
 
     public void GetCollectablesAndObstaclesInGame()
     {
-        obstaclesInGame = ObstaclesPoolingSystem.Instance.GetInstantiatedObjects();
-        gunsInGame = GunPoolingSystem.Instance.GetInstantiatedObjects();
-        jetsInGame = JetPoolingSystem.Instance.GetInstantiatedObjects();
-        spaceshipsInGame = SpaceshipPoolingSystem.Instance.GetInstantiatedObjects();
-        enemiesInGame = EnemyPoolingSystem.Instance.GetInstantiatedObjects();
         chunksInGame = ChunkPoolingSystem.Instance.GetInstantiatedObjects();
+        objectsMovements.Clear();
+        foreach (EnvironmentMovementController movement in chunksInGame.Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
+            objectsMovements.Add(movement);
+        foreach (EnvironmentMovementController movement in stagesInGame.Select(stage => stage.GetComponent<EnvironmentMovementController>()))
+            objectsMovements.Add(movement);
     }
 
-    private void PerformActionOnObjects<T>(List<T> objects, Action<T> action) where T : MonoBehaviour
+    public void EnableMovementOfObjects()
     {
-        foreach (T obj in objects)
-        {
-            EnvironmentMovementController envMovement = obj.GetComponent<EnvironmentMovementController>();
-            if (envMovement != null)
-            {
-                action.Invoke(obj);
-            }
-        }
-    }
-
-    public void EnableMovement()
-    {
-        EnableMovementForObjects(chunksInGame);
-        foreach (ChunkController chunk in chunksInGame)
-        {
-            foreach (Transform child in chunk.transform)
-            {
-                EnvironmentMovementController movement = child.GetComponent<EnvironmentMovementController>();
-                if (movement != null)
-                {
-                    movement.EnableMovement();
-                }
-            }
-        }
-
-        // EnableMovementForObjects(obstaclesInGame);
-        // EnableMovementForObjects(gunsInGame, gun => gun.UnpauseCoroutine());
-        EnableMovementForObjects(stagesInGame);
-        // EnableMovementForObjects(jetsInGame, jet => jet.UnpauseCoroutine());
-        // EnableMovementForObjects(spaceshipsInGame);
-        // EnableMovementForObjects(enemiesInGame);
+        EnableMovement();
+        EnableMovementOfChildrenInChunk();
 
         player.EnableMovement();
     }
 
-    private void EnableMovementForObjects<T>(List<T> objects, Action<T> additionalAction = null) where T : MonoBehaviour
+    private void EnableMovement()
     {
-        PerformActionOnObjects(objects, obj =>
-        {
-            obj.GetComponent<EnvironmentMovementController>().EnableMovement();
-            additionalAction?.Invoke(obj);
-        });
+        foreach (EnvironmentMovementController movement in objectsMovements)
+            movement.EnableMovement();
     }
 
-    public void SetMovementSpeed()
+    private void EnableMovementOfChildrenInChunk()
     {
-        SetMovementSpeedForObjects(chunksInGame);
-        // foreach (ChunkController chunk in chunksInGame)
-        // {
-        //     foreach (Transform child in chunk.transform)
-        //     {
-        //         EnvironmentMovementController movement = child.GetComponent<EnvironmentMovementController>();
-        //         if (movement != null)
-        //         {
-        //             movement.SetMovementSpeed(speed);
-        //         }
-        //     }
-        // }
+        foreach (ChunkController chunk in chunksInGame)
+        {
+            EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
+            foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
+            {
+                movementInChunk.EnableMovement();
+            }
+        }
+    }
 
-        // SetMovementSpeedForObjects(obstaclesInGame);
-        SetMovementSpeedForObjects(stagesInGame);
-        // SetMovementSpeedForObjects(gunsInGame);
-        // SetMovementSpeedForObjects(jetsInGame);
-        // SetMovementSpeedForObjects(spaceshipsInGame);
-        // SetMovementSpeedForObjects(enemiesInGame);
-
+    public void SetMovementSpeedOfObjects()
+    {
+        SetMovementSpeed();
         player.SetMovementSpeed(speed + playerSpeedBalancer);
     }
 
-    private void SetMovementSpeedForObjects<T>(List<T> objects) where T : MonoBehaviour
+    private void SetMovementSpeed()
     {
-        PerformActionOnObjects(objects, obj => obj.GetComponent<EnvironmentMovementController>().SetMovementSpeed(speed));
+        foreach (EnvironmentMovementController movement in objectsMovements)
+            movement.SetMovementSpeed(speed);
     }
-
 
     public void DisableMovementOfMovableObjects()
     {
-        DisableMovementForObjects(chunksInGame);
-        foreach (ChunkController chunk in chunksInGame)
-        {
-            foreach (Transform child in chunk.transform)
-            {
-                EnvironmentMovementController movement = child.GetComponent<EnvironmentMovementController>();
-                if (movement != null)
-                {
-                    movement.DisableMovement();
-                }
-            }
-        }
-
-        DisableMovementForObjects(stagesInGame);
-        // DisableMovementForObjects(obstaclesInGame);
-        // DisableMovementForObjects(jetsInGame, jet => jet.PauseCoroutine());
-        // DisableMovementForObjects(gunsInGame, gun => gun.PauseCoroutine());
-        // DisableMovementForObjects(spaceshipsInGame);
-        // DisableMovementForObjects(enemiesInGame);
-
+        DisableMovement();
+        DisableMovemenOfChildrenInChunk();
         player.DisableMovement();
     }
 
-    private void DisableMovementForObjects<T>(List<T> objects, Action<T> additionalAction = null) where T : MonoBehaviour
+    private void DisableMovement()
     {
-        PerformActionOnObjects(objects, obj =>
+        foreach (EnvironmentMovementController movement in objectsMovements)
+            movement.DisableMovement();
+    }
+
+    private void DisableMovemenOfChildrenInChunk()
+    {
+        foreach (ChunkController chunk in chunksInGame)
         {
-            obj.GetComponent<EnvironmentMovementController>().DisableMovement();
-            additionalAction?.Invoke(obj);
-        });
+            EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
+            foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
+            {
+                movementInChunk.DisableMovement();
+            }
+        }
     }
 
     public void IncreaseMovementSpeed()
     {
         speed += speedIncrease;
-        SetMovementSpeed();
+        SetMovementSpeedOfObjects();
     }
-
 }
