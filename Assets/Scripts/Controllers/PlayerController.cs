@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private const string horizontalAxis = "Horizontal";
     private const string verticalAxis = "Vertical";
     private const float playerEdgePositionBackZ = -10.5f;
+    private const float edgePositionYWithJet = 4.65f;
+    private const float edgePositionZWithJet = -5f;
     private const float offsetFromGround = 0.65f;
     private const float flyingPosition = 4.65f;
     private const float playerEdgePositionFrontZ = -2;
@@ -71,10 +73,7 @@ public class PlayerController : MonoBehaviour
             jetOnBack = null;
         }
 
-        if (jetOnBack?.HasJet == true)
-        {
-            KeepPlayerInCameraField();
-        }
+        KeepPlayerInCameraFieldIfHasJet();
     }
 
     private void ContinueGunAndJetCoroutine()
@@ -101,39 +100,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayAnimationsWithGunOrFlyingAnimations()
-    {
-        if (gunInHands?.HasGun == true)
-        {
-            characterAnimator.StartRunningWithGunAnimation();
-        }
-        else
-        {
-            characterAnimator.StopRunningWithGunAnimation();
-        }
-
-        if (jetOnBack?.HasJet == true)
-        {
-            characterAnimator.StartFlyingAnimation();
-        }
-        else
-        {
-            characterAnimator.StopFlyingAnimation();
-        }
-    }
-
     private void Shoot()
     {
         if (Input.GetKey(KeyCode.Mouse0) && gunInHands?.HasGun == true)
             gunInHands.ShootFromGun();
-    }
-
-    private void KeepPlayerInCameraField()
-    {
-        if (transform.position.z > -5f)
-            transform.position = new Vector3(transform.position.x, transform.position.y, -5f);
-        if (transform.position.y <= 4.65f)
-            transform.position = new Vector3(transform.position.x, 4.65f, transform.position.z);
     }
 
     private void MovePlayer()
@@ -187,6 +157,38 @@ public class PlayerController : MonoBehaviour
         if (transform.position.z > playerEdgePositionFrontZ)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, playerEdgePositionFrontZ);
+        }
+    }
+
+    private void PlayAnimationsWithGunOrFlyingAnimations()
+    {
+        if (gunInHands?.HasGun == true)
+        {
+            characterAnimator.StartRunningWithGunAnimation();
+        }
+        else
+        {
+            characterAnimator.StopRunningWithGunAnimation();
+        }
+
+        if (jetOnBack?.HasJet == true)
+        {
+            characterAnimator.StartFlyingAnimation();
+        }
+        else
+        {
+            characterAnimator.StopFlyingAnimation();
+        }
+    }
+
+    private void KeepPlayerInCameraFieldIfHasJet()
+    {
+        if (jetOnBack?.HasJet == true)
+        {
+            if (transform.position.z > edgePositionZWithJet)
+                transform.position = new Vector3(transform.position.x, transform.position.y, edgePositionZWithJet);
+            if (transform.position.y <= edgePositionYWithJet)
+                transform.position = new Vector3(transform.position.x, edgePositionYWithJet, transform.position.z);
         }
     }
 
@@ -310,7 +312,6 @@ public class PlayerController : MonoBehaviour
         Vector3 startRotation = transform.rotation.eulerAngles;
         float distance = Vector3.Distance(startPos, endPosition);
         float remainingDistance = distance;
-
 
         while (remainingDistance > 0)
         {
