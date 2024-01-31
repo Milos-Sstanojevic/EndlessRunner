@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovementManager : MonoBehaviour
@@ -43,9 +44,15 @@ public class MovementManager : MonoBehaviour
     public void GetCollectablesAndObstaclesInGame()
     {
         chunksInGame = ChunkPoolingSystem.Instance.GetInstantiatedObjects();
+        AddObjectsInSceneToMovementList();
+    }
+
+    private void AddObjectsInSceneToMovementList()
+    {
         objectsMovements.Clear();
         foreach (EnvironmentMovementController movement in chunksInGame.Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
             objectsMovements.Add(movement);
+
         foreach (EnvironmentMovementController movement in stagesInGame.Select(stage => stage.GetComponent<EnvironmentMovementController>()))
             objectsMovements.Add(movement);
     }
@@ -61,8 +68,11 @@ public class MovementManager : MonoBehaviour
     private void EnableMovement()
     {
         foreach (EnvironmentMovementController movement in objectsMovements)
+        {
             movement.EnableMovement();
+        }
     }
+
 
     private void EnableMovementOfChildrenInChunk()
     {
@@ -98,7 +108,9 @@ public class MovementManager : MonoBehaviour
     private void DisableMovement()
     {
         foreach (EnvironmentMovementController movement in objectsMovements)
+        {
             movement.DisableMovement();
+        }
     }
 
     private void DisableMovemenOfChildrenInChunk()

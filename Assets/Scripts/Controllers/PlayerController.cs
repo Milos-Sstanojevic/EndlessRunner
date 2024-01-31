@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     {
         if (movementEnabled)
         {
+            ContinueGunAndJetCoroutine();
             Shoot();
             characterAnimator.PlayRunAnimation();
             MovePlayer();
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            StopGunAndJetCoroutines();
             characterAnimator.StopRunAnimation();
             characterAnimator.StopRunningWithGunAnimation();
         }
@@ -72,6 +74,30 @@ public class PlayerController : MonoBehaviour
         if (jetOnBack?.HasJet == true)
         {
             KeepPlayerInCameraField();
+        }
+    }
+
+    private void ContinueGunAndJetCoroutine()
+    {
+        if (gunInHands != null)
+        {
+            gunInHands.UnpauseCoroutine();
+        }
+        if (jetOnBack != null)
+        {
+            jetOnBack.UnpauseCoroutine();
+        }
+    }
+
+    private void StopGunAndJetCoroutines()
+    {
+        if (gunInHands != null)
+        {
+            gunInHands.PauseCoroutine();
+        }
+        if (jetOnBack != null)
+        {
+            jetOnBack.PauseCoroutine();
         }
     }
 
