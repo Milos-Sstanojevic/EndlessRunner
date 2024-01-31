@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
         if (score >= scoreStep * speedupRound)
         {
             MovementManager.Instance.IncreaseMovementSpeed();
-            DecreaseSpawningTime();
+            //DecreaseSpawningTime();
             speedupRound++;
         }
     }

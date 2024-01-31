@@ -939,8 +939,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a66303c27eba44fbeec92e27b9821b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCapacity: 40
-  maxCapacity: 100
+  defaultCapacity: 10
+  maxCapacity: 12
   objectPrefab: {fileID: -680846875328544350, guid: 03a8ef7ceefe09a4091f06a4ba74345f, type: 3}
   spawnedObjectsHolder: {fileID: 187315150}
   typesOfChunk:

@@ -9,7 +9,6 @@ public class ChunkController : MonoBehaviour
     [SerializeField] private Transform endOfChunk;
     [SerializeField] private List<GameObject> positionsForRandomObstaclesOnChunk;
     [SerializeField] private List<GameObject> positionsForRandomCollectablesOnChunk;
-
     private List<GameObject> spawnedObjects;
 
     private void Awake()
