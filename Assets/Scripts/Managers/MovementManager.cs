@@ -1,18 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovementManager : MonoBehaviour
 {
     public static MovementManager Instance { get; private set; }
-    private const float speedIncrease = 1f;
-    private const float playerSpeedBalancer = 1;
+    private const float SpeedIncrease = 1f;
+    private const float PlayerSpeedBalancer = 1;
     [SerializeField] private PlayerController player;
-    [SerializeField] private List<StageController> stagesInGame;
     private List<ChunkController> chunksInGame;
-    private List<EnvironmentMovementController> objectsMovements;
+    [SerializeField] private List<EnvironmentMovementController> objectsMovements;
     private float speed;
 
     private void Awake()
@@ -27,18 +24,16 @@ public class MovementManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        EventManager.Instance.OnObjectsInSceneChangedAction += GetCollectablesAndObstaclesInGame;
+    }
+
     private void Start()
     {
         chunksInGame = new List<ChunkController>();
-        objectsMovements = new List<EnvironmentMovementController>();
-
-
-        speed = 8;
-    }
-
-    private void Update()
-    {
         GetCollectablesAndObstaclesInGame();
+        speed = 8;
     }
 
     public void GetCollectablesAndObstaclesInGame()
@@ -49,19 +44,15 @@ public class MovementManager : MonoBehaviour
 
     private void AddObjectsInSceneToMovementList()
     {
-        objectsMovements.Clear();
-        foreach (EnvironmentMovementController movement in chunksInGame.Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
-            objectsMovements.Add(movement);
+        objectsMovements = objectsMovements.Take(2).ToList();
 
-        foreach (EnvironmentMovementController movement in stagesInGame.Select(stage => stage.GetComponent<EnvironmentMovementController>()))
+        foreach (EnvironmentMovementController movement in chunksInGame.Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
             objectsMovements.Add(movement);
     }
 
     public void EnableMovementOfObjects()
     {
         EnableMovement();
-        EnableMovementOfChildrenInChunk();
-
         player.EnableMovement();
     }
 
@@ -70,26 +61,23 @@ public class MovementManager : MonoBehaviour
         foreach (EnvironmentMovementController movement in objectsMovements)
         {
             movement.EnableMovement();
+            EnableMovementOfChildrenInChunk(movement);
         }
     }
 
-
-    private void EnableMovementOfChildrenInChunk()
+    private void EnableMovementOfChildrenInChunk(EnvironmentMovementController chunk)
     {
-        foreach (ChunkController chunk in chunksInGame)
+        EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
+        foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
         {
-            EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
-            foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
-            {
-                movementInChunk.EnableMovement();
-            }
+            movementInChunk.EnableMovement();
         }
     }
 
     public void SetMovementSpeedOfObjects()
     {
         SetMovementSpeed();
-        player.SetMovementSpeed(speed + playerSpeedBalancer);
+        player.SetMovementSpeed(speed + PlayerSpeedBalancer);
     }
 
     private void SetMovementSpeed()
@@ -101,7 +89,6 @@ public class MovementManager : MonoBehaviour
     public void DisableMovementOfMovableObjects()
     {
         DisableMovement();
-        DisableMovemenOfChildrenInChunk();
         player.DisableMovement();
     }
 
@@ -110,24 +97,27 @@ public class MovementManager : MonoBehaviour
         foreach (EnvironmentMovementController movement in objectsMovements)
         {
             movement.DisableMovement();
+            DisableMovemenOfChildrenInChunk(movement);
         }
     }
 
-    private void DisableMovemenOfChildrenInChunk()
+    private void DisableMovemenOfChildrenInChunk(EnvironmentMovementController chunk)
     {
-        foreach (ChunkController chunk in chunksInGame)
+        EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
+        foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
         {
-            EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
-            foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
-            {
-                movementInChunk.DisableMovement();
-            }
+            movementInChunk.DisableMovement();
         }
     }
 
     public void IncreaseMovementSpeed()
     {
-        speed += speedIncrease;
+        speed += SpeedIncrease;
         SetMovementSpeedOfObjects();
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Instance.OnObjectsInSceneChangedAction -= GetCollectablesAndObstaclesInGame;
     }
 }

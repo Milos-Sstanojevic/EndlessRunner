@@ -14,6 +14,7 @@ public class EventManager : MonoBehaviour
     public event Action<ChunkController> OnChunkDestroyAction;
     public event Action<int> OnEnemyKilledAction;
     public event Action OnPlayerDeadAction;
+    public event Action OnObjectsInSceneChangedAction;
 
     private void Awake()
     {
@@ -25,6 +26,11 @@ public class EventManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void OnObjectsInSceneChanged()
+    {
+        OnObjectsInSceneChangedAction?.Invoke();
     }
 
     public void OnChunkDestroyed(ChunkController chunk)

@@ -52,10 +52,11 @@ public abstract class PoolingSystemBase<T> : MonoBehaviour where T : MonoBehavio
         objectPool.Release(obj);
     }
 
+    public void SetBasePrefab(T prefab)
+    {
+        objectPrefab = prefab;
+    }
 
     public List<T> GetInstantiatedObjects() => instantiatedObjects;
     public T GetObjectFromPool() => objectPool.Get();
-    public int GetCountAll() => objectPool.CountAll;
-    public int GetCountInactive() => objectPool.CountInactive;
-    public int GetCountActive() => objectPool.CountActive;
 }

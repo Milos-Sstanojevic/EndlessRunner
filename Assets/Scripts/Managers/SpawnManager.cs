@@ -4,25 +4,24 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    private const float offsetFromCenterOfChunk = 12f;
-    private const int chanceForRegularChunk = 30;
-    private const int chanceForTwoEnemiesChunk = 60;
-    private const int chanceForFlyingEnemyChunk = 90;
-    private const int chanceForRandomChunk = 100;
-    private const int chanceForSpaceship = 85;
-    private const int chanceForJet = 100;
-    private const int chanceForRoadblock = 20;
-    private const int chanceForDoubleRight = 36;
-    private const int chanceForDoubleLeft = 52;
-    private const int chanceForDoubleMid = 68;
-    private const int chanceForGroundEnemy = 84;
-    private const int chanceForFlyingEnemy = 100;
-    private const int hundredPercent = 101;
-    private const int zeroPercent = 0;
-    private const float posZ = 50f;
+    private const float OffsetFromCenterOfChunk = 12f;
+    private const int ChanceForRegularChunk = 30;
+    private const int ChanceForTwoEnemiesChunk = 60;
+    private const int ChanceForFlyingEnemyChunk = 90;
+    private const int ChanceForRandomChunk = 100;
+    private const int ChanceForSpaceship = 85;
+    private const int ChanceForJet = 100;
+    private const int ChanceForRoadblock = 20;
+    private const int ChanceForDoubleRight = 36;
+    private const int ChanceForDoubleLeft = 52;
+    private const int ChanceForDoubleMid = 68;
+    private const int ChanceForGroundEnemy = 84;
+    private const int ChanceForFlyingEnemy = 100;
+    private const int HundredPercent = 101;
+    private const int ZeroPercent = 0;
+    private const float PosZ = 50f;
     private float chunkSpawnDelay = 3.5f;
     private bool canSpawn;
-    private float spacingBetweenObstacles = 10f;
     private bool spawnedEnemy;
     private Vector3 endOfPreviousChunk;
     private ChunkController chunk;
@@ -47,6 +46,8 @@ public class SpawnManager : MonoBehaviour
         SetEndOfPreviousChunk();
         PickTypeOfChunk();
         HandleChunkSpawning();
+
+        EventManager.Instance.OnObjectsInSceneChanged();
     }
 
     private void SetEndOfPreviousChunk()
@@ -59,13 +60,13 @@ public class SpawnManager : MonoBehaviour
 
     private void PickTypeOfChunk()
     {
-        int indexForChunk = Random.Range(zeroPercent, hundredPercent);
+        int indexForChunk = Random.Range(ZeroPercent, HundredPercent);
 
         int[] chancesForChunks ={
-            chanceForRegularChunk,
-            chanceForTwoEnemiesChunk,
-            chanceForFlyingEnemyChunk,
-            chanceForRandomChunk
+            ChanceForRegularChunk,
+            ChanceForTwoEnemiesChunk,
+            ChanceForFlyingEnemyChunk,
+            ChanceForRandomChunk
         };
 
         System.Action[] chunkPrefabSetters ={
@@ -109,9 +110,9 @@ public class SpawnManager : MonoBehaviour
     private void SetPositionOfChunk()
     {
         if (endOfPreviousChunk == Vector3.zero)
-            chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, posZ);
+            chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, PosZ);
         else
-            chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, endOfPreviousChunk.z + offsetFromCenterOfChunk);
+            chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, endOfPreviousChunk.z + OffsetFromCenterOfChunk);
     }
 
     //If lists for positions of obstcles are empty, it is premade chunk
@@ -130,14 +131,14 @@ public class SpawnManager : MonoBehaviour
 
     private void PickTypeOfObstacle(GameObject obstaclePos)
     {
-        int index = Random.Range(zeroPercent, hundredPercent);
+        int index = Random.Range(ZeroPercent, HundredPercent);
         int[] obstaclesChances ={
-                    chanceForRoadblock,
-                    chanceForDoubleRight,
-                    chanceForDoubleLeft,
-                    chanceForDoubleMid,
-                    chanceForGroundEnemy,
-                    chanceForFlyingEnemy
+                    ChanceForRoadblock,
+                    ChanceForDoubleRight,
+                    ChanceForDoubleLeft,
+                    ChanceForDoubleMid,
+                    ChanceForGroundEnemy,
+                    ChanceForFlyingEnemy
                 };
 
         System.Action[] obstacleSetPrefabFunctions ={
@@ -196,10 +197,10 @@ public class SpawnManager : MonoBehaviour
 
     private void PickTypeOfCollectable(GameObject collectablePos)
     {
-        int index = Random.Range(zeroPercent, hundredPercent);
+        int index = Random.Range(ZeroPercent, HundredPercent);
         int[] collectableChances ={
-                chanceForSpaceship,
-                chanceForJet
+                ChanceForSpaceship,
+                ChanceForJet
             };
 
         System.Action<Vector3>[] collectableSpawnFunctions ={
@@ -243,9 +244,6 @@ public class SpawnManager : MonoBehaviour
         SetPositionAndParentOfObjectFromPool(spaceship.gameObject, positionToSpawn);
     }
 
-
-
-
     public void EnableSpawning()
     {
         canSpawn = true;
@@ -260,18 +258,4 @@ public class SpawnManager : MonoBehaviour
     {
         StopCoroutine(SpawnChunks());
     }
-
-    public float GetChunkSpawnDelay() => chunkSpawnDelay;
-
-    public void SetChunkSpawnDelay(float spawnDelayInSeconds)
-    {
-        chunkSpawnDelay = spawnDelayInSeconds;
-    }
-
-    public void SetSpacingBetweenObstacles(float space)
-    {
-        spacingBetweenObstacles = space;
-    }
-
-    public float GetSpacingBetweenObstacles() => spacingBetweenObstacles;
 }

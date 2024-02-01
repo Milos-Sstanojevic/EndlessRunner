@@ -3,72 +3,72 @@ using UnityEngine;
 public class AnimationManager : MonoBehaviour
 {
     private Animator animator;
-    private const string deadAnimation = "Dead";
-    private const string jumpAnimation = "Jump";
-    private const string runAnimation = "Run";
-    private const string walkAnimation = "Walk";
-    private const string runWithGunAnimation = "HasGun";
-    private const string flyingAnimation = "Flying";
+    private const string DeadAnimation = "Dead";
+    private const string JumpAnimation = "Jump";
+    private const string RunAnimation = "Run";
+    private const string WalkAnimation = "Walk";
+    private const string RunWithGunAnimation = "HasGun";
+    private const string FlyingAnimation = "Flying";
 
-    private void Start()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
     }
 
     public void PlayRunAnimation()
     {
-        animator.SetBool(runAnimation, true);
+        animator.SetBool(RunAnimation, true);
     }
 
     public void StopRunAnimation()
     {
-        animator.SetBool(runAnimation, false);
+        animator.SetBool(RunAnimation, false);
     }
 
     //Happens when space is pressed
     public void PlayJumpAnimation()
     {
-        animator.SetBool(jumpAnimation, true);
+        animator.SetBool(JumpAnimation, true);
     }
 
     public void StopJumpAnimation()
     {
-        animator.SetBool(jumpAnimation, false);
+        animator.SetBool(JumpAnimation, false);
     }
 
     public void PlayDeadAnimation()
     {
-        animator.SetBool(deadAnimation, true);
+        animator.SetBool(DeadAnimation, true);
     }
 
     public void StartWalkAnimation()
     {
-        animator.SetBool(walkAnimation, true);
+        animator.SetBool(WalkAnimation, true);
     }
 
     public void StopWalkAnimation()
     {
-        animator.SetBool(walkAnimation, false);
+        animator.SetBool(WalkAnimation, false);
     }
 
     public void StartRunningWithGunAnimation()
     {
-        animator.SetBool(runWithGunAnimation, true);
+        animator.SetBool(RunWithGunAnimation, true);
     }
 
     public void StopRunningWithGunAnimation()
     {
-        animator.SetBool(runWithGunAnimation, false);
+        animator.SetBool(RunWithGunAnimation, false);
     }
 
     public void StartFlyingAnimation()
     {
-        animator.SetBool(flyingAnimation, true);
+        animator.SetBool(FlyingAnimation, true);
     }
 
     public void StopFlyingAnimation()
     {
-        animator.SetBool(flyingAnimation, false);
+        animator.SetBool(FlyingAnimation, false);
     }
 
 }

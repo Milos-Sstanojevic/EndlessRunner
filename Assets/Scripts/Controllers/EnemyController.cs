@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-    private const int negator = -1;
+    private const int Negator = -1;
     private int minimumHealth;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private AnimationManager enemyAnimator;
@@ -63,7 +63,7 @@ public class EnemyController : MonoBehaviour
         if (!hasRotated && enemyScriptableObject.IsEnemyOnEdge(transform.position))
         {
             transform.Rotate(enemyScriptableObject.faceTheOtherWay * isOnEdge);
-            isOnEdge *= negator;
+            isOnEdge *= Negator;
             hasRotated = true;
         }
         else if (!enemyScriptableObject.IsEnemyOnEdge(transform.position))

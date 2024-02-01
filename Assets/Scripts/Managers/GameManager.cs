@@ -1,22 +1,20 @@
 
 using System.Collections;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private const int scoreStep = 100;
-    private const float minimumObstacleSpawningDelay = 0.5f;
-    private const float spacingDecreaser = 0.14f;
-    private const float minimumSpacing = 6f;
-    private const float spawningDelayDecreaser = 0.07f;
-    private const float addPointsDelay = 0.5f;
-    private const int oneScorePoint = 1;
+    private const int ScoreStep = 100;
+    private const float AddPointsDelay = 0.5f;
+    private const int OneScorePoint = 1;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private UIManager uiManager;
     private int speedupRound = 1;
     private GameStates CurrentState;
+    private int score;
 
 
     private void Awake()
@@ -31,6 +29,7 @@ public class GameManager : MonoBehaviour
         }
 
         SetGameState(GameStates.MainMenu);
+        score = 0;
     }
 
     private void SetGameState(GameStates state)
@@ -60,7 +59,8 @@ public class GameManager : MonoBehaviour
 
     public void CollectCollectable(CollectableController collectible, int pointsWorth)
     {
-        uiManager.SetScoreOnScoreScreen(pointsWorth);
+        score += pointsWorth;
+        uiManager.SetScoreOnScoreScreen(score);
     }
 
     public void EnemyKilled(int enemyWorth)
@@ -85,11 +85,12 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        if (CurrentState == GameStates.Playing)
-        {
-            SetGameState(GameStates.Paused);
-            uiManager.SetPauseScreenActive();
-        }
+        //zar nije ovo code smell
+        if (CurrentState != GameStates.Playing)
+            return;
+
+        SetGameState(GameStates.Paused);
+        uiManager.SetPauseScreenActive();
     }
 
     //Bind with Unity event, on continue game button
@@ -102,34 +103,31 @@ public class GameManager : MonoBehaviour
 
     private void HandlePlayingState()
     {
-        if (CurrentState == GameStates.Playing)
-        {
-            EnableSpawnManager();
-            MovementManager.Instance.EnableMovementOfObjects();
-            MovementManager.Instance.SetMovementSpeedOfObjects();
-            SetupPlayingScreen();
-        }
+        if (CurrentState != GameStates.Playing)
+            return;
+
+        EnableSpawnManager();
+        MovementManager.Instance.EnableMovementOfObjects();
+        MovementManager.Instance.SetMovementSpeedOfObjects();
+        SetupPlayingScreen();
     }
 
     private void HandlePauseOrGameOverState()
     {
-        if (CurrentState == GameStates.Paused || CurrentState == GameStates.GameOver)
-        {
-            MovementManager.Instance.DisableMovementOfMovableObjects();
-            DisableSpawnManager();
-        }
+        if (CurrentState == GameStates.Playing || CurrentState == GameStates.MainMenu)
+            return;
+
+        MovementManager.Instance.DisableMovementOfMovableObjects();
+        DisableSpawnManager();
     }
 
     private void SpeedupGame()
     {
-        int score = uiManager.GetScore();
+        if (score < ScoreStep * speedupRound)
+            return;
 
-        if (score >= scoreStep * speedupRound)
-        {
-            MovementManager.Instance.IncreaseMovementSpeed();
-            //DecreaseSpawningTime();
-            speedupRound++;
-        }
+        MovementManager.Instance.IncreaseMovementSpeed();
+        speedupRound++;
     }
 
     private void SetupPlayingScreen()
@@ -150,46 +148,6 @@ public class GameManager : MonoBehaviour
         spawnManager.gameObject.SetActive(false);
     }
 
-    private void DecreaseSpawningTime()
-    {
-        float chunkSpawnDelay = spawnManager.GetChunkSpawnDelay();
-        float spacingBetweenObstacles = spawnManager.GetSpacingBetweenObstacles();
-        float spawnDelay;
-        float spacing;
-
-        if (chunkSpawnDelay > minimumObstacleSpawningDelay)
-        {
-            spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay, minimumObstacleSpawningDelay);
-            spacing = HandleDecreasingSpacing(spacingBetweenObstacles, minimumSpacing);
-
-            spawnManager.SetChunkSpawnDelay(spawnDelay);
-            spawnManager.SetSpacingBetweenObstacles(spacing);
-        }
-    }
-
-    private float HandleDecreasingSpacing(float spacing, float minimumSpacing)
-    {
-        float space = spacing - spacingDecreaser;
-
-        if (space < minimumSpacing)
-        {
-            space = minimumSpacing;
-        }
-
-        return space;
-    }
-
-    private float HandleDecreasingSpawnDelay(float spawnDelay, float minimumSpawnDelay)
-    {
-        float delay = spawnDelay - spawningDelayDecreaser;
-
-        if (delay < minimumSpawnDelay)
-            delay = minimumSpawnDelay;
-
-        return delay;
-    }
-
-
     //Bind with Unity event, on start game button
     public void StartGame()
     {
@@ -201,8 +159,9 @@ public class GameManager : MonoBehaviour
     {
         while (CurrentState == GameStates.Playing)
         {
-            uiManager.SetScoreOnScoreScreen(oneScorePoint);
-            yield return new WaitForSeconds(addPointsDelay);
+            score += OneScorePoint;
+            uiManager.SetScoreOnScoreScreen(score);
+            yield return new WaitForSeconds(AddPointsDelay);
         }
     }
 

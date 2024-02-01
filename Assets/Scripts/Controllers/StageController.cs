@@ -2,15 +2,12 @@ using UnityEngine;
 
 public class StageController : MonoBehaviour
 {
-    private const string groundTag = "Ground";
-    private const float stagePostitionOffset = 14.91158f;
+    private const string GroundTag = "Ground";
     private float totalStageLength;
-    private GameObject spawnStagePoint;
+    [SerializeField] private GameObject spawnStagePoint;
 
     private void Awake()
     {
-        spawnStagePoint = GameObject.FindGameObjectWithTag("EndOfRoad");
-
         CalculateTotalStageLength();
     }
 
@@ -18,16 +15,18 @@ public class StageController : MonoBehaviour
     {
         totalStageLength = 0f;
 
+        totalStageLength += transform.GetChild(0).GetComponent<MeshCollider>().bounds.size.z;
+
         foreach (Transform child in transform)
         {
-            if (child.CompareTag(groundTag))
-            {
-                MeshCollider collider = child.GetComponent<MeshCollider>();
+            if (!child.CompareTag(GroundTag))
+                continue;
 
-                if (collider != null)
-                {
-                    totalStageLength += collider.bounds.size.z;
-                }
+            MeshCollider collider = child.GetComponent<MeshCollider>();
+
+            if (collider != null)
+            {
+                totalStageLength += collider.bounds.size.z;
             }
         }
     }
@@ -39,10 +38,10 @@ public class StageController : MonoBehaviour
 
     private void MoveStageToTheEnd()
     {
-        if (transform.position.z < -totalStageLength)
-        {
-            float errorOffset = totalStageLength + transform.position.z;
-            transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + stagePostitionOffset + errorOffset);
-        }
+        if (transform.position.z > -totalStageLength)
+            return;
+
+        float errorOffset = totalStageLength + transform.position.z;
+        transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + errorOffset);
     }
 }

@@ -6,26 +6,26 @@ public class ParticleSystemManager : MonoBehaviour
     [SerializeField] private ParticleSystem jumpingParticles;
     [SerializeField] private ParticleSystem landingParticles;
     [SerializeField] private ParticleSystem[] jetEngineParticles;
-    private bool canPlayLangingParticles;
+    private bool canPlayLandingParticles;
 
     public void PlayLandingParticleEffect()
     {
-        if (canPlayLangingParticles == true)
-        {
-            canPlayLangingParticles = false;
-            landingParticles.Play();
-        }
+        if (!canPlayLandingParticles)
+            return;
+
+        canPlayLandingParticles = false;
+        landingParticles.Play();
     }
 
     public void PlayJumpingParticleEffect()
     {
-        canPlayLangingParticles = true;
+        canPlayLandingParticles = true;
         jumpingParticles.Play();
     }
 
     public void PlayJetEngineParticleEffect()
     {
-        for (int i = 0; i < jetEngineParticles.Length; i++)
-            jetEngineParticles[i].Play();
+        foreach (ParticleSystem particle in jetEngineParticles)
+            particle.Play();
     }
 }

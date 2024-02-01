@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "ScriptableEnemy", menuName = "EndlessRunner/Scriptable Enemy")]
 public class EnemyScriptableObject : ScriptableObject
 {
+    private const float EdgePositionUpY = 4f;
+    private const float EdgePositionDownY = 0f;
     public Vector3 faceTheOtherWay = new Vector3(0, 180, 0);
-    private static float edgePositionUpY = 4f;
-    private static float edgePositionDownY = 0f;
     public string enemyName;
     public int health = 100;
     public int minimumHealth = 0;
@@ -37,9 +36,9 @@ public class EnemyScriptableObject : ScriptableObject
             return true;
         if (position.x >= GlobalConstants.EdgePosX)
             return true;
-        if (position.y >= edgePositionUpY)
+        if (position.y >= EdgePositionUpY)
             return true;
-        if (position.y <= edgePositionDownY)
+        if (position.y <= EdgePositionDownY)
             return true;
 
         return false;

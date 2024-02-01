@@ -34,11 +34,11 @@ public class EnemyPoolingSystem : PoolingSystemBase<EnemyController>
 
     public void SetFlyingEnemyAsBasePrefab()
     {
-        base.objectPrefab = flyingEnemy;
+        objectPrefab = flyingEnemy;
     }
 
     public void SetGroundEnemyAsBasePrefab()
     {
-        base.objectPrefab = groundEnemy;
+        objectPrefab = groundEnemy;
     }
 }

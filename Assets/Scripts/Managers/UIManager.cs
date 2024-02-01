@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 public class UIManager : MonoBehaviour
 {
-    private const string scoreText = "Score: ";
+    private const string ScoreText = "Score: ";
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject endScreen;
     [SerializeField] private GameObject pauseScreen;
@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        pointsText.text = scoreText + score;
+        pointsText.text = ScoreText + score;
     }
 
     //Unity event, called when play button is pressed
@@ -53,9 +53,9 @@ public class UIManager : MonoBehaviour
 
     public int GetScore() => score;
 
-    public void SetScoreOnScoreScreen(int points)
+    public void SetScoreOnScoreScreen(int score)
     {
-        score += points;
-        pointsText.text = scoreText + score;
+        // score += points;
+        pointsText.text = ScoreText + score;
     }
 }

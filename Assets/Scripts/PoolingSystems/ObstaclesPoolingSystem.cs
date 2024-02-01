@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstaclesPoolingSystem : PoolingSystemBase<EnvironmentMovementController>
@@ -35,21 +34,21 @@ public class ObstaclesPoolingSystem : PoolingSystemBase<EnvironmentMovementContr
 
     public void SetRoadblockAsBasePrefab()
     {
-        base.objectPrefab = roadblockObstacle;
+        objectPrefab = roadblockObstacle;
     }
 
     public void SetDoubleLeftAsBasePrefab()
     {
-        base.objectPrefab = leftObstacle;
+        objectPrefab = leftObstacle;
     }
 
     public void SetDoubleRightAsBasePrefab()
     {
-        base.objectPrefab = rightObstacle;
+        objectPrefab = rightObstacle;
     }
 
     public void SetLeftAndRightAsBasePrefab()
     {
-        base.objectPrefab = leftAndRightObstacle;
+        objectPrefab = leftAndRightObstacle;
     }
 }

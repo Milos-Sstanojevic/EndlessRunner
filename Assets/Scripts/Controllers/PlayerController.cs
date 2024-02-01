@@ -5,21 +5,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private const string groundTag = "Ground";
-    private const string enemyTag = "Enemy";
-    private const string obstacleTag = "Obstacle";
-    private const string horizontalAxis = "Horizontal";
-    private const string verticalAxis = "Vertical";
-    private const float playerEdgePositionBackZ = -10.5f;
-    private const float edgePositionYWithJet = 4.65f;
-    private const float edgePositionZWithJet = -5f;
-    private const float offsetFromGround = 0.65f;
-    private const float flyingPosition = 4.65f;
-    private const float playerEdgePositionFrontZ = -2;
-    private const int collectablePointsWorth = 5;
-    private const float asscendingSpeed = 5;
-    private const float zeroPosition = 0;
-    private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
+    private const string GroundTag = "Ground";
+    private const string EnemyTag = "Enemy";
+    private const string ObstacleTag = "Obstacle";
+    private const string HorizontalAxis = "Horizontal";
+    private const string VerticalAxis = "Vertical";
+    private const float PlayerEdgePositionBackZ = -10.5f;
+    private const float EdgePositionYWithJet = 4.65f;
+    private const float EdgePositionZWithJet = -5f;
+    private const float OffsetFromGround = 0.65f;
+    private const float FlyingPosition = 4.65f;
+    private const float PlayerEdgePositionFrontZ = -2;
+    private const int CollectablePointsWorth = 5;
+    private const float AsscendingSpeed = 5;
+    private const float ZeroPosition = 0;
+    private static Vector3 RotateAroundX = new Vector3(90, 0, 0);
     private GunController gunInHands;
     private JetController jetOnBack;
     private Rigidbody playerRb;
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
         if (jetOnBack?.HasJet == false && isInAir)
         {
-            StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.position.x, zeroPosition + offsetFromGround, transform.position.z)));
+            StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.position.x, ZeroPosition + OffsetFromGround, transform.position.z)));
             jetOnBack = null;
         }
 
@@ -108,8 +108,8 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        float horizontalInput = Input.GetAxisRaw(horizontalAxis);
-        float verticalInput = Input.GetAxisRaw(verticalAxis);
+        float horizontalInput = Input.GetAxisRaw(HorizontalAxis);
+        float verticalInput = Input.GetAxisRaw(VerticalAxis);
         transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput, Space.World);
         transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput, Space.World);
 
@@ -150,13 +150,13 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(GlobalConstants.EdgePosX, transform.position.y, transform.position.z);
         }
-        if (transform.position.z < playerEdgePositionBackZ)
+        if (transform.position.z < PlayerEdgePositionBackZ)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, playerEdgePositionBackZ);
+            transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionBackZ);
         }
-        if (transform.position.z > playerEdgePositionFrontZ)
+        if (transform.position.z > PlayerEdgePositionFrontZ)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, playerEdgePositionFrontZ);
+            transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionFrontZ);
         }
     }
 
@@ -185,21 +185,21 @@ public class PlayerController : MonoBehaviour
     {
         if (jetOnBack?.HasJet == true)
         {
-            if (transform.position.z > edgePositionZWithJet)
-                transform.position = new Vector3(transform.position.x, transform.position.y, edgePositionZWithJet);
-            if (transform.position.y <= edgePositionYWithJet)
-                transform.position = new Vector3(transform.position.x, edgePositionYWithJet, transform.position.z);
+            if (transform.position.z > EdgePositionZWithJet)
+                transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
+            if (transform.position.y <= EdgePositionYWithJet)
+                transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
         }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (/*other.gameObject.CompareTag(obstacleTag) ||*/  other.gameObject.CompareTag(enemyTag))
+        if (/*other.gameObject.CompareTag(obstacleTag) ||*/  other.gameObject.CompareTag(EnemyTag))
         {
             EventManager.Instance.OnPlayerDead();
 
             if (!IsPlayerOnGround())
-                transform.position = new Vector3(transform.position.x, zeroPosition + 0.5f, transform.position.z);
+                transform.position = new Vector3(transform.position.x, ZeroPosition + 0.5f, transform.position.z);
 
             characterAnimator.PlayDeadAnimation();
             AudioManager.Instance.PlayDeathSound();
@@ -207,7 +207,7 @@ public class PlayerController : MonoBehaviour
             ReleaseGunAndJetIfHaveOne();
         }
 
-        if (other.gameObject.CompareTag(groundTag))
+        if (other.gameObject.CompareTag(GroundTag))
         {
             canJump = true;
             playerParticleSystem.PlayLandingParticleEffect();
@@ -229,7 +229,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool IsPlayerOnGround() => (int)transform.position.y == zeroPosition;
+    private bool IsPlayerOnGround() => (int)transform.position.y == ZeroPosition;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -239,7 +239,6 @@ public class PlayerController : MonoBehaviour
         {
             int pointsWorth = Collect(collectable);
 
-            AudioManager.Instance.PlaySpaceshipCollectedSound();
             EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
         }
     }
@@ -265,8 +264,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            AudioManager.Instance.PlaySpaceshipCollectedSound();
             EventManager.Instance.OnSpaceshipDestroyed(collectable);
-            return collectablePointsWorth;
+            return CollectablePointsWorth;
         }
     }
 
@@ -282,7 +282,10 @@ public class PlayerController : MonoBehaviour
         {
             gun.ReleaseGunInPool();
         }
-        return collectablePointsWorth * 2;
+
+        AudioManager.Instance.PlayGunCollectedSound();
+
+        return CollectablePointsWorth * 2;
     }
 
     private int CollectJet(JetController collectable)
@@ -292,7 +295,7 @@ public class PlayerController : MonoBehaviour
         if (jetOnBack == null && !isInAir)
         {
             jetOnBack = jet;
-            StartCoroutine(SlowlyStartOrStopFlying(rotateAroundX, new Vector3(transform.position.x, zeroPosition + flyingPosition, transform.position.z)));
+            StartCoroutine(SlowlyStartOrStopFlying(RotateAroundX, new Vector3(transform.position.x, ZeroPosition + FlyingPosition, transform.position.z)));
             jet.MoveOnPlayerBack(this, jetPosition.transform.position);
         }
         else
@@ -300,7 +303,9 @@ public class PlayerController : MonoBehaviour
             jet.ReleaseJetToPool();
         }
 
-        return collectablePointsWorth * 2;
+        AudioManager.Instance.PlayJetCollectedSound();
+
+        return CollectablePointsWorth * 2;
     }
 
     public IEnumerator SlowlyStartOrStopFlying(Vector3 endRotation, Vector3 endPosition)
@@ -317,7 +322,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(startPos, endPosition, 1 - (remainingDistance / distance));
             transform.eulerAngles = Vector3.Lerp(startRotation, endRotation, 1 - (remainingDistance / distance));
-            remainingDistance -= asscendingSpeed * Time.deltaTime;
+            remainingDistance -= AsscendingSpeed * Time.deltaTime;
 
             yield return null;
         }

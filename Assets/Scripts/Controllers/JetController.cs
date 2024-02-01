@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class JetController : MonoBehaviour
 {
-    private const int jetTimeToLive = 5;
-    private static Vector3 defaultJetOrientation = new Vector3(-90, 0, 0);
+    private const int JetTimeToLive = 5;
+    private static Vector3 DefaultJetOrientation = new Vector3(-90, 0, 0);
     [SerializeField] private GameObject engineParticleEffect;
     private EnvironmentMovementController environmentComponent;
     private CollectableController collectableComponent;
@@ -32,7 +32,7 @@ public class JetController : MonoBehaviour
     public void MoveOnPlayerBack(PlayerController player, Vector3 jetPosition)
     {
         transform.SetParent(player.transform);
-        transform.eulerAngles = defaultJetOrientation;
+        transform.eulerAngles = DefaultJetOrientation;
         engineParticleEffect.SetActive(true);
         particleSystemManager.PlayJetEngineParticleEffect();
         HasJet = true;
@@ -44,10 +44,10 @@ public class JetController : MonoBehaviour
 
     private IEnumerator JetExpiration()
     {
-        yield return new WaitForSeconds(jetTimeToLive);
+        yield return new WaitForSeconds(JetTimeToLive);
         engineParticleEffect.SetActive(false);
         HasJet = false;
-        transform.eulerAngles = defaultJetOrientation;
+        transform.eulerAngles = DefaultJetOrientation;
         EventManager.Instance.OnJetDestroyed(this);
     }
 

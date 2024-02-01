@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    private const int gunTimeToLive = 5;
-    private static Vector3 rotateAroundX = new Vector3(90, 0, 0);
-    private static Vector3 defaultOrientation = new Vector3(0, 0, 0);
+    private const int GunTimeToLive = 5;
+    private static Vector3 RotateAroundX = new Vector3(90, 0, 0);
+    private static Vector3 DefaultOrientation = new Vector3(0, 0, 0);
     [SerializeField] private GameObject muzzleParticleObject;
     private float lastShootTime;
     private float shootDelay = 0.1f;
@@ -121,7 +121,7 @@ public class GunController : MonoBehaviour
     {
         transform.SetParent(player.transform);
         transform.position = gunPos;
-        transform.eulerAngles = rotateAroundX;
+        transform.eulerAngles = RotateAroundX;
         HasGun = true;
         environmentComponent.enabled = false;
         collectableComponent.enabled = false;
@@ -130,9 +130,9 @@ public class GunController : MonoBehaviour
 
     private IEnumerator GunExpiration()
     {
-        yield return new WaitForSeconds(gunTimeToLive);
+        yield return new WaitForSeconds(GunTimeToLive);
         HasGun = false;
-        transform.eulerAngles = defaultOrientation;
+        transform.eulerAngles = DefaultOrientation;
         muzzleParticleObject.SetActive(false);
         DeactivateAllBullets();
         gunExpired = true;
@@ -153,7 +153,7 @@ public class GunController : MonoBehaviour
 
     public void ReleaseGunInPool()
     {
-        transform.eulerAngles = defaultOrientation;
+        transform.eulerAngles = DefaultOrientation;
         muzzleParticleObject.SetActive(false);
         HasGun = false;
         DeactivateAllBullets();
