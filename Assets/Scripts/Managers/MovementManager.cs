@@ -26,7 +26,7 @@ public class MovementManager : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.Instance.OnObjectsInSceneChangedAction += GetCollectablesAndObstaclesInGame;
+        EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
     }
 
     private void Start()
@@ -38,7 +38,7 @@ public class MovementManager : MonoBehaviour
 
     public void GetCollectablesAndObstaclesInGame()
     {
-        chunksInGame = ChunkPoolingSystem.Instance.GetInstantiatedObjects();
+        chunksInGame = PoolingSystemController.Instance.GetChunkPoolingSystem().GetInstantiatedObjects();
         AddObjectsInSceneToMovementList();
     }
 
@@ -118,6 +118,6 @@ public class MovementManager : MonoBehaviour
 
     private void OnDisable()
     {
-        EventManager.Instance.OnObjectsInSceneChangedAction -= GetCollectablesAndObstaclesInGame;
+        EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
     }
 }

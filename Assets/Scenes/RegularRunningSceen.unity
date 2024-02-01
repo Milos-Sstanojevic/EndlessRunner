@@ -947,11 +947,6 @@ MonoBehaviour:
   maxCapacity: 12
   objectPrefab: {fileID: -680846875328544350, guid: 03a8ef7ceefe09a4091f06a4ba74345f, type: 3}
   spawnedObjectsHolder: {fileID: 187315150}
-  typesOfChunk:
-  - {fileID: -680846875328544350, guid: 03a8ef7ceefe09a4091f06a4ba74345f, type: 3}
-  - {fileID: 9032498583903461987, guid: fb759b43e061c20458e7ffa9b51462aa, type: 3}
-  - {fileID: 7891957651188697047, guid: e4cbfb862beaf794abfa342cb807cd13, type: 3}
-  - {fileID: 41688236254824970, guid: 8f7731ff540349043854a31458a65771, type: 3}
 --- !u!1 &611313580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1340,37 +1335,6 @@ MonoBehaviour:
   maxCapacity: 1000
   objectPrefab: {fileID: 842306070566031017, guid: d252798f8b7c82641a13f540ab606b87, type: 3}
   spawnedObjectsHolder: {fileID: 391682362}
---- !u!1 &894698581
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 894698582}
-  m_Layer: 0
-  m_Name: EnemyPool
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &894698582
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 894698581}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.069105, y: -33.8014, z: 14.232454}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1081107745}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &895725762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2440,7 +2404,6 @@ Transform:
   m_Children:
   - {fileID: 187315150}
   - {fileID: 391682362}
-  - {fileID: 894698582}
   - {fileID: 1753139086}
   - {fileID: 2118036196}
   - {fileID: 611313581}
@@ -3616,8 +3579,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1483714898}
+  - component: {fileID: 1483714899}
   m_Layer: 0
-  m_Name: PoolingSystems
+  m_Name: BasePoolingSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3637,7 +3601,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 801544851}
-  - {fileID: 1886949387}
   - {fileID: 1824557727}
   - {fileID: 1239510493}
   - {fileID: 1006517345}
@@ -3646,6 +3609,35 @@ Transform:
   - {fileID: 532135097}
   m_Father: {fileID: 1950996646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1483714899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483714897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 964f42235470aba45ab108388638da27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAndRightObstacle: {fileID: 6977361175378971136, guid: 99b772da13d26f0458db8f85ca049843, type: 3}
+  leftObstacle: {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
+  rightObstacle: {fileID: 3146250182552618409, guid: 4be5ffcd6406bc74699e4d81ad92609b, type: 3}
+  roadblockObstacle: {fileID: 5707862660727839584, guid: 0a4b2d97341aabf4db401a06517038a0, type: 3}
+  flyingEnemy: {fileID: 7236899872907980071, guid: ae500c0c575fd11428cd26b0446dfbd0, type: 3}
+  groundEnemy: {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
+  jetPoolingSystem: {fileID: 1006517346}
+  bulletPoolingSystem: {fileID: 801544852}
+  chunkPoolingSystem: {fileID: 532135098}
+  enemyPoolingSystem: {fileID: 1741032797}
+  gunPoolingSystem: {fileID: 1239510494}
+  obstaclesPoolingSystem: {fileID: 1824557728}
+  spaceshipPoolingSystem: {fileID: 1245102171}
+  twoEnemiesChunk: {fileID: -680846875328544350, guid: 03a8ef7ceefe09a4091f06a4ba74345f, type: 3}
+  flyingEnemyChunk: {fileID: 9032498583903461987, guid: fb759b43e061c20458e7ffa9b51462aa, type: 3}
+  completeChunk: {fileID: 7891957651188697047, guid: e4cbfb862beaf794abfa342cb807cd13, type: 3}
+  randomObstaclesChunk: {fileID: 41688236254824970, guid: 8f7731ff540349043854a31458a65771, type: 3}
 --- !u!1 &1490460004
 GameObject:
   m_ObjectHideFlags: 0
@@ -4201,8 +4193,6 @@ MonoBehaviour:
   maxCapacity: 100
   objectPrefab: {fileID: 0}
   spawnedObjectsHolder: {fileID: 973170632}
-  flyingEnemy: {fileID: 7236899872907980071, guid: ae500c0c575fd11428cd26b0446dfbd0, type: 3}
-  groundEnemy: {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
 --- !u!1 &1748329537
 GameObject:
   m_ObjectHideFlags: 0
@@ -4386,65 +4376,11 @@ MonoBehaviour:
   maxCapacity: 100
   objectPrefab: {fileID: 0}
   spawnedObjectsHolder: {fileID: 1753139086}
-  leftAndRightObstacle: {fileID: 6977361175378971136, guid: 99b772da13d26f0458db8f85ca049843, type: 3}
-  leftObstacle: {fileID: 1139345263663883936, guid: 7370727d1b2983e478b603caa5cb82c4, type: 3}
-  rightObstacle: {fileID: 3146250182552618409, guid: 4be5ffcd6406bc74699e4d81ad92609b, type: 3}
-  roadblockObstacle: {fileID: 5707862660727839584, guid: 0a4b2d97341aabf4db401a06517038a0, type: 3}
 --- !u!4 &1838649012 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5340790431636367008, guid: 5ad51c08838b07a43b7279d5feb1bb6d, type: 3}
   m_PrefabInstance: {fileID: 6103018407880754161}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1886949386
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1886949387}
-  - component: {fileID: 1886949388}
-  m_Layer: 0
-  m_Name: EnemyPoolingSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1886949387
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1886949386}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.9560094, y: 4.599187, z: 47.15406}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1483714898}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1886949388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1886949386}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f17d77a587dfb0246a042a00c811aa27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultCapacity: 30
-  maxCapacity: 50
-  objectPrefab: {fileID: -4834785537647469847, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
-  spawnedObjectsHolder: {fileID: 894698582}
-  flyingEnemy: {fileID: 0}
-  groundEnemy: {fileID: 0}
 --- !u!1 &1950996645
 GameObject:
   m_ObjectHideFlags: 0

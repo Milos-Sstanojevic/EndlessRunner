@@ -32,9 +32,9 @@ public class EnemyScriptableObject : ScriptableObject
 
     public bool IsEnemyOnEdge(Vector3 position)
     {
-        if (position.x <= -GlobalConstants.EdgePosX)
+        if (position.x <= -MapEdgeConstants.EdgePosX)
             return true;
-        if (position.x >= GlobalConstants.EdgePosX)
+        if (position.x >= MapEdgeConstants.EdgePosX)
             return true;
         if (position.y >= EdgePositionUpY)
             return true;

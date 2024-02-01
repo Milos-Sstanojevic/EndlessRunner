@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +9,8 @@ public class PlayerController : MonoBehaviour
     private const string ObstacleTag = "Obstacle";
     private const string HorizontalAxis = "Horizontal";
     private const string VerticalAxis = "Vertical";
+    private const int OneScorePoint = 1;
+    private const float AddPointsDelay = 0.5f;
     private const float PlayerEdgePositionBackZ = -10.5f;
     private const float EdgePositionYWithJet = 4.65f;
     private const float EdgePositionZWithJet = -5f;
@@ -34,6 +35,8 @@ public class PlayerController : MonoBehaviour
     private bool isInAir = false;
     private bool movementEnabled;
     private float movementSpeed;
+    private int score;
+    private bool canAddPoints;
 
     private void Awake()
     {
@@ -46,6 +49,35 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         Physics.gravity *= gravityModifier;
+        Time.timeScale = 1f;
+        score = 0;
+    }
+
+    private void OnEnable()
+    {
+        EventManager.Instance.SubscribeToStartAddingPointsAction(StartAddingPoints);
+        EventManager.Instance.SubscribeToStopAddingPointsAction(StopAddingPoints);
+    }
+
+    private void StartAddingPoints()
+    {
+        canAddPoints = true;
+        StartCoroutine(AddPointsEachHalfSecond());
+    }
+
+    private IEnumerator AddPointsEachHalfSecond()
+    {
+        while (canAddPoints)
+        {
+            score += OneScorePoint;
+            yield return new WaitForSeconds(AddPointsDelay);
+            EventManager.Instance.OnChangeScoreOnScreen(score);
+        }
+    }
+
+    private void StopAddingPoints()
+    {
+        canAddPoints = false;
     }
 
     private void Update()
@@ -142,13 +174,13 @@ public class PlayerController : MonoBehaviour
 
     private void KeepPlayerOnRoad()
     {
-        if (transform.position.x < -GlobalConstants.EdgePosX)
+        if (transform.position.x < -MapEdgeConstants.EdgePosX)
         {
-            transform.position = new Vector3(-GlobalConstants.EdgePosX, transform.position.y, transform.position.z);
+            transform.position = new Vector3(-MapEdgeConstants.EdgePosX, transform.position.y, transform.position.z);
         }
-        if (transform.position.x > GlobalConstants.EdgePosX)
+        if (transform.position.x > MapEdgeConstants.EdgePosX)
         {
-            transform.position = new Vector3(GlobalConstants.EdgePosX, transform.position.y, transform.position.z);
+            transform.position = new Vector3(MapEdgeConstants.EdgePosX, transform.position.y, transform.position.z);
         }
         if (transform.position.z < PlayerEdgePositionBackZ)
         {
@@ -219,14 +251,26 @@ public class PlayerController : MonoBehaviour
     {
         if (gunInHands != null)
         {
-            gunInHands.ReleaseGunInPool();
-            gunInHands = null;
+            StartCoroutine(ReleaseGunCoroutine());
         }
         if (jetOnBack != null)
         {
-            jetOnBack.ReleaseJetToPool();
-            jetOnBack = null;
+            StartCoroutine(ReleaseJetCoroutine());
         }
+    }
+
+    private IEnumerator ReleaseGunCoroutine()
+    {
+        gunInHands.ReleaseGunInPool();
+        yield return null;
+        gunInHands = null;
+    }
+
+    private IEnumerator ReleaseJetCoroutine()
+    {
+        jetOnBack.ReleaseJetToPool();
+        yield return null;
+        jetOnBack = null;
     }
 
     private bool IsPlayerOnGround() => (int)transform.position.y == ZeroPosition;
@@ -237,9 +281,8 @@ public class PlayerController : MonoBehaviour
 
         if (collectable != null)
         {
-            int pointsWorth = Collect(collectable);
-
-            EventManager.Instance.OnCollectibleCollected(collectable, pointsWorth);
+            score += Collect(collectable);
+            EventManager.Instance.OnChangeScoreOnScreen(score);
         }
     }
 
@@ -332,11 +375,6 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = endRotation;
     }
 
-    private void OnDestroy()
-    {
-        Physics.gravity /= gravityModifier;
-    }
-
     public void EnableMovement()
     {
         movementEnabled = true;
@@ -350,5 +388,16 @@ public class PlayerController : MonoBehaviour
     public void SetMovementSpeed(float speed)
     {
         movementSpeed = speed;
+    }
+
+    private void OnDestroy()
+    {
+        Physics.gravity /= gravityModifier;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Instance.UnsubscribeFromStartAddingPointsAction(StartAddingPoints);
+        EventManager.Instance.UnsubscribeFromStopAddingPointsAction(StopAddingPoints);
     }
 }

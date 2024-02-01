@@ -1,6 +1,5 @@
 
 using System.Collections;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,8 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const int ScoreStep = 100;
-    private const float AddPointsDelay = 0.5f;
-    private const int OneScorePoint = 1;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private UIManager uiManager;
     private int speedupRound = 1;
@@ -39,20 +36,22 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        SubscribeToDeadCollectKilledEvents();
+        SubscribeToEvents();
     }
 
-    private void SubscribeToDeadCollectKilledEvents()
+    private void SubscribeToEvents()
     {
-        EventManager.Instance.OnPlayerDeadAction += GameOver;
-        EventManager.Instance.OnCollectAction += CollectCollectable;
-        EventManager.Instance.OnEnemyKilledAction += EnemyKilled;
+        EventManager.Instance.SubscribeToOnPlayerDeadAction(GameOver);
+        EventManager.Instance.SubscribeToOnCollectAction(CollectCollectable);
+        EventManager.Instance.SubscribeToOnEnemyKilledAction(EnemyKilled);
+        EventManager.Instance.SubscribeToChangeScoreOnScreen(SetScoreOnScreen);
     }
 
     //Unity event, called when player is dead
     public void GameOver()
     {
         SetGameState(GameStates.GameOver);
+        EventManager.Instance.StopAddingPoints();
         uiManager.SetEndScreenActive();
         uiManager.SetScoreScreenInactive();
     }
@@ -85,11 +84,11 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        //zar nije ovo code smell
         if (CurrentState != GameStates.Playing)
             return;
 
         SetGameState(GameStates.Paused);
+        EventManager.Instance.StopAddingPoints();
         uiManager.SetPauseScreenActive();
     }
 
@@ -97,7 +96,7 @@ public class GameManager : MonoBehaviour
     public void ResumeGame()
     {
         SetGameState(GameStates.Playing);
-        StartCoroutine(AddPointsEachHalfSecond());
+        EventManager.Instance.StartAddingPoints();
         uiManager.SetPauseScreenInactive();
     }
 
@@ -152,18 +151,14 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         SetGameState(GameStates.Playing);
-        StartCoroutine(AddPointsEachHalfSecond());
+        EventManager.Instance.StartAddingPoints();
     }
 
-    public IEnumerator AddPointsEachHalfSecond()
+    private void SetScoreOnScreen(int score)
     {
-        while (CurrentState == GameStates.Playing)
-        {
-            score += OneScorePoint;
-            uiManager.SetScoreOnScoreScreen(score);
-            yield return new WaitForSeconds(AddPointsDelay);
-        }
+        uiManager.SetScoreOnScoreScreen(score);
     }
+
 
     //Bind with Unity event, on restart game button
     public void RestartGame()
@@ -180,18 +175,14 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
-        UnsubscribeFromCollectAction();
-        UnsubscribeFromPlayerDeadAction();
+        UnsubscribeFromEvents();
     }
 
-    private void UnsubscribeFromPlayerDeadAction()
+    private void UnsubscribeFromEvents()
     {
-        EventManager.Instance.OnPlayerDeadAction -= GameOver;
-    }
-
-    private void UnsubscribeFromCollectAction()
-    {
-        EventManager.Instance.OnCollectAction -= CollectCollectable;
+        EventManager.Instance.UnsubscribeFromChangeScoreOnScreen(SetScoreOnScreen);
+        EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(GameOver);
+        EventManager.Instance.UnsubscribeFromOnCollectAction(CollectCollectable);
     }
 }
 

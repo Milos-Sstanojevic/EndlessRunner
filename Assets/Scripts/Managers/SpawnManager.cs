@@ -70,10 +70,10 @@ public class SpawnManager : MonoBehaviour
         };
 
         System.Action[] chunkPrefabSetters ={
-            ChunkPoolingSystem.Instance.SetCompleteChunkAsBase,
-            ChunkPoolingSystem.Instance.SetChunkWithTwoEnemiesAsBase,
-            ChunkPoolingSystem.Instance.SetChunkWithFlyingEnemyAsBase,
-            ChunkPoolingSystem.Instance.SetChunkWithRandomObstaclesAsBase
+            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetCompleteChunk()),
+            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetChunkWithTwoEnemies()),
+            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetChunkWithFlyingEnemy()),
+            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetChunkWithRandomObstacles())
         };
 
         for (int i = 0; i < chancesForChunks.Length; i++)
@@ -88,7 +88,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleChunkSpawning()
     {
-        chunk = ChunkPoolingSystem.Instance.GetObjectFromPool();
+        chunk = PoolingSystemController.Instance.GetChunkPoolingSystem().GetObjectFromPool();
 
         List<GameObject> randomObstaclesOnChunk = chunk.GetPositionsForRandomObstaclesOnChunk();
         List<GameObject> randomCollectablesOnChunk = chunk.GetPositionsForRandomCollectablesOnChunk();
@@ -115,7 +115,7 @@ public class SpawnManager : MonoBehaviour
             chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, endOfPreviousChunk.z + OffsetFromCenterOfChunk);
     }
 
-    //If lists for positions of obstcles are empty, it is premade chunk
+    //If lists for positions of obstacles are empty, it is premade chunk
     private bool IsChunkPremade(List<GameObject> randomObstaclesOnChunk, List<GameObject> randomCollectablesOnChunk)
     {
         return randomObstaclesOnChunk.Count != 0 && randomCollectablesOnChunk.Count != 0;
@@ -142,12 +142,12 @@ public class SpawnManager : MonoBehaviour
                 };
 
         System.Action[] obstacleSetPrefabFunctions ={
-                    ObstaclesPoolingSystem.Instance.SetRoadblockAsBasePrefab,
-                    ObstaclesPoolingSystem.Instance.SetDoubleRightAsBasePrefab,
-                    ObstaclesPoolingSystem.Instance.SetDoubleLeftAsBasePrefab,
-                    ObstaclesPoolingSystem.Instance.SetLeftAndRightAsBasePrefab,
-                    EnemyPoolingSystem.Instance.SetGroundEnemyAsBasePrefab,
-                    EnemyPoolingSystem.Instance.SetFlyingEnemyAsBasePrefab
+                    ()=>PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetRoadblockObstaclePrefab()),
+                    ()=> PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetRightObstaclePrefab()),
+                    ()=> PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetLeftObstaclePrefab()),
+                    ()=> PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetLeftAndRightObstaclePrefab()),
+                    ()=> PoolingSystemController.Instance.GetEnemyPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetGroundEnemyPrefab()),
+                    ()=> PoolingSystemController.Instance.GetEnemyPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetFlyingEnemyPrefab())
                 };
 
         bool isEnemy = false;
@@ -168,13 +168,13 @@ public class SpawnManager : MonoBehaviour
 
         if (isEnemy)
         {
-            EnemyController enemy = EnemyPoolingSystem.Instance.GetObjectFromPool();
+            EnemyController enemy = PoolingSystemController.Instance.GetEnemyPoolingSystem().GetObjectFromPool();
             spawnedEnemy = true;
             SetPositionAndParentOfObjectFromPool(enemy.gameObject, obstaclePos.transform.position);
         }
         else
         {
-            EnvironmentMovementController obstacle = ObstaclesPoolingSystem.Instance.GetObjectFromPool();
+            EnvironmentMovementController obstacle = PoolingSystemController.Instance.GetObstaclesPoolingSystem().GetObjectFromPool();
             SetPositionAndParentOfObjectFromPool(obstacle.gameObject, obstaclePos.transform.position);
         }
     }
@@ -228,19 +228,19 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnGun(Vector3 positionToSpawn)
     {
-        GunController gun = GunPoolingSystem.Instance.GetObjectFromPool();
+        GunController gun = PoolingSystemController.Instance.GetGunPoolingSystem().GetObjectFromPool();
         SetPositionAndParentOfObjectFromPool(gun.gameObject, positionToSpawn);
     }
 
     private void SpawnJet(Vector3 positionToSpawn)
     {
-        JetController jet = JetPoolingSystem.Instance.GetObjectFromPool();
+        JetController jet = PoolingSystemController.Instance.GetJetPoolingSystem().GetObjectFromPool();
         SetPositionAndParentOfObjectFromPool(jet.gameObject, positionToSpawn);
     }
 
     private void SpawnSpaceship(Vector3 positionToSpawn)
     {
-        CollectableController spaceship = SpaceshipPoolingSystem.Instance.GetObjectFromPool();
+        CollectableController spaceship = PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetObjectFromPool();
         SetPositionAndParentOfObjectFromPool(spaceship.gameObject, positionToSpawn);
     }
 

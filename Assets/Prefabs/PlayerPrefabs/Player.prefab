@@ -11100,6 +11100,8 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 113ee460fadc340e4957a7404a9fbb27, type: 3}
   deathSound: {fileID: 8300000, guid: 07fc76fde664654468afff3bc12f84b0, type: 3}
   spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
+  jetCollectedSound: {fileID: 8300000, guid: 7875d3cec6e352143b14cb1f472f1153, type: 3}
+  gunCollectedSound: {fileID: 8300000, guid: 5b948c8857a97b64391116612365171f, type: 3}
 --- !u!82 &2962921181929539184
 AudioSource:
   m_ObjectHideFlags: 0

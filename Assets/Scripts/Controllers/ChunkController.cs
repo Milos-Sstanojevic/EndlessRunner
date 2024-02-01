@@ -23,7 +23,7 @@ public class ChunkController : MonoBehaviour
 
     private void Destroy()
     {
-        if (transform.position.z <= GlobalConstants.PositionBehindPlayerAxisZ)
+        if (transform.position.z <= MapEdgeConstants.PositionBehindPlayerAxisZ)
         {
             ResetChunk();
             EventManager.Instance.OnChunkDestroyed(this);

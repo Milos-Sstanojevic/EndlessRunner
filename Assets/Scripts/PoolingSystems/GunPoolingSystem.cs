@@ -1,29 +1,13 @@
 
-public class GunPoolingSystem : PoolingSystemBase<GunController>
+public class GunPoolingSystem : BasePoolingSystem<GunController>
 {
-    public static GunPoolingSystem Instance { get; private set; }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
-    }
-
     private void OnEnable()
     {
-        EventManager.Instance.OnDestroyGunAction += DestroyObjects;
+        EventManager.Instance.SubscribeToOnDestroyGunAction(DestroyObjects);
     }
 
     private void OnDisable()
     {
-        EventManager.Instance.OnDestroyGunAction -= DestroyObjects;
+        EventManager.Instance.UnsubscribeFromOnDestroyGunAction(DestroyObjects);
     }
 }

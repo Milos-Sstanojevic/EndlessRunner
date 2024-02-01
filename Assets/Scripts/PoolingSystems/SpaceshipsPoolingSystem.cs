@@ -1,29 +1,13 @@
 
-public class SpaceshipPoolingSystem : PoolingSystemBase<CollectableController>
+public class SpaceshipPoolingSystem : BasePoolingSystem<CollectableController>
 {
-    public static SpaceshipPoolingSystem Instance { get; private set; }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
-    }
-
     private void OnEnable()
     {
-        EventManager.Instance.OnSpaceshipDestroyAction += DestroyObjects;
+        EventManager.Instance.SubscribeToOnSpaceshipDestroyAction(DestroyObjects);
     }
 
     private void OnDisable()
     {
-        EventManager.Instance.OnSpaceshipDestroyAction -= DestroyObjects;
+        EventManager.Instance.UnsubscribeFromOnSpaceshipDestroyAction(DestroyObjects);
     }
 }

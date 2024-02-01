@@ -68,7 +68,7 @@ public class JetController : MonoBehaviour
 
     private void Destroy()
     {
-        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
             EventManager.Instance.OnJetDestroyed(this);
     }
 }

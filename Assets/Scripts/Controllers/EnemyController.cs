@@ -12,10 +12,14 @@ public class EnemyController : MonoBehaviour
     private int health;
     private bool hasRotated;
     private EnvironmentMovementController environmentComponent;
+    private ParticleSystemManager particleSystemManager;
+    private AudioSource audioSource;
 
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         environmentComponent = GetComponent<EnvironmentMovementController>();
+        particleSystemManager = GetComponent<ParticleSystemManager>();
     }
 
     private void OnEnable()
@@ -79,7 +83,15 @@ public class EnemyController : MonoBehaviour
 
     private void Destroy()
     {
-        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
+        {
+            audioSource.Stop();
             EventManager.Instance.OnEnemyDestroyed(this);
+        }
+    }
+
+    public void PlayBloodParticles()
+    {
+        particleSystemManager.PlayBloodParticleEffect();
     }
 }

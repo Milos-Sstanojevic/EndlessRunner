@@ -45,7 +45,7 @@ public class GunController : MonoBehaviour
 
     private void Destroy()
     {
-        if (transform.position.z < GlobalConstants.PositionBehindPlayerAxisZ)
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
             EventManager.Instance.OnGunDestroyed(this);
     }
 
@@ -71,7 +71,7 @@ public class GunController : MonoBehaviour
         if (lastShootTime + shootDelay < Time.time)
         {
             RaycastHit hit;
-            BulletController bullet = BulletPoolingSystem.Instance.GetObjectFromPool();
+            BulletController bullet = PoolingSystemController.Instance.GetBulletPoolingSystem().GetObjectFromPool();
 
             bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
 
@@ -83,6 +83,7 @@ public class GunController : MonoBehaviour
                 if (enemy != null)
                 {
                     enemy.TakeDamage(bullet.GetBulletDamage());
+                    enemy.PlayBloodParticles();
                     enemyIsHit = true;
                 }
 
@@ -141,7 +142,7 @@ public class GunController : MonoBehaviour
 
     private void DeactivateAllBullets()
     {
-        List<BulletController> bullets = BulletPoolingSystem.Instance.GetInstantiatedObjects();
+        List<BulletController> bullets = PoolingSystemController.Instance.GetBulletPoolingSystem().GetInstantiatedObjects();
         foreach (BulletController bullet in bullets)
         {
             if (bullet.gameObject.activeSelf)

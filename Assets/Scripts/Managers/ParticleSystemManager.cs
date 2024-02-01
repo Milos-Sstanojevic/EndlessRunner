@@ -5,6 +5,7 @@ public class ParticleSystemManager : MonoBehaviour
 {
     [SerializeField] private ParticleSystem jumpingParticles;
     [SerializeField] private ParticleSystem landingParticles;
+    [SerializeField] private ParticleSystem enemyBloodParticles;
     [SerializeField] private ParticleSystem[] jetEngineParticles;
     private bool canPlayLandingParticles;
 
@@ -27,5 +28,10 @@ public class ParticleSystemManager : MonoBehaviour
     {
         foreach (ParticleSystem particle in jetEngineParticles)
             particle.Play();
+    }
+
+    public void PlayBloodParticleEffect()
+    {
+        enemyBloodParticles.Play();
     }
 }

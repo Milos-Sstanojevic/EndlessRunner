@@ -11,7 +11,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip jetCollectedSound;
     [SerializeField] private AudioClip gunCollectedSound;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -55,4 +54,5 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.PlayOneShot(audioClip, ClipVolume);
     }
+
 }
