@@ -159,6 +159,10 @@ public class GameManager : MonoBehaviour
         uiManager.SetScoreOnScoreScreen(score);
     }
 
+    public void OpenSettings()
+    {
+        uiManager.SetSettingsScreenActive();
+    }
 
     //Bind with Unity event, on restart game button
     public void RestartGame()

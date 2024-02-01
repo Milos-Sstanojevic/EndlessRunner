@@ -55,4 +55,5 @@ public class AudioManager : MonoBehaviour
         audioSource.PlayOneShot(audioClip, ClipVolume);
     }
 
+    public AudioSource GetAudioSource() => audioSource;
 }

@@ -8,11 +8,22 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private GameObject scoreScreen;
     [SerializeField] private TextMeshProUGUI pointsText;
+    [SerializeField] private GameObject settingsScreen;
     private int score = 0;
 
     private void Start()
     {
         pointsText.text = ScoreText + score;
+    }
+
+    public void SetSettingsScreenActive()
+    {
+        settingsScreen.SetActive(true);
+    }
+
+    public void SetSettingsScreenInactive()
+    {
+        settingsScreen.SetActive(false);
     }
 
     //Unity event, called when play button is pressed
