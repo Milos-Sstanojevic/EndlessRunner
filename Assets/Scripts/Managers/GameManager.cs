@@ -159,9 +159,33 @@ public class GameManager : MonoBehaviour
         uiManager.SetScoreOnScoreScreen(score);
     }
 
+    //Unity event, this is called when settings button is clicked
     public void OpenSettings()
     {
         uiManager.SetSettingsScreenActive();
+
+        if (CurrentState == GameStates.MainMenu)
+            uiManager.SetStartScreenInactive();
+
+        if (CurrentState == GameStates.Paused)
+            uiManager.SetPauseScreenInactive();
+
+        if (CurrentState == GameStates.GameOver)
+            uiManager.SetGameOverScreenInactive();
+    }
+
+    //Unity event, this is called when save or cancel buttons are clicked in settings menu
+    public void SaveOrCancelSettings()
+    {
+        uiManager.SetSettingsScreenInactive();
+        if (CurrentState == GameStates.MainMenu)
+            uiManager.SetStartScreenActive();
+
+        if (CurrentState == GameStates.Paused)
+            uiManager.SetPauseScreenActive();
+
+        if (CurrentState == GameStates.GameOver)
+            uiManager.SetGameOverScreenActive();
     }
 
     //Bind with Unity event, on restart game button

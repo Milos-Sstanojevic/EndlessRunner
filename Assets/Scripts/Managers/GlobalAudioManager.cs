@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class GlobalAudioManager : MonoBehaviour
 {
@@ -10,27 +11,48 @@ public class GlobalAudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup effectsMixerGroup;
     [SerializeField] private TextMeshProUGUI musicSliderText;
     [SerializeField] private TextMeshProUGUI effectsSliderText;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider effectsSlider;
     [SerializeField] private AudioSource musicAudio;
-    //ovde treba nekako da pozovem moj audio manager i dodelim mu vrednost za volume
 
-    public void OnMusicSliderValueChange(float value)
+    private void Start()
     {
-        MusicVolume = value;
-        musicAudio.volume = value;//testiraj
-        musicSliderText.text = ((int)(value * 100)).ToString();
+        if (!PlayerPrefs.HasKey("musicVolume"))
+            return;
+
+        LoadVolume();
     }
 
-    public void OnEffectSliderValueChange(float value)
+    public void OnMusicSliderValueChange()
     {
-        EffectsVolume = value;
-        //ovde ce verovatno za audio manager jer je on za sve effekte
-        effectsSliderText.text = ((int)(value * 100)).ToString();
+        MusicVolume = musicSlider.value;
+        musicAudio.volume = musicSlider.value;
+        musicSliderText.text = ((int)(musicSlider.value * 100)).ToString();
+    }
+
+    public void OnEffectSliderValueChange()
+    {
+        EffectsVolume = effectsSlider.value;
+        AudioManager.Instance.SetAudioSourceVolume(effectsSlider.value);
+        effectsSliderText.text = ((int)(effectsSlider.value * 100)).ToString();
     }
 
     public void UpdateAudioMixerValue()
     {
         musicMixerGroup.audioMixer.SetFloat("Music Volume", Mathf.Log10(MusicVolume) * 20);
         effectsMixerGroup.audioMixer.SetFloat("Effects Volume", Mathf.Log10(EffectsVolume) * 20);
+    }
+
+    public void SaveMusicAndEffectVolume()
+    {
+        PlayerPrefs.SetFloat("musicVolume", MusicVolume);
+        PlayerPrefs.SetFloat("effectsVolume", EffectsVolume);
+    }
+
+    private void LoadVolume()
+    {
+        musicSlider.value = PlayerPrefs.GetFloat("musicVolume");
+        effectsSlider.value = PlayerPrefs.GetFloat("effectsVolume");
     }
 
 }

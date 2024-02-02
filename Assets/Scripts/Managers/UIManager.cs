@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject scoreScreen;
     [SerializeField] private TextMeshProUGUI pointsText;
     [SerializeField] private GameObject settingsScreen;
+    [SerializeField] private GameObject gameOverScreen;
+
     private int score = 0;
 
     private void Start()
@@ -30,6 +32,11 @@ public class UIManager : MonoBehaviour
     public void SetStartScreenInactive()
     {
         startScreen.SetActive(false);
+    }
+
+    public void SetStartScreenActive()
+    {
+        startScreen.SetActive(true);
     }
 
     //Unity event, called when player is dead
@@ -60,6 +67,16 @@ public class UIManager : MonoBehaviour
     public void SetScoreScreenInactive()
     {
         scoreScreen.SetActive(false);
+    }
+
+    public void SetGameOverScreenActive()
+    {
+        gameOverScreen.SetActive(true);
+    }
+
+    public void SetGameOverScreenInactive()
+    {
+        gameOverScreen.SetActive(false);
     }
 
     public int GetScore() => score;

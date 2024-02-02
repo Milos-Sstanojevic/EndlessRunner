@@ -25,6 +25,7 @@ public class EnemyController : MonoBehaviour
     private void OnEnable()
     {
         health = enemyScriptableObject.health;
+        audioSource.volume = PlayerPrefs.GetFloat("effectsVolume");
     }
 
     private void Start()

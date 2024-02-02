@@ -56,4 +56,8 @@ public class AudioManager : MonoBehaviour
     }
 
     public AudioSource GetAudioSource() => audioSource;
+    public void SetAudioSourceVolume(float value)
+    {
+        audioSource.volume = value;
+    }
 }
