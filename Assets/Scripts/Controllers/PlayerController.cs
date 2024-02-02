@@ -192,13 +192,14 @@ public class PlayerController : MonoBehaviour
 
     private void KeepPlayerInCameraFieldIfHasJet()
     {
-        if (jetOnBack?.HasJet == false)
-            return;
+        if (jetOnBack?.HasJet == true)
+        {
 
-        if (transform.position.z > EdgePositionZWithJet)
-            transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
-        if (transform.position.y <= EdgePositionYWithJet)
-            transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
+            if (transform.position.z > EdgePositionZWithJet)
+                transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
+            if (transform.position.y <= EdgePositionYWithJet)
+                transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
+        }
     }
 
     private void OnCollisionEnter(Collision other)

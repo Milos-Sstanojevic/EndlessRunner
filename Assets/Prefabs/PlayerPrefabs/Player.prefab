@@ -10940,6 +10940,7 @@ GameObject:
   - component: {fileID: 5935847692933754051}
   - component: {fileID: 5605359223869833552}
   - component: {fileID: 4910153093682061335}
+  - component: {fileID: 4022415395586803856}
   - component: {fileID: 2962921181929539184}
   m_Layer: 0
   m_Name: Player
@@ -11084,6 +11085,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpingParticles: {fileID: 6951370374734900631}
   landingParticles: {fileID: 8682966931910837299}
+  enemyBloodParticles: {fileID: 0}
   jetEngineParticles: []
 --- !u!114 &4910153093682061335
 MonoBehaviour:
@@ -11102,6 +11104,18 @@ MonoBehaviour:
   spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
   jetCollectedSound: {fileID: 8300000, guid: 7875d3cec6e352143b14cb1f472f1153, type: 3}
   gunCollectedSound: {fileID: 8300000, guid: 5b948c8857a97b64391116612365171f, type: 3}
+--- !u!114 &4022415395586803856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3976238698996553829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac04ed360de7474dac5c44896637d1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &2962921181929539184
 AudioSource:
   m_ObjectHideFlags: 0
