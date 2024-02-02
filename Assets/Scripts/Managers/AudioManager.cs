@@ -54,8 +54,7 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.PlayOneShot(audioClip, ClipVolume);
     }
-
-    public AudioSource GetAudioSource() => audioSource;
+    
     public void SetAudioSourceVolume(float value)
     {
         audioSource.volume = value;

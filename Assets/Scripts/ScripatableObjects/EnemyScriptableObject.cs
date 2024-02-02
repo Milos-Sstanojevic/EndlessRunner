@@ -18,10 +18,8 @@ public class EnemyScriptableObject : ScriptableObject
     public void MoveEnemy(EnemyController enemy, AnimationManager enemyAnimator, int isOnEdge)
     {
         if (!isGroundEnemy)
-        {
             enemy.transform.Translate(Vector3.up * isOnEdge * movementSpeed * Time.deltaTime, Space.World);
 
-        }
         if (isGroundEnemy)
         {
             enemyAnimator.StartWalkAnimation();
@@ -34,10 +32,13 @@ public class EnemyScriptableObject : ScriptableObject
     {
         if (position.x <= -MapEdgeConstants.EdgePosX)
             return true;
+
         if (position.x >= MapEdgeConstants.EdgePosX)
             return true;
+
         if (position.y >= EdgePositionUpY)
             return true;
+
         if (position.y <= EdgePositionDownY)
             return true;
 

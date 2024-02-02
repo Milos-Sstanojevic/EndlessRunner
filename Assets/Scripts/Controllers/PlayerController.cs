@@ -111,25 +111,19 @@ public class PlayerController : MonoBehaviour
     private void ContinueGunAndJetCoroutine()
     {
         if (gunInHands != null)
-        {
             gunInHands.UnpauseCoroutine();
-        }
+
         if (jetOnBack != null)
-        {
             jetOnBack.UnpauseCoroutine();
-        }
     }
 
     private void StopGunAndJetCoroutines()
     {
         if (gunInHands != null)
-        {
             gunInHands.PauseCoroutine();
-        }
+
         if (jetOnBack != null)
-        {
             jetOnBack.PauseCoroutine();
-        }
     }
 
     private void Shoot()
@@ -151,13 +145,9 @@ public class PlayerController : MonoBehaviour
     private void SpinWhileFlying(float horizontalInput)
     {
         if (jetOnBack?.HasJet == true)
-        {
             transform.Rotate(0, 0, horizontalInput * -5, Space.World);
-        }
         else
-        {
             transform.eulerAngles = Vector3.zero;
-        }
     }
 
     private void Jump()
@@ -175,53 +165,40 @@ public class PlayerController : MonoBehaviour
     private void KeepPlayerOnRoad()
     {
         if (transform.position.x < -MapEdgeConstants.EdgePosX)
-        {
             transform.position = new Vector3(-MapEdgeConstants.EdgePosX, transform.position.y, transform.position.z);
-        }
+
         if (transform.position.x > MapEdgeConstants.EdgePosX)
-        {
             transform.position = new Vector3(MapEdgeConstants.EdgePosX, transform.position.y, transform.position.z);
-        }
+
         if (transform.position.z < PlayerEdgePositionBackZ)
-        {
             transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionBackZ);
-        }
+
         if (transform.position.z > PlayerEdgePositionFrontZ)
-        {
             transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionFrontZ);
-        }
     }
 
     private void PlayAnimationsWithGunOrFlyingAnimations()
     {
         if (gunInHands?.HasGun == true)
-        {
             characterAnimator.StartRunningWithGunAnimation();
-        }
         else
-        {
             characterAnimator.StopRunningWithGunAnimation();
-        }
 
         if (jetOnBack?.HasJet == true)
-        {
             characterAnimator.StartFlyingAnimation();
-        }
         else
-        {
             characterAnimator.StopFlyingAnimation();
-        }
     }
 
     private void KeepPlayerInCameraFieldIfHasJet()
     {
-        if (jetOnBack?.HasJet == true)
-        {
-            if (transform.position.z > EdgePositionZWithJet)
-                transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
-            if (transform.position.y <= EdgePositionYWithJet)
-                transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
-        }
+        if (jetOnBack?.HasJet == false)
+            return;
+
+        if (transform.position.z > EdgePositionZWithJet)
+            transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
+        if (transform.position.y <= EdgePositionYWithJet)
+            transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
     }
 
     private void OnCollisionEnter(Collision other)
@@ -250,13 +227,10 @@ public class PlayerController : MonoBehaviour
     private void ReleaseGunAndJetIfHaveOne()
     {
         if (gunInHands != null)
-        {
             StartCoroutine(ReleaseGunCoroutine());
-        }
+
         if (jetOnBack != null)
-        {
             StartCoroutine(ReleaseJetCoroutine());
-        }
     }
 
     private IEnumerator ReleaseGunCoroutine()
@@ -322,9 +296,7 @@ public class PlayerController : MonoBehaviour
             gun.MoveToPlayerHand(this, gunPosition.transform.position);
         }
         else
-        {
             gun.ReleaseGunInPool();
-        }
 
         AudioManager.Instance.PlayGunCollectedSound();
 
@@ -342,9 +314,7 @@ public class PlayerController : MonoBehaviour
             jet.MoveOnPlayerBack(this, jetPosition.transform.position);
         }
         else
-        {
             jet.ReleaseJetToPool();
-        }
 
         AudioManager.Instance.PlayJetCollectedSound();
 

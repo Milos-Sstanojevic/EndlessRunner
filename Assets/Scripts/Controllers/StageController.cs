@@ -25,9 +25,7 @@ public class StageController : MonoBehaviour
             MeshCollider collider = child.GetComponent<MeshCollider>();
 
             if (collider != null)
-            {
                 totalStageLength += collider.bounds.size.z;
-            }
         }
     }
 

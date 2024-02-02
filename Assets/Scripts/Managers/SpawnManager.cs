@@ -53,9 +53,7 @@ public class SpawnManager : MonoBehaviour
     private void SetEndOfPreviousChunk()
     {
         if (chunk != null)
-        {
             endOfPreviousChunk = chunk.GetEndOfChunk();
-        }
     }
 
     private void PickTypeOfChunk()
@@ -124,9 +122,7 @@ public class SpawnManager : MonoBehaviour
     private void HandleObstacleSpawning(List<GameObject> randomObstaclesOnChunk)
     {
         foreach (GameObject obstaclePos in randomObstaclesOnChunk)
-        {
             PickTypeOfObstacle(obstaclePos);
-        }
     }
 
     private void PickTypeOfObstacle(GameObject obstaclePos)
@@ -155,9 +151,7 @@ public class SpawnManager : MonoBehaviour
         for (int i = 0; i < obstaclesChances.Length; i++)
         {
             if (i > 3)
-            {
                 isEnemy = true;
-            }
 
             if (index <= obstaclesChances[i])
             {
@@ -190,9 +184,7 @@ public class SpawnManager : MonoBehaviour
     private void HandleCollectableSpawning(List<GameObject> randomCollectablesOnChunk)
     {
         foreach (GameObject collectablePos in randomCollectablesOnChunk)
-        {
             PickTypeOfCollectable(collectablePos);
-        }
     }
 
     private void PickTypeOfCollectable(GameObject collectablePos)

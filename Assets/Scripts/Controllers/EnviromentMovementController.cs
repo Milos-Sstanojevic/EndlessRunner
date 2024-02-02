@@ -13,11 +13,8 @@ public class EnvironmentMovementController : MonoBehaviour
 
     public void MoveObject()
     {
-
         if (MovementEnabled)
-        {
             transform.Translate(Vector3.back * MovementSpeed * Time.deltaTime, Space.World);
-        }
     }
 
     public void EnableMovement()

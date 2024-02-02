@@ -68,10 +68,9 @@ public class MovementManager : MonoBehaviour
     private void EnableMovementOfChildrenInChunk(EnvironmentMovementController chunk)
     {
         EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
+        
         foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
-        {
             movementInChunk.EnableMovement();
-        }
     }
 
     public void SetMovementSpeedOfObjects()
@@ -104,10 +103,9 @@ public class MovementManager : MonoBehaviour
     private void DisableMovemenOfChildrenInChunk(EnvironmentMovementController chunk)
     {
         EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
+
         foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
-        {
             movementInChunk.DisableMovement();
-        }
     }
 
     public void IncreaseMovementSpeed()

@@ -25,7 +25,6 @@ public class EnemyController : MonoBehaviour
     private void OnEnable()
     {
         health = enemyScriptableObject.health;
-        audioSource.volume = PlayerPrefs.GetFloat("effectsVolume");
     }
 
     private void Start()
@@ -37,10 +36,12 @@ public class EnemyController : MonoBehaviour
     {
         MoveLeftAndRight();
 
+        if (audioSource.volume != PlayerPrefs.GetFloat("effectsVolume"))
+            audioSource.volume = PlayerPrefs.GetFloat("effectsVolume");
+
         if (healthSlider.value != health)
-        {
             healthSlider.value = health;
-        }
+
 
         if (health <= minimumHealth)
         {
@@ -72,9 +73,8 @@ public class EnemyController : MonoBehaviour
             hasRotated = true;
         }
         else if (!enemyScriptableObject.IsEnemyOnEdge(transform.position))
-        {
             hasRotated = false;
-        }
+
     }
 
     public void TakeDamage(int damage)

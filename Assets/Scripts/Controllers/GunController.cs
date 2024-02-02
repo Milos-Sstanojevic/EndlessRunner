@@ -51,18 +51,18 @@ public class GunController : MonoBehaviour
 
     public void ShootFromGun()
     {
-        if (HasGun)
-        {
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                muzzleParticleObject.SetActive(true);
-                ShootBullet();
-            }
+        if (!HasGun)
+            return;
 
-            if (Input.GetKeyUp(KeyCode.Mouse0))
-            {
-                muzzleParticleObject.SetActive(false);
-            }
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            muzzleParticleObject.SetActive(true);
+            ShootBullet();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            muzzleParticleObject.SetActive(false);
         }
     }
 
@@ -143,13 +143,10 @@ public class GunController : MonoBehaviour
     private void DeactivateAllBullets()
     {
         List<BulletController> bullets = PoolingSystemController.Instance.GetBulletPoolingSystem().GetInstantiatedObjects();
+
         foreach (BulletController bullet in bullets)
-        {
             if (bullet.gameObject.activeSelf)
-            {
                 EventManager.Instance.OnBulletDestroyed(bullet);
-            }
-        }
     }
 
     public void ReleaseGunInPool()

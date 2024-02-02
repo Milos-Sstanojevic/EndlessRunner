@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -36,39 +37,31 @@ public class ChunkController : MonoBehaviour
 
     private void ResetChunk()
     {
+        Dictionary<Type, Action<Component>> eventHandlers = new Dictionary<Type, Action<Component>>
+        {
+            { typeof(GunController), c => EventManager.Instance.OnGunDestroyed((GunController)c) },
+            { typeof(JetController), c => EventManager.Instance.OnJetDestroyed((JetController)c) },
+            { typeof(CollectableController), c => EventManager.Instance.OnSpaceshipDestroyed((CollectableController)c) },
+            { typeof(EnemyController), c => EventManager.Instance.OnEnemyDestroyed((EnemyController)c) },
+            { typeof(EnvironmentMovementController), c => EventManager.Instance.OnEnvironmentDestroyed((EnvironmentMovementController)c) }
+        };
+
         foreach (GameObject obj in spawnedObjects)
         {
             if (!obj.activeSelf)
                 continue;
 
-            EnvironmentMovementController obstacle = obj.GetComponent<EnvironmentMovementController>();
-            GunController gun = obj.GetComponent<GunController>();
-            JetController jet = obj.GetComponent<JetController>();
-            CollectableController spaceship = obj.GetComponent<CollectableController>();
-            EnemyController enemy = obj.GetComponent<EnemyController>();
-
-            if (gun != null)
+            foreach (var keyValuePair in eventHandlers)
             {
-                EventManager.Instance.OnGunDestroyed(gun);
+                Component component = obj.GetComponent(keyValuePair.Key);
+                if (component != null)
+                {
+                    keyValuePair.Value(component);
+                    break;
+                }
             }
-            else if (jet != null)
-            {
-                EventManager.Instance.OnJetDestroyed(jet);
-            }
-            else if (spaceship != null)
-            {
-                EventManager.Instance.OnSpaceshipDestroyed(spaceship);
-            }
-            else if (enemy != null)
-            {
-                EventManager.Instance.OnEnemyDestroyed(enemy);
-            }
-            else if (obstacle != null)
-            {
-                EventManager.Instance.OnEnvironmentDestroyed(obstacle);
-            }
-
         }
+
 
         spawnedObjects.Clear();
     }

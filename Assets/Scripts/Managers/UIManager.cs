@@ -79,11 +79,8 @@ public class UIManager : MonoBehaviour
         gameOverScreen.SetActive(false);
     }
 
-    public int GetScore() => score;
-
     public void SetScoreOnScoreScreen(int score)
     {
-        // score += points;
         pointsText.text = ScoreText + score;
     }
 }
