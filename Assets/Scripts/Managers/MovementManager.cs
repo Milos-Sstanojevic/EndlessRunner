@@ -7,7 +7,7 @@ public class MovementManager : MonoBehaviour
     public static MovementManager Instance { get; private set; }
     private const float SpeedIncrease = 1f;
     private const float PlayerSpeedBalancer = 1;
-    [SerializeField] private PlayerController player;
+    [SerializeField] private PlayerMovement player;
     private List<ChunkController> chunksInGame;
     [SerializeField] private List<EnvironmentMovementController> objectsMovements;
     private float speed;
@@ -68,7 +68,7 @@ public class MovementManager : MonoBehaviour
     private void EnableMovementOfChildrenInChunk(EnvironmentMovementController chunk)
     {
         EnvironmentMovementController[] objectsInChunk = chunk.GetComponentsInChildren<EnvironmentMovementController>();
-        
+
         foreach (EnvironmentMovementController movementInChunk in objectsInChunk)
             movementInChunk.EnableMovement();
     }

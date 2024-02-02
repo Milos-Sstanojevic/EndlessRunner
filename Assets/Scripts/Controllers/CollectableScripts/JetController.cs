@@ -29,7 +29,7 @@ public class JetController : MonoBehaviour
         Destroy();
     }
 
-    public void MoveOnPlayerBack(PlayerController player, Vector3 jetPosition)
+    public void MoveOnPlayerBack(PlayerJetHandler player, Vector3 jetPosition)
     {
         transform.SetParent(player.transform);
         transform.eulerAngles = DefaultJetOrientation;

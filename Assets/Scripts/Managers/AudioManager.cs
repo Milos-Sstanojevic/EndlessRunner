@@ -54,9 +54,18 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.PlayOneShot(audioClip, ClipVolume);
     }
-    
+
     public void SetAudioSourceVolume(float value)
     {
         audioSource.volume = value;
+    }
+
+    public void MuteAudioSource()
+    {
+        audioSource.mute = true;
+    }
+    public void UnmuteAudioSource()
+    {
+        audioSource.mute = false;
     }
 }

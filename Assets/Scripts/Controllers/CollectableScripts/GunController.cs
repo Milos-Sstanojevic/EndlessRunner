@@ -118,7 +118,7 @@ public class GunController : MonoBehaviour
         EventManager.Instance.OnBulletDestroyed(bullet);
     }
 
-    public void MoveToPlayerHand(PlayerController player, Vector3 gunPos)
+    public void MoveToPlayerHand(PlayerGunHandler player, Vector3 gunPos)
     {
         transform.SetParent(player.transform);
         transform.position = gunPos;
