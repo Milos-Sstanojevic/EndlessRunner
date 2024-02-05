@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerCollisionHandler : MonoBehaviour
 {
     private const float ZeroPosition = 0;
+    private const float OffsetForPrefab = 0.5f;
     private const string GroundTag = "Ground";
     private const string EnemyTag = "Enemy";
     private AnimationManager characterAnimator;
@@ -43,10 +44,8 @@ public class PlayerCollisionHandler : MonoBehaviour
     {
         EventManager.Instance.OnPlayerDead();
 
-        if (IsPlayerOnGround())
-        {
-            playerController.transform.position = new Vector3(playerController.transform.position.x, ZeroPosition + 0.5f, playerController.transform.position.z);
-        }
+        if (!IsPlayerOnGround())
+            playerController.transform.position = new Vector3(playerController.transform.position.x, ZeroPosition + OffsetForPrefab, playerController.transform.position.z);
 
         characterAnimator.PlayDeadAnimation();
         AudioManager.Instance.PlayDeathSound();
@@ -55,12 +54,14 @@ public class PlayerCollisionHandler : MonoBehaviour
         jetHandler.ReleaseJetIfHaveOne();
     }
 
+
     private void HandleGroundCollision()
     {
         playerInputController.SetCanJumpToTrue();
         playerParticleSystem.PlayLandingParticleEffect();
         characterAnimator.StopJumpAnimation();
     }
+
 
     private void OnTriggerEnter(Collider other)
     {

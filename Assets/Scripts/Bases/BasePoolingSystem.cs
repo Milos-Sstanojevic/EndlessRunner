@@ -57,6 +57,8 @@ public abstract class BasePoolingSystem<T> : MonoBehaviour where T : MonoBehavio
         objectPrefab = prefab;
     }
 
+    public T GetBasePrefab() => objectPrefab;
+
     public List<T> GetInstantiatedObjects() => instantiatedObjects;
     public T GetObjectFromPool() => objectPool.Get();
 }

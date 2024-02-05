@@ -81,6 +81,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStage: 0
+  obstacleScriptableObject: {fileID: 11400000, guid: 40db25040881b7c4fa2382fd5ca06cfa, type: 2}
 --- !u!1 &2585242783823856665
 GameObject:
   m_ObjectHideFlags: 0

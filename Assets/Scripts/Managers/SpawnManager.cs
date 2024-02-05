@@ -11,12 +11,9 @@ public class SpawnManager : MonoBehaviour
     private const int ChanceForRandomChunk = 100;
     private const int ChanceForSpaceship = 85;
     private const int ChanceForJet = 100;
-    private const int ChanceForRoadblock = 20;
-    private const int ChanceForDoubleRight = 36;
-    private const int ChanceForDoubleLeft = 52;
-    private const int ChanceForDoubleMid = 68;
-    private const int ChanceForGroundEnemy = 84;
-    private const int ChanceForFlyingEnemy = 100;
+    private Dictionary<EnvironmentMovementController, int> chancesForObstacles;
+    private Dictionary<CollectableController, int> chancesForCollectables;
+    private Dictionary<ChunkController, int> chancesForChunks;
     private const int HundredPercent = 101;
     private const int ZeroPercent = 0;
     private const float PosZ = 50f;
@@ -25,6 +22,33 @@ public class SpawnManager : MonoBehaviour
     private bool spawnedEnemy;
     private Vector3 endOfPreviousChunk;
     private ChunkController chunk;
+
+    private void Awake()
+    {
+        chancesForObstacles = new Dictionary<EnvironmentMovementController, int>
+        {
+            { PoolingSystemController.Instance.GetRoadblockObstaclePrefab(), 60 },
+            { PoolingSystemController.Instance.GetRightObstaclePrefab(), 40 },
+            { PoolingSystemController.Instance.GetLeftObstaclePrefab(), 40 },
+            { PoolingSystemController.Instance.GetLeftAndRightObstaclePrefab(), 50 },
+            { PoolingSystemController.Instance.GetGroundEnemyPrefab().GetComponent<EnvironmentMovementController>(), 20 },
+            { PoolingSystemController.Instance.GetFlyingEnemyPrefab().GetComponent<EnvironmentMovementController>(), 20 }
+        };
+
+        chancesForCollectables = new Dictionary<CollectableController, int>
+        {
+            { PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetBasePrefab(), 70 },
+            { PoolingSystemController.Instance.GetJetPoolingSystem().GetBasePrefab().GetComponent<CollectableController>(), 20 }
+        };
+
+        chancesForChunks = new Dictionary<ChunkController, int>
+        {
+            {PoolingSystemController.Instance.GetCompleteChunk(),60},
+            {PoolingSystemController.Instance.GetChunkWithTwoEnemies(),45},
+            {PoolingSystemController.Instance.GetChunkWithFlyingEnemy(),50},
+            {PoolingSystemController.Instance.GetChunkWithRandomObstacles(),20}
+        };
+    }
 
     private void OnEnable()
     {
@@ -58,27 +82,18 @@ public class SpawnManager : MonoBehaviour
 
     private void PickTypeOfChunk()
     {
-        int indexForChunk = Random.Range(ZeroPercent, HundredPercent);
+        int totalWeight = 0;
+        foreach (var chance in chancesForChunks)
+            totalWeight += chance.Value;
 
-        int[] chancesForChunks ={
-            ChanceForRegularChunk,
-            ChanceForTwoEnemiesChunk,
-            ChanceForFlyingEnemyChunk,
-            ChanceForRandomChunk
-        };
-
-        System.Action[] chunkPrefabSetters ={
-            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetCompleteChunk()),
-            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetChunkWithTwoEnemies()),
-            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetChunkWithFlyingEnemy()),
-            ()=>PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetChunkWithRandomObstacles())
-        };
-
-        for (int i = 0; i < chancesForChunks.Length; i++)
+        int randomValue = Random.Range(0, totalWeight + 1);
+        int coursor = 0;
+        foreach (var chance in chancesForChunks)
         {
-            if (indexForChunk <= chancesForChunks[i])
+            coursor += chance.Value;
+            if (coursor >= randomValue)
             {
-                chunkPrefabSetters[i].Invoke();
+                PoolingSystemController.Instance.GetChunkPoolingSystem().SetBasePrefab(chance.Key);
                 break;
             }
         }
@@ -97,7 +112,7 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleSpawningOfPremadeChunk(List<GameObject> randomObstaclesOnChunk, List<GameObject> randomCollectablesOnChunk)
     {
-        if (IsChunkPremade(randomObstaclesOnChunk, randomCollectablesOnChunk))
+        if (IsChunkNotPremade(randomObstaclesOnChunk, randomCollectablesOnChunk))
         {
             spawnedEnemy = false;
             HandleObstacleSpawning(randomObstaclesOnChunk);
@@ -113,8 +128,8 @@ public class SpawnManager : MonoBehaviour
             chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, endOfPreviousChunk.z + OffsetFromCenterOfChunk);
     }
 
-    //If lists for positions of obstacles are empty, it is premade chunk
-    private bool IsChunkPremade(List<GameObject> randomObstaclesOnChunk, List<GameObject> randomCollectablesOnChunk)
+    //If lists for positions of obstacles are not empty, it is not premade chunk
+    private bool IsChunkNotPremade(List<GameObject> randomObstaclesOnChunk, List<GameObject> randomCollectablesOnChunk)
     {
         return randomObstaclesOnChunk.Count != 0 && randomCollectablesOnChunk.Count != 0;
     }
@@ -127,49 +142,35 @@ public class SpawnManager : MonoBehaviour
 
     private void PickTypeOfObstacle(GameObject obstaclePos)
     {
-        int index = Random.Range(ZeroPercent, HundredPercent);
-        int[] obstaclesChances ={
-                    ChanceForRoadblock,
-                    ChanceForDoubleRight,
-                    ChanceForDoubleLeft,
-                    ChanceForDoubleMid,
-                    ChanceForGroundEnemy,
-                    ChanceForFlyingEnemy
-                };
+        int totalWeight = 0;
+        foreach (var chancePair in chancesForObstacles)
+            totalWeight += chancePair.Value;
 
-        System.Action[] obstacleSetPrefabFunctions ={
-                    ()=>PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetRoadblockObstaclePrefab()),
-                    ()=> PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetRightObstaclePrefab()),
-                    ()=> PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetLeftObstaclePrefab()),
-                    ()=> PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetLeftAndRightObstaclePrefab()),
-                    ()=> PoolingSystemController.Instance.GetEnemyPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetGroundEnemyPrefab()),
-                    ()=> PoolingSystemController.Instance.GetEnemyPoolingSystem().SetBasePrefab(PoolingSystemController.Instance.GetFlyingEnemyPrefab())
-                };
+        int randomValue = Random.Range(0, totalWeight + 1);
 
-        bool isEnemy = false;
-
-        for (int i = 0; i < obstaclesChances.Length; i++)
+        int coursor = 0;
+        foreach (var chance in chancesForObstacles)
         {
-            if (i > 3)
-                isEnemy = true;
-
-            if (index <= obstaclesChances[i])
+            spawnedEnemy = false;
+            coursor += chance.Value;
+            if (coursor >= randomValue)
             {
-                obstacleSetPrefabFunctions[i].Invoke();
+                if (chance.Key.GetComponent<EnemyController>() != null)
+                {
+                    spawnedEnemy = true;
+                    PoolingSystemController.Instance.GetEnemyPoolingSystem().SetBasePrefab(chance.Key.GetComponent<EnemyController>());
+                    EnemyController enemy = PoolingSystemController.Instance.GetEnemyPoolingSystem().GetObjectFromPool();
+                    SetPositionAndParentOfObjectFromPool(enemy.gameObject, obstaclePos.transform.position);
+                }
+                else
+                {
+                    PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(chance.Key);
+                    EnvironmentMovementController obstacle = PoolingSystemController.Instance.GetObstaclesPoolingSystem().GetObjectFromPool();
+                    SetPositionAndParentOfObjectFromPool(obstacle.gameObject, obstaclePos.transform.position);
+                }
+
                 break;
             }
-        }
-
-        if (isEnemy)
-        {
-            EnemyController enemy = PoolingSystemController.Instance.GetEnemyPoolingSystem().GetObjectFromPool();
-            spawnedEnemy = true;
-            SetPositionAndParentOfObjectFromPool(enemy.gameObject, obstaclePos.transform.position);
-        }
-        else
-        {
-            EnvironmentMovementController obstacle = PoolingSystemController.Instance.GetObstaclesPoolingSystem().GetObjectFromPool();
-            SetPositionAndParentOfObjectFromPool(obstacle.gameObject, obstaclePos.transform.position);
         }
     }
 
@@ -189,16 +190,6 @@ public class SpawnManager : MonoBehaviour
 
     private void PickTypeOfCollectable(GameObject collectablePos)
     {
-        int index = Random.Range(ZeroPercent, HundredPercent);
-        int[] collectableChances ={
-                ChanceForSpaceship,
-                ChanceForJet
-            };
-
-        System.Action<Vector3>[] collectableSpawnFunctions ={
-                SpawnSpaceship,
-                SpawnJet
-            };
 
         if (spawnedEnemy == true)
         {
@@ -207,11 +198,28 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < collectableChances.Length; i++)
+            int totalWeight = 0;
+
+            foreach (var chance in chancesForCollectables)
+                totalWeight += chance.Value;
+
+            int randomValue = Random.Range(0, totalWeight);
+
+            int coursor = 0;
+
+            foreach (var chance in chancesForCollectables)
             {
-                if (index <= collectableChances[i])
+                coursor += chance.Value;
+                if (coursor >= randomValue)
                 {
-                    collectableSpawnFunctions[i].Invoke(collectablePos.transform.position);
+                    if (chance.Key.GetComponent<JetController>() != null)
+                    {
+                        SpawnJet(collectablePos.transform.position);
+                    }
+                    else
+                    {
+                        SpawnSpaceship(collectablePos.transform.position);
+                    }
                     break;
                 }
             }

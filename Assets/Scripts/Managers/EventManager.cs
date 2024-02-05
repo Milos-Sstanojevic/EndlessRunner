@@ -171,7 +171,6 @@ public class EventManager : MonoBehaviour
         OnStartAddingPointsAction -= action;
     }
 
-
     public void OnObjectsInSceneChanged()
     {
         OnObjectsInSceneChangedAction?.Invoke();

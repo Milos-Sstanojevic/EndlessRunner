@@ -48,14 +48,15 @@ public class GlobalAudioManager : MonoBehaviour
 
     public void SaveMusicAndEffectVolume()
     {
+        Debug.Log(MusicVolume); //ovde je greska posle restarta, ako se odma klikne save default je 0, nece da se desi ali stavicu check
         PlayerPrefs.SetFloat("musicVolume", MusicVolume);
         PlayerPrefs.SetFloat("effectsVolume", EffectsVolume);
     }
 
     private void LoadVolume()
     {
-        musicSlider.value = PlayerPrefs.GetFloat("musicVolume");
-        effectsSlider.value = PlayerPrefs.GetFloat("effectsVolume");
+        musicSlider.value = PlayerPrefs.GetFloat("musicVolume", 1f);
+        effectsSlider.value = PlayerPrefs.GetFloat("effectsVolume", 1f);
     }
 
     public void MuteMusicToggle(bool mute)
@@ -63,12 +64,10 @@ public class GlobalAudioManager : MonoBehaviour
         if (mute)
         {
             musicAudio.mute = true;
-            MusicVolume = 0.0001f;
         }
         else
         {
             musicAudio.mute = false;
-            MusicVolume = musicSlider.value;
         }
 
         UpdateAudioMixerValue();
@@ -80,12 +79,10 @@ public class GlobalAudioManager : MonoBehaviour
         if (muteEffects)
         {
             AudioManager.Instance.MuteAudioSource();
-            EffectsVolume = 0.0001f;
         }
         else
         {
             AudioManager.Instance.UnmuteAudioSource();
-            EffectsVolume = effectsSlider.value;
         }
 
         UpdateAudioMixerValue();

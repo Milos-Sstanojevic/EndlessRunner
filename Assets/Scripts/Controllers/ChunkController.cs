@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-
 
 public class ChunkController : MonoBehaviour
 {
@@ -11,10 +9,24 @@ public class ChunkController : MonoBehaviour
     [SerializeField] private List<GameObject> positionsForRandomObstaclesOnChunk;
     [SerializeField] private List<GameObject> positionsForRandomCollectablesOnChunk;
     private List<GameObject> spawnedObjects;
+    private Dictionary<GameObject, Vector3> initialObjectPositions;
+
 
     private void Awake()
     {
         spawnedObjects = new List<GameObject>();
+        initialObjectPositions = new Dictionary<GameObject, Vector3>();
+        SaveInitialState();
+    }
+
+    private void SaveInitialState()
+    {
+        initialObjectPositions.Clear();
+        foreach (Transform child in transform)
+        {
+            GameObject childObject = child.gameObject;
+            initialObjectPositions[childObject] = childObject.transform.localPosition;
+        }
     }
 
     private void Update()
@@ -28,6 +40,7 @@ public class ChunkController : MonoBehaviour
         {
             ResetChunk();
             EventManager.Instance.OnChunkDestroyed(this);
+            RespawnMissingObjects();
         }
     }
 
@@ -62,7 +75,6 @@ public class ChunkController : MonoBehaviour
             }
         }
 
-
         spawnedObjects.Clear();
     }
 
@@ -72,4 +84,93 @@ public class ChunkController : MonoBehaviour
     }
 
     public Vector3 GetEndOfChunk() => endOfChunk.position;
+
+    private void RespawnMissingObjects()
+    {
+        foreach (var initialObjectPosition in initialObjectPositions)
+        {
+            GameObject initialObject = initialObjectPosition.Key;
+            if (!IsObjectActiveInChunk(initialObject))
+            {
+                RespawnObject(initialObject);
+            }
+        }
+    }
+
+    private bool IsObjectActiveInChunk(GameObject obj)
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject == obj && child.gameObject.activeSelf)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void RespawnObject(GameObject obj)
+    {
+        Type objectType = GetObjectType(obj);
+
+        Vector3 originalPosition = GetOriginalObjectPosition(obj);
+
+        if (obj.GetComponent<JetController>() != null)
+        {
+            JetController jet = PoolingSystemController.Instance.GetJetPoolingSystem().GetObjectFromPool();
+            jet.transform.SetParent(transform);
+            jet.transform.localPosition = originalPosition;
+        }
+        else if (obj.GetComponent<EnemyController>() != null)
+        {
+            EnemyController enemy = PoolingSystemController.Instance.GetEnemyPoolingSystem().GetObjectFromPool();
+            enemy.transform.SetParent(transform);
+            enemy.transform.localPosition = originalPosition;
+        }
+        else if (objectType == typeof(GunController))
+        {
+            GunController gun = PoolingSystemController.Instance.GetGunPoolingSystem().GetObjectFromPool();
+            gun.transform.SetParent(transform);
+            gun.transform.localPosition = originalPosition;
+        }
+        else if (objectType == typeof(CollectableController))
+        {
+            CollectableController spaceship = PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetObjectFromPool();
+            spaceship.transform.SetParent(transform);
+            spaceship.transform.localPosition = originalPosition;
+        }
+
+    }
+
+    private Vector3 GetOriginalObjectPosition(GameObject obj)
+    {
+        if (initialObjectPositions.TryGetValue(obj, out Vector3 originalPosition))
+        {
+            return originalPosition;
+        }
+
+        return Vector3.zero;
+    }
+
+
+    private Type GetObjectType(GameObject obj)
+    {
+        if (obj.GetComponent<GunController>() != null)
+        {
+            return typeof(GunController);
+        }
+        else if (obj.GetComponent<JetController>() != null)
+        {
+            return typeof(JetController);
+        }
+        else if (obj.GetComponent<CollectableController>() != null)
+        {
+            return typeof(CollectableController);
+        }
+        else
+        {
+            Debug.LogWarning("Unknown object type");
+            return null;
+        }
+    }
 }

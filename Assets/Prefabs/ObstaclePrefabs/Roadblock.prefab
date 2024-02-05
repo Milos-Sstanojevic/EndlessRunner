@@ -120,6 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStage: 0
+  obstacleScriptableObject: {fileID: 11400000, guid: 53b26a47f4da8594191435e694e2ef2e, type: 2}
 --- !u!54 &6027595725735332152
 Rigidbody:
   m_ObjectHideFlags: 0
