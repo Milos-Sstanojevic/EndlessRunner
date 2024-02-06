@@ -4,7 +4,6 @@ using UnityEngine;
 public class EventManager : MonoBehaviour
 {
     public static EventManager Instance { get; private set; }
-    private event Action<CollectableController, int> OnCollectAction;
     private event Action<EnvironmentMovementController> OnDestroyAction;
     private event Action<GunController> OnDestroyGunAction;
     private event Action<JetController> OnDestroyJetAction;
@@ -44,11 +43,6 @@ public class EventManager : MonoBehaviour
     public void SubscribeToChangeScoreOnScreen(Action<int> action)
     {
         OnChangeScoreOnScreenAction += action;
-    }
-
-    public void SubscribeToOnCollectAction(Action<CollectableController, int> action)
-    {
-        OnCollectAction += action;
     }
 
     public void SubscribeToOnDestroyAction(Action<EnvironmentMovementController> action)
@@ -99,11 +93,6 @@ public class EventManager : MonoBehaviour
     public void SubscribeToOnObjectsInSceneChangedAction(Action action)
     {
         OnObjectsInSceneChangedAction += action;
-    }
-
-    public void UnsubscribeFromOnCollectAction(Action<CollectableController, int> action)
-    {
-        OnCollectAction -= action;
     }
 
     public void UnsubscribeFromOnDestroyAction(Action<EnvironmentMovementController> action)
@@ -181,10 +170,6 @@ public class EventManager : MonoBehaviour
         OnChunkDestroyAction?.Invoke(chunk);
     }
 
-    public void OnCollectibleCollected(CollectableController collectible, int pointsWorth)
-    {
-        OnCollectAction?.Invoke(collectible, pointsWorth);
-    }
 
     public void OnEnvironmentDestroyed(EnvironmentMovementController movable)
     {

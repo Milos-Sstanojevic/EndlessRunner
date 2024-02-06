@@ -5,7 +5,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravityModifier;
     public ScoreManager ScoreManager { get; private set; }
 
-
     private void Awake()
     {
         ScoreManager = GetComponent<ScoreManager>();

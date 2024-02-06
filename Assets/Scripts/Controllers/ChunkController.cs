@@ -22,6 +22,7 @@ public class ChunkController : MonoBehaviour
     private void SaveInitialState()
     {
         initialObjectPositions.Clear();
+
         foreach (Transform child in transform)
         {
             GameObject childObject = child.gameObject;
@@ -78,42 +79,30 @@ public class ChunkController : MonoBehaviour
         spawnedObjects.Clear();
     }
 
-    public void AddObjectToList(GameObject spawnedObject)
-    {
-        spawnedObjects.Add(spawnedObject);
-    }
-
-    public Vector3 GetEndOfChunk() => endOfChunk.position;
-
     private void RespawnMissingObjects()
     {
         foreach (var initialObjectPosition in initialObjectPositions)
         {
             GameObject initialObject = initialObjectPosition.Key;
             if (!IsObjectActiveInChunk(initialObject))
-            {
                 RespawnObject(initialObject);
-            }
         }
     }
 
     private bool IsObjectActiveInChunk(GameObject obj)
     {
         foreach (Transform child in transform)
-        {
             if (child.gameObject == obj && child.gameObject.activeSelf)
-            {
                 return true;
-            }
-        }
+
         return false;
     }
 
     private void RespawnObject(GameObject obj)
     {
-        Type objectType = GetObjectType(obj);
-
         Vector3 originalPosition = GetOriginalObjectPosition(obj);
+
+        
 
         if (obj.GetComponent<JetController>() != null)
         {
@@ -127,13 +116,13 @@ public class ChunkController : MonoBehaviour
             enemy.transform.SetParent(transform);
             enemy.transform.localPosition = originalPosition;
         }
-        else if (objectType == typeof(GunController))
+        else if (obj.GetComponent<GunController>() != null)
         {
             GunController gun = PoolingSystemController.Instance.GetGunPoolingSystem().GetObjectFromPool();
             gun.transform.SetParent(transform);
             gun.transform.localPosition = originalPosition;
         }
-        else if (objectType == typeof(CollectableController))
+        else if (obj.GetComponent<CollectableController>() != null)
         {
             CollectableController spaceship = PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetObjectFromPool();
             spaceship.transform.SetParent(transform);
@@ -152,25 +141,10 @@ public class ChunkController : MonoBehaviour
         return Vector3.zero;
     }
 
-
-    private Type GetObjectType(GameObject obj)
+    public void AddObjectToList(GameObject spawnedObject)
     {
-        if (obj.GetComponent<GunController>() != null)
-        {
-            return typeof(GunController);
-        }
-        else if (obj.GetComponent<JetController>() != null)
-        {
-            return typeof(JetController);
-        }
-        else if (obj.GetComponent<CollectableController>() != null)
-        {
-            return typeof(CollectableController);
-        }
-        else
-        {
-            Debug.LogWarning("Unknown object type");
-            return null;
-        }
+        spawnedObjects.Add(spawnedObject);
     }
+
+    public Vector3 GetEndOfChunk() => endOfChunk.position;
 }

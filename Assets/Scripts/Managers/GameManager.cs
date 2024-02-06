@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     private int speedupRound = 1;
     private GameStates CurrentState;
-    private int score;
+    private int playerScore;
 
 
     private void Awake()
@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         SetGameState(GameStates.MainMenu);
-        score = 0;
     }
 
     private void SetGameState(GameStates state)
@@ -38,7 +37,6 @@ public class GameManager : MonoBehaviour
     private void SubscribeToEvents()
     {
         EventManager.Instance.SubscribeToOnPlayerDeadAction(GameOver);
-        EventManager.Instance.SubscribeToOnCollectAction(CollectCollectable);
         EventManager.Instance.SubscribeToOnEnemyKilledAction(EnemyKilled);
         EventManager.Instance.SubscribeToChangeScoreOnScreen(SetScoreOnScreen);
     }
@@ -50,12 +48,6 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.StopAddingPoints();
         uiManager.SetEndScreenActive();
         uiManager.SetScoreScreenInactive();
-    }
-
-    public void CollectCollectable(CollectableController collectible, int pointsWorth)
-    {
-        score += pointsWorth;
-        uiManager.SetScoreOnScoreScreen(score);
     }
 
     public void EnemyKilled(int enemyWorth)
@@ -94,6 +86,7 @@ public class GameManager : MonoBehaviour
         SetGameState(GameStates.Playing);
         EventManager.Instance.StartAddingPoints();
         uiManager.SetPauseScreenInactive();
+        uiManager.SetSettingsScreenInactive();
     }
 
     private void HandlePlayingState()
@@ -118,7 +111,7 @@ public class GameManager : MonoBehaviour
 
     private void SpeedupGame()
     {
-        if (score < ScoreStep * speedupRound)
+        if (playerScore < ScoreStep * speedupRound)
             return;
 
         MovementManager.Instance.IncreaseMovementSpeed();
@@ -152,6 +145,7 @@ public class GameManager : MonoBehaviour
 
     private void SetScoreOnScreen(int score)
     {
+        playerScore = score;
         uiManager.SetScoreOnScoreScreen(score);
     }
 
@@ -206,7 +200,6 @@ public class GameManager : MonoBehaviour
     {
         EventManager.Instance.UnsubscribeFromChangeScoreOnScreen(SetScoreOnScreen);
         EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(GameOver);
-        EventManager.Instance.UnsubscribeFromOnCollectAction(CollectCollectable);
     }
 }
 

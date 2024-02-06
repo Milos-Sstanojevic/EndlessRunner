@@ -5,6 +5,8 @@ using UnityEngine;
 public class MovementManager : MonoBehaviour
 {
     public static MovementManager Instance { get; private set; }
+
+    private const int NumberOfStagesInScene = 2;
     private const float SpeedIncrease = 1f;
     private const float PlayerSpeedBalancer = 1;
     [SerializeField] private PlayerMovement player;
@@ -44,7 +46,7 @@ public class MovementManager : MonoBehaviour
 
     private void AddObjectsInSceneToMovementList()
     {
-        objectsMovements = objectsMovements.Take(2).ToList();
+        objectsMovements = objectsMovements.Take(NumberOfStagesInScene).ToList();
 
         foreach (EnvironmentMovementController movement in chunksInGame.Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
             objectsMovements.Add(movement);
