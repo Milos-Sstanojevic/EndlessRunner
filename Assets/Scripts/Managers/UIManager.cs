@@ -1,8 +1,10 @@
 using TMPro;
 using UnityEngine;
+
 public class UIManager : MonoBehaviour
 {
     private const string ScoreText = "Score: ";
+    private const int StartingScore = 0;
     [SerializeField] private GameObject startScreen;
     [SerializeField] private GameObject endScreen;
     [SerializeField] private GameObject pauseScreen;
@@ -10,11 +12,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pointsText;
     [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject gameOverScreen;
-    private int score = 0;
 
     private void Start()
     {
-        pointsText.text = ScoreText + score;
+        pointsText.text = ScoreText + StartingScore;
     }
 
     public void SetSettingsScreenActive()

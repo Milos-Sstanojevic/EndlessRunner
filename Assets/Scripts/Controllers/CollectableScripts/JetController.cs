@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class JetController : MonoBehaviour
+public class JetController : MonoBehaviour, IDestroyable
 {
     private const int JetTimeToLive = 5;
     private static Vector3 DefaultJetOrientation = new Vector3(-90, 0, 0);
@@ -26,7 +26,14 @@ public class JetController : MonoBehaviour
             collectableComponent.enabled = true;
         }
 
-        Destroy();
+
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
+            Destroy();
+    }
+
+    public void Destroy()
+    {
+        EventManager.Instance.OnJetDestroyed(this);
     }
 
     public void MoveOnPlayerBack(PlayerJetHandler player, Vector3 jetPosition)
@@ -64,11 +71,5 @@ public class JetController : MonoBehaviour
     public void UnpauseCoroutine()
     {
         Time.timeScale = 1f;
-    }
-
-    private void Destroy()
-    {
-        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
-            EventManager.Instance.OnJetDestroyed(this);
     }
 }

@@ -9843,9 +9843,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpingParticles: {fileID: 0}
   landingParticles: {fileID: 0}
+  enemyBloodParticles: {fileID: 0}
   jetEngineParticles:
   - {fileID: 1564374173742707355}
   - {fileID: 1721335608948306727}
+  flyingEnemyExplosion: {fileID: 0}
 --- !u!114 &3590230177244468710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9858,6 +9860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 60
   isStage: 0
 --- !u!114 &-49817474904436873
 MonoBehaviour:
@@ -9871,6 +9874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a94452cdaca25564ba8896f78c134a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisCollectable: 20
 --- !u!4 &183490728636014685 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 247766e192f437c4680b63372b7cb017, type: 3}

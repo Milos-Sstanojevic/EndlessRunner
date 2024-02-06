@@ -773,9 +773,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b7dffc68498074892d949d6afb3677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisEnemy: 20
   healthSlider: {fileID: 8031315488870881352}
   enemyAnimator: {fileID: 6482012536767241962}
   enemyScriptableObject: {fileID: 11400000, guid: 4443f1bdcd68e34488a70f6125b9721c, type: 2}
+  deathExplosion: {fileID: 0}
 --- !u!54 &5208618901591304463
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -850,8 +852,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 60
   isStage: 0
-  obstacleScriptableObject: {fileID: 0}
 --- !u!114 &8056657919502811744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -868,6 +870,7 @@ MonoBehaviour:
   landingParticles: {fileID: 0}
   enemyBloodParticles: {fileID: 7815981359894947892}
   jetEngineParticles: []
+  flyingEnemyExplosion: {fileID: 0}
 --- !u!82 &53614081130899892
 AudioSource:
   m_ObjectHideFlags: 0
@@ -877,10 +880,10 @@ AudioSource:
   m_GameObject: {fileID: 6850901344987526839}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1359262410050280969, guid: aeb55ba195ba20f46b5d6f5de4dd1b3e, type: 2}
   m_audioClip: {fileID: 8300000, guid: 96b4c081276c1764995e060132e60519, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.704
+  m_Volume: 0.519
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -889,7 +892,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 15
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -939,7 +942,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.119444445
+      value: 0.10277778
       inSlope: 0
       outSlope: 0
       tangentMode: 0

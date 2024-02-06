@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip spaceshipCollectedSound;
     [SerializeField] private AudioClip jetCollectedSound;
     [SerializeField] private AudioClip gunCollectedSound;
+    [SerializeField] private AudioClip enemyShotSound;
 
     private void Awake()
     {
@@ -67,5 +68,10 @@ public class AudioManager : MonoBehaviour
     public void UnmuteAudioSource()
     {
         audioSource.mute = false;
+    }
+
+    public void PlayEnemyShotSound()
+    {
+        PlaySound(enemyShotSound);
     }
 }

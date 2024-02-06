@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class ParticleSystemManager : MonoBehaviour
@@ -7,6 +6,7 @@ public class ParticleSystemManager : MonoBehaviour
     [SerializeField] private ParticleSystem landingParticles;
     [SerializeField] private ParticleSystem enemyBloodParticles;
     [SerializeField] private ParticleSystem[] jetEngineParticles;
+    [SerializeField] private ParticleSystem flyingEnemyExplosion;
     private bool canPlayLandingParticles;
 
     public void PlayLandingParticleEffect()
@@ -33,5 +33,10 @@ public class ParticleSystemManager : MonoBehaviour
     public void PlayBloodParticleEffect()
     {
         enemyBloodParticles.Play();
+    }
+
+    public void PlayDeathParticles()
+    {
+        flyingEnemyExplosion.Play();
     }
 }

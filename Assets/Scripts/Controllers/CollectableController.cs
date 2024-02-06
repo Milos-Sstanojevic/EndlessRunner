@@ -1,13 +1,16 @@
 using UnityEngine;
 
-public class CollectableController : MonoBehaviour
+public class CollectableController : MonoBehaviour, IDestroyable
 {
-    private float RotationSpeed = 80;
+    private const float RotationSpeed = 80;
+    [SerializeField] private int chanceForThisCollectable;//70
 
     private void Update()
     {
         RotateCollectable();
-        Destroy();
+
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
+            Destroy();
     }
 
     private void RotateCollectable()
@@ -15,10 +18,10 @@ public class CollectableController : MonoBehaviour
         transform.Rotate(Time.deltaTime * RotationSpeed * Vector3.up, Space.World);
     }
 
-    private void Destroy()
+    public void Destroy()
     {
-        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
-            EventManager.Instance.OnSpaceshipDestroyed(this);
+        EventManager.Instance.OnSpaceshipDestroyed(this);
     }
 
+    public int GetChanceForThisCollectable() => chanceForThisCollectable;
 }

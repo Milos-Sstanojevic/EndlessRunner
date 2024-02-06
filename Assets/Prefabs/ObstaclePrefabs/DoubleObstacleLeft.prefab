@@ -786,8 +786,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 30
   isStage: 0
-  obstacleScriptableObject: {fileID: 11400000, guid: 349cdb6643c96894f8067c5e9a18a184, type: 2}
 --- !u!1 &5117090210193192672
 GameObject:
   m_ObjectHideFlags: 0

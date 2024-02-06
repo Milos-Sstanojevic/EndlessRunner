@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 60
   isStage: 0
-  obstacleScriptableObject: {fileID: 11400000, guid: 53b26a47f4da8594191435e694e2ef2e, type: 2}
 --- !u!1001 &7129839431336986222
 PrefabInstance:
   m_ObjectHideFlags: 0

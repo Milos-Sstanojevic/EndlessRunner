@@ -11070,6 +11070,7 @@ MonoBehaviour:
   landingParticles: {fileID: 8682966931910837299}
   enemyBloodParticles: {fileID: 0}
   jetEngineParticles: []
+  flyingEnemyExplosion: {fileID: 0}
 --- !u!114 &4910153093682061335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11087,6 +11088,7 @@ MonoBehaviour:
   spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
   jetCollectedSound: {fileID: 8300000, guid: 7875d3cec6e352143b14cb1f472f1153, type: 3}
   gunCollectedSound: {fileID: 8300000, guid: 5b948c8857a97b64391116612365171f, type: 3}
+  enemyShotSound: {fileID: 0}
 --- !u!114 &4022415395586803856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11195,7 +11197,7 @@ AudioSource:
   m_GameObject: {fileID: 3976238698996553829}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1359262410050280969, guid: aeb55ba195ba20f46b5d6f5de4dd1b3e, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

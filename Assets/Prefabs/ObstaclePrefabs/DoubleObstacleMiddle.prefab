@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 40
   isStage: 0
-  obstacleScriptableObject: {fileID: 11400000, guid: 8a93aa60311496041beb390505183573, type: 2}
 --- !u!54 &4402571247789571547
 Rigidbody:
   m_ObjectHideFlags: 0

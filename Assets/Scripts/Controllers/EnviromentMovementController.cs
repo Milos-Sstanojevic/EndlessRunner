@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class EnvironmentMovementController : MonoBehaviour
+public class EnvironmentMovementController : MonoBehaviour, IDestroyable
 {
+    [SerializeField] private int chanceForThisObstacle;
+    [SerializeField] private bool isStage;
     public bool MovementEnabled { get; private set; }
     public float MovementSpeed { get; private set; }
-    [SerializeField] private bool isStage;
 
     private void Update()
     {
@@ -30,5 +31,12 @@ public class EnvironmentMovementController : MonoBehaviour
     public void SetMovementSpeed(float speed)
     {
         MovementSpeed = speed;
+    }
+
+    public int GetChanceForThisObstacle() => chanceForThisObstacle;
+
+    public void Destroy()
+    {
+        EventManager.Instance.OnEnvironmentDestroyed(this);
     }
 }

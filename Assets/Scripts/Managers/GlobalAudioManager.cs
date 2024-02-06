@@ -10,8 +10,6 @@ public class GlobalAudioManager : MonoBehaviour
     private const string AudioMixerMusicVolume = "Music Volume";
     private const string AudioMixerEffectsVolume = "Effects Volume";
     private const int ZeroVolume = 0;
-    public static float MusicVolume { get; private set; }
-    public static float EffectsVolume { get; private set; }
     [SerializeField] private AudioMixerGroup musicMixerGroup;
     [SerializeField] private AudioMixerGroup effectsMixerGroup;
     [SerializeField] private TextMeshProUGUI musicSliderText;
@@ -21,6 +19,8 @@ public class GlobalAudioManager : MonoBehaviour
     [SerializeField] private AudioSource musicAudio;
     [SerializeField] private Toggle muteToggleMusic;
     [SerializeField] private Toggle muteToggleEffects;
+    public float MusicVolume { get; private set; }
+    public float EffectsVolume { get; private set; }
 
 
     private void Start()

@@ -1,20 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IDestroyable
 {
     private const int Negator = -1;
     private const string EffectsVolume = "effectsVolume";
     private int minimumHealth;
+    [SerializeField] private int chanceForThisEnemy;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private AnimationManager enemyAnimator;
     [SerializeField] private EnemyScriptableObject enemyScriptableObject;
+    [SerializeField] private GameObject deathExplosion;
     private int isOnEdge = -1;
     private int health;
     private bool hasRotated;
     private EnvironmentMovementController environmentComponent;
     private ParticleSystemManager particleSystemManager;
     private AudioSource audioSource;
+
 
     private void Awake()
     {
@@ -26,6 +29,14 @@ public class EnemyController : MonoBehaviour
     private void OnEnable()
     {
         health = enemyScriptableObject.health;
+
+        UpdateHealthSlider();
+    }
+
+    private void UpdateHealthSlider()
+    {
+        if (healthSlider.value != health)
+            healthSlider.value = health;
     }
 
     private void Start()
@@ -37,32 +48,43 @@ public class EnemyController : MonoBehaviour
     {
         MoveLeftAndRight();
 
+        //ovo treba preko audioMixera
         if (audioSource.volume != PlayerPrefs.GetFloat(EffectsVolume))
             audioSource.volume = PlayerPrefs.GetFloat(EffectsVolume);
 
-        if (healthSlider.value != health)
-            healthSlider.value = health;
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
+            Destroy();
+    }
 
-
-        if (health <= minimumHealth)
-        {
-            health = enemyScriptableObject.fullHealth;
-            EventManager.Instance.OnEnemyDestroyed(this);
-            EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
-        }
-
-        Destroy();
+    public void Destroy()
+    {
+        audioSource.Stop();
+        EventManager.Instance.OnEnemyDestroyed(this);
     }
 
     private void MoveLeftAndRight()
     {
-        if (environmentComponent.MovementEnabled == true)
+        if (environmentComponent.MovementEnabled)
         {
-            enemyScriptableObject.MoveEnemy(this, enemyAnimator, isOnEdge);
+            MoveEnemy(enemyAnimator, isOnEdge);
             RotateEnemy();
         }
         else if (enemyAnimator != null)
+        {
             enemyAnimator.StopWalkAnimation();
+        }
+    }
+
+    public void MoveEnemy(AnimationManager enemyAnimator, int isOnEdge)
+    {
+        if (!enemyScriptableObject.isGroundEnemy)
+            transform.Translate(Vector3.up * isOnEdge * enemyScriptableObject.movementSpeed * Time.deltaTime, Space.World);
+
+        if (enemyScriptableObject.isGroundEnemy)
+        {
+            enemyAnimator.StartWalkAnimation();
+            transform.Translate(Vector3.left * isOnEdge * enemyScriptableObject.movementSpeed * Time.deltaTime, Space.World);
+        }
     }
 
     private void RotateEnemy()
@@ -74,26 +96,42 @@ public class EnemyController : MonoBehaviour
             hasRotated = true;
         }
         else if (!enemyScriptableObject.IsEnemyOnEdge(transform.position))
+        {
             hasRotated = false;
-
+        }
     }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
+
+        UpdateHealthSlider();
+
+        if (health <= minimumHealth)
+        {
+            health = enemyScriptableObject.fullHealth;
+            PlayDeathParticles();
+            EventManager.Instance.OnEnemyDestroyed(this);
+            EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
+        }
     }
 
-    private void Destroy()
+    public void PlayDeathParticles()
     {
-        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
+        if (!enemyScriptableObject.isGroundEnemy)
         {
-            audioSource.Stop();
-            EventManager.Instance.OnEnemyDestroyed(this);
+            Instantiate(deathExplosion, transform.position, Quaternion.identity);
+            deathExplosion.GetComponent<ParticleSystem>().Play();
         }
     }
 
     public void PlayBloodParticles()
     {
-        particleSystemManager.PlayBloodParticleEffect();
+        if (enemyScriptableObject.isGroundEnemy)
+        {
+            particleSystemManager.PlayBloodParticleEffect();
+        }
     }
+
+    public int GetChanceForThisEnemy() => chanceForThisEnemy;
 }

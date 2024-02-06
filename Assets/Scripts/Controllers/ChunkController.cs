@@ -4,18 +4,17 @@ using UnityEngine;
 
 public class ChunkController : MonoBehaviour
 {
+    [SerializeField] private int chanceOfThisChunk;
     [SerializeField] private Transform startOfChunk;
     [SerializeField] private Transform endOfChunk;
     [SerializeField] private List<GameObject> positionsForRandomObstaclesOnChunk;
     [SerializeField] private List<GameObject> positionsForRandomCollectablesOnChunk;
-    private List<GameObject> spawnedObjects;
-    private Dictionary<GameObject, Vector3> initialObjectPositions;
+    private List<GameObject> spawnedObjects = new List<GameObject>();
+    private Dictionary<GameObject, Vector3> initialObjectPositions = new Dictionary<GameObject, Vector3>();
 
 
     private void Awake()
     {
-        spawnedObjects = new List<GameObject>();
-        initialObjectPositions = new Dictionary<GameObject, Vector3>();
         SaveInitialState();
     }
 
@@ -32,47 +31,61 @@ public class ChunkController : MonoBehaviour
 
     private void Update()
     {
-        Destroy();
+        if (transform.position.z <= MapEdgeConstants.PositionBehindPlayerAxisZ)
+        {
+            Destroy();
+        }
     }
 
     private void Destroy()
     {
-        if (transform.position.z <= MapEdgeConstants.PositionBehindPlayerAxisZ)
-        {
-            ResetChunk();
-            EventManager.Instance.OnChunkDestroyed(this);
-            RespawnMissingObjects();
-        }
+        ResetChunk();
+        EventManager.Instance.OnChunkDestroyed(this);
+        RespawnMissingObjects();
     }
 
-    public List<GameObject> GetPositionsForRandomObstaclesOnChunk() => positionsForRandomObstaclesOnChunk;
+    // private void ResetChunk()
+    // {
+    //     Dictionary<Type, Action<Component>> eventHandlers = new Dictionary<Type, Action<Component>>
+    //     {
+    //         { typeof(GunController), c => EventManager.Instance.OnGunDestroyed((GunController)c) },
+    //         { typeof(JetController), c => EventManager.Instance.OnJetDestroyed((JetController)c) },
+    //         { typeof(CollectableController), c => EventManager.Instance.OnSpaceshipDestroyed((CollectableController)c) },
+    //         { typeof(EnemyController), c => EventManager.Instance.OnEnemyDestroyed((EnemyController)c) },
+    //         { typeof(EnvironmentMovementController), c => EventManager.Instance.OnEnvironmentDestroyed((EnvironmentMovementController)c) }
+    //     };
 
-    public List<GameObject> GetPositionsForRandomCollectablesOnChunk() => positionsForRandomCollectablesOnChunk;
+    //     foreach (GameObject obj in spawnedObjects)
+    //     {
+    //         if (!obj.activeSelf)
+    //             continue;
+
+
+    //         foreach (var keyValuePair in eventHandlers)
+    //         {
+    //             Component component = obj.GetComponent(keyValuePair.Key);
+    //             if (component != null)
+    //             {
+    //                 keyValuePair.Value(component);
+    //                 break;
+    //             }
+    //         }
+    //     }
+
+    //     spawnedObjects.Clear();
+    // }
 
     private void ResetChunk()
     {
-        Dictionary<Type, Action<Component>> eventHandlers = new Dictionary<Type, Action<Component>>
-        {
-            { typeof(GunController), c => EventManager.Instance.OnGunDestroyed((GunController)c) },
-            { typeof(JetController), c => EventManager.Instance.OnJetDestroyed((JetController)c) },
-            { typeof(CollectableController), c => EventManager.Instance.OnSpaceshipDestroyed((CollectableController)c) },
-            { typeof(EnemyController), c => EventManager.Instance.OnEnemyDestroyed((EnemyController)c) },
-            { typeof(EnvironmentMovementController), c => EventManager.Instance.OnEnvironmentDestroyed((EnvironmentMovementController)c) }
-        };
-
         foreach (GameObject obj in spawnedObjects)
         {
             if (!obj.activeSelf)
                 continue;
 
-            foreach (var keyValuePair in eventHandlers)
+            IDestroyable destroyableComponent = obj.GetComponent<IDestroyable>();
+            if (destroyableComponent != null)
             {
-                Component component = obj.GetComponent(keyValuePair.Key);
-                if (component != null)
-                {
-                    keyValuePair.Value(component);
-                    break;
-                }
+                destroyableComponent.Destroy();
             }
         }
 
@@ -91,8 +104,8 @@ public class ChunkController : MonoBehaviour
 
     private bool IsObjectActiveInChunk(GameObject obj)
     {
-        foreach (Transform child in transform)
-            if (child.gameObject == obj && child.gameObject.activeSelf)
+        foreach (Transform objectsInChunk in transform)
+            if (objectsInChunk.gameObject == obj && objectsInChunk.gameObject.activeSelf)
                 return true;
 
         return false;
@@ -145,4 +158,7 @@ public class ChunkController : MonoBehaviour
     }
 
     public Vector3 GetEndOfChunk() => endOfChunk.position;
+    public List<GameObject> GetPositionsForRandomObstaclesOnChunk() => positionsForRandomObstaclesOnChunk;
+    public List<GameObject> GetPositionsForRandomCollectablesOnChunk() => positionsForRandomCollectablesOnChunk;
+    public int GetChanceForThisChunk() => chanceOfThisChunk;
 }

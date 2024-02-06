@@ -3,7 +3,13 @@ guid: 74bc6b98caf68ea48b541d075a99f262
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - jumpSound: {instanceID: 0}
+  - deathSound: {instanceID: 0}
+  - spaceshipCollectedSound: {instanceID: 0}
+  - jetCollectedSound: {instanceID: 0}
+  - gunCollectedSound: {instanceID: 0}
+  - enemyShotSound: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

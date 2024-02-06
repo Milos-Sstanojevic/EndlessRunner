@@ -19,6 +19,16 @@ public class ScoreManager : MonoBehaviour
         StartCoroutine(AddPointsEachHalfSecond());
     }
 
+    private IEnumerator AddPointsEachHalfSecond()
+    {
+        while (canAddPoints)
+        {
+            score += OneScorePoint;
+            yield return new WaitForSeconds(AddPointsDelay);
+            EventManager.Instance.OnChangeScoreOnScreen(score);
+        }
+    }
+
     public void StopAddingPoints()
     {
         canAddPoints = false;
@@ -30,13 +40,4 @@ public class ScoreManager : MonoBehaviour
         EventManager.Instance.OnChangeScoreOnScreen(score);
     }
 
-    private IEnumerator AddPointsEachHalfSecond()
-    {
-        while (canAddPoints)
-        {
-            score += OneScorePoint;
-            yield return new WaitForSeconds(AddPointsDelay);
-            EventManager.Instance.OnChangeScoreOnScreen(score);
-        }
-    }
 }

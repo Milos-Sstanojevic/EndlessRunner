@@ -119,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e304c4ed199f284590fef947959ef0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceOfThisChunk: 20
   startOfChunk: {fileID: 6627323077190380048}
   endOfChunk: {fileID: 1220250458310911412}
   positionsForRandomObstaclesOnChunk:
@@ -142,8 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 60
   isStage: 0
-  obstacleScriptableObject: {fileID: 0}
 --- !u!1 &3406978952125616644
 GameObject:
   m_ObjectHideFlags: 0

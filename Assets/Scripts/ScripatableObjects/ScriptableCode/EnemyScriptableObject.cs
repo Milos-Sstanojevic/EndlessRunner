@@ -14,20 +14,6 @@ public class EnemyScriptableObject : ScriptableObject
     public int enemyWorth = 25;
     public int fullHealth = 100;
 
-
-    public void MoveEnemy(EnemyController enemy, AnimationManager enemyAnimator, int isOnEdge)
-    {
-        if (!isGroundEnemy)
-            enemy.transform.Translate(Vector3.up * isOnEdge * movementSpeed * Time.deltaTime, Space.World);
-
-        if (isGroundEnemy)
-        {
-            enemyAnimator.StartWalkAnimation();
-            enemy.transform.Translate(Vector3.left * isOnEdge * movementSpeed * Time.deltaTime, Space.World);
-        }
-    }
-
-
     public bool IsEnemyOnEdge(Vector3 position)
     {
         if (position.x <= -MapEdgeConstants.EdgePosX)

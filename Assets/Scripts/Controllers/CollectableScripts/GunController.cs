@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunController : MonoBehaviour
+public class GunController : MonoBehaviour, IDestroyable
 {
     private const int GunTimeToLive = 5;
     private static Vector3 RotateAroundX = new Vector3(90, 0, 0);
@@ -40,13 +40,13 @@ public class GunController : MonoBehaviour
 
         ShootFromGun();
 
-        Destroy();
+        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
+            Destroy();
     }
 
-    private void Destroy()
+    public void Destroy()
     {
-        if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
-            EventManager.Instance.OnGunDestroyed(this);
+        EventManager.Instance.OnGunDestroyed(this);
     }
 
     public void ShootFromGun()
