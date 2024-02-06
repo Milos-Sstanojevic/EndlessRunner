@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class EnemyController : MonoBehaviour
 {
     private const int Negator = -1;
+    private const string EffectsVolume = "effectsVolume";
     private int minimumHealth;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private AnimationManager enemyAnimator;
@@ -36,8 +37,8 @@ public class EnemyController : MonoBehaviour
     {
         MoveLeftAndRight();
 
-        if (audioSource.volume != PlayerPrefs.GetFloat("effectsVolume"))
-            audioSource.volume = PlayerPrefs.GetFloat("effectsVolume");
+        if (audioSource.volume != PlayerPrefs.GetFloat(EffectsVolume))
+            audioSource.volume = PlayerPrefs.GetFloat(EffectsVolume);
 
         if (healthSlider.value != health)
             healthSlider.value = health;

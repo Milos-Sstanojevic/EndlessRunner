@@ -102,8 +102,6 @@ public class ChunkController : MonoBehaviour
     {
         Vector3 originalPosition = GetOriginalObjectPosition(obj);
 
-        
-
         if (obj.GetComponent<JetController>() != null)
         {
             JetController jet = PoolingSystemController.Instance.GetJetPoolingSystem().GetObjectFromPool();

@@ -10,7 +10,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pointsText;
     [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject gameOverScreen;
-
     private int score = 0;
 
     private void Start()
