@@ -29,32 +29,27 @@ public class GlobalAudioManager : MonoBehaviour
             return;
 
         LoadVolume();
+        LoadMuteState();
     }
 
     public void OnMusicSliderValueChange()
     {
         MusicVolume = musicSlider.value;
-        musicAudio.volume = musicSlider.value;
+        UpdateMusicAudioMixerValue(MusicVolume);
         musicSliderText.text = ((int)(musicSlider.value * 100)).ToString();
     }
 
     public void OnEffectSliderValueChange()
     {
         EffectsVolume = effectsSlider.value;
-        AudioManager.Instance.SetAudioSourceVolume(effectsSlider.value);
+        UpdateEffectsAudioMixerValue(EffectsVolume);
         effectsSliderText.text = ((int)(effectsSlider.value * 100)).ToString();
-    }
-
-    public void UpdateAudioMixerValue()
-    {
-        musicMixerGroup.audioMixer.SetFloat(AudioMixerMusicVolume, Mathf.Log10(MusicVolume) * 20);
-        effectsMixerGroup.audioMixer.SetFloat(AudioMixerEffectsVolume, Mathf.Log10(EffectsVolume) * 20);
     }
 
     public void SaveMusicAndEffectVolume()
     {
-        PlayerPrefs.SetFloat(MusicVolumePref, MusicVolume);
-        PlayerPrefs.SetFloat(EffectsVolumePref, EffectsVolume);
+        PlayerPrefs.SetFloat(MusicVolumePref, musicSlider.value);
+        PlayerPrefs.SetFloat(EffectsVolumePref, effectsSlider.value);
     }
 
     private void LoadVolume()
@@ -63,38 +58,38 @@ public class GlobalAudioManager : MonoBehaviour
         effectsSlider.value = PlayerPrefs.GetFloat(EffectsVolumePref);
     }
 
-    public void MuteMusicToggle(bool mute)
+    private void LoadMuteState()
     {
-        if (mute)
-        {
-            musicAudio.mute = true;
-            MusicVolume = ZeroVolume;
-        }
-        else
-        {
-            MusicVolume = PlayerPrefs.GetFloat(MusicVolumePref);
-            musicAudio.mute = false;
-        }
-
-        UpdateAudioMixerValue();
-        SaveMusicAndEffectVolume();
+        muteToggleMusic.isOn = PlayerPrefs.GetInt("MusicMute", 0) == 1;
+        muteToggleEffects.isOn = PlayerPrefs.GetInt("EffectsMute", 0) == 1;
+        MuteMusicToggle(muteToggleMusic.isOn);
+        MuteEffectsToggle(muteToggleEffects.isOn);
     }
 
-    public void MuteEffectsToggle(bool muteEffects)
+    public void MuteMusicToggle(bool mute)
     {
-        if (muteEffects)
-        {
-            AudioManager.Instance.MuteAudioSource();
-            EffectsVolume = ZeroVolume;
-        }
-        else
-        {
-            AudioManager.Instance.UnmuteAudioSource();
-            EffectsVolume = PlayerPrefs.GetFloat(EffectsVolumePref);
-        }
+        musicAudio.mute = mute;
+        PlayerPrefs.SetInt("MusicMute", mute ? 1 : 0);
+    }
 
-        UpdateAudioMixerValue();
-        SaveMusicAndEffectVolume();
+    public void MuteEffectsToggle(bool mute)
+    {
+        if (mute)
+            AudioManager.Instance.MuteAudioSource();
+        else
+            AudioManager.Instance.UnmuteAudioSource();
+
+        PlayerPrefs.SetInt("EffectsMute", mute ? 1 : 0);
+    }
+
+    private void UpdateMusicAudioMixerValue(float volume)
+    {
+        musicMixerGroup.audioMixer.SetFloat(AudioMixerMusicVolume, Mathf.Log10(volume) * 20);
+    }
+
+    private void UpdateEffectsAudioMixerValue(float volume)
+    {
+        effectsMixerGroup.audioMixer.SetFloat(AudioMixerEffectsVolume, Mathf.Log10(volume) * 20);
     }
 
 }

@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
     private const float EdgePositionZWithJet = -5f;
     private const float PlayerEdgePositionBackZ = -10.5f;
     private const float PlayerEdgePositionFrontZ = -2;
+    private float playerStartPositionX;
     private Rigidbody playerRb;
     private float movementSpeed;
     private PlayerController playerController;
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
         jetHandler = GetComponent<PlayerJetHandler>();
         playerController = GetComponent<PlayerController>();
         playerRb = GetComponent<Rigidbody>();
+        playerStartPositionX = transform.position.x;
     }
 
     private void Update()
@@ -38,11 +40,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void KeepPlayerOnRoad()
     {
-        if (transform.position.x < -MapEdgeConstants.EdgePosX)
-            transform.position = new Vector3(-MapEdgeConstants.EdgePosX, transform.position.y, transform.position.z);
+        if (transform.position.x < -MapEdgeConstants.EdgePosX + playerStartPositionX)
+            transform.position = new Vector3(-MapEdgeConstants.EdgePosX + playerStartPositionX, transform.position.y, transform.position.z);
 
-        if (transform.position.x > MapEdgeConstants.EdgePosX)
-            transform.position = new Vector3(MapEdgeConstants.EdgePosX, transform.position.y, transform.position.z);
+        if (transform.position.x > playerStartPositionX + MapEdgeConstants.EdgePosX)
+            transform.position = new Vector3(MapEdgeConstants.EdgePosX + playerStartPositionX, transform.position.y, transform.position.z);
 
         if (transform.position.z < PlayerEdgePositionBackZ)
             transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionBackZ);

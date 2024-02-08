@@ -54,7 +54,6 @@ public class PlayerInputController : MonoBehaviour
         AudioManager.Instance.PlayJumpSound();
         canJump = false;
         playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
     }
 
     private void HandleShootInput()

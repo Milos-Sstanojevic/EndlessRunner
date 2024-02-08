@@ -256,4 +256,10 @@ public class SpawnManager : MonoBehaviour
     {
         StopCoroutine(SpawnChunks());
     }
+
+    public float GetChunkSpawnDelay() => chunkSpawnDelay;
+    public void SetChunkSpawnDelay(float delay)
+    {
+        chunkSpawnDelay = delay;
+    }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChunkController : MonoBehaviour
 {
     [SerializeField] private int chanceOfThisChunk;
+    [SerializeField] private bool isThisRandomChunk;
     [SerializeField] private Transform startOfChunk;
     [SerializeField] private Transform endOfChunk;
     [SerializeField] private List<GameObject> positionsForRandomObstaclesOnChunk;
@@ -12,8 +13,7 @@ public class ChunkController : MonoBehaviour
     private List<GameObject> spawnedObjects = new List<GameObject>();
     private Dictionary<GameObject, Vector3> initialObjectPositions = new Dictionary<GameObject, Vector3>();
 
-
-    private void Awake()
+    private void OnEnable()
     {
         SaveInitialState();
     }
@@ -32,48 +32,17 @@ public class ChunkController : MonoBehaviour
     private void Update()
     {
         if (transform.position.z <= MapEdgeConstants.PositionBehindPlayerAxisZ)
-        {
             Destroy();
-        }
     }
 
     private void Destroy()
     {
-        ResetChunk();
+        if (isThisRandomChunk)
+            ResetChunk();
         EventManager.Instance.OnChunkDestroyed(this);
+
         RespawnMissingObjects();
     }
-
-    // private void ResetChunk()
-    // {
-    //     Dictionary<Type, Action<Component>> eventHandlers = new Dictionary<Type, Action<Component>>
-    //     {
-    //         { typeof(GunController), c => EventManager.Instance.OnGunDestroyed((GunController)c) },
-    //         { typeof(JetController), c => EventManager.Instance.OnJetDestroyed((JetController)c) },
-    //         { typeof(CollectableController), c => EventManager.Instance.OnSpaceshipDestroyed((CollectableController)c) },
-    //         { typeof(EnemyController), c => EventManager.Instance.OnEnemyDestroyed((EnemyController)c) },
-    //         { typeof(EnvironmentMovementController), c => EventManager.Instance.OnEnvironmentDestroyed((EnvironmentMovementController)c) }
-    //     };
-
-    //     foreach (GameObject obj in spawnedObjects)
-    //     {
-    //         if (!obj.activeSelf)
-    //             continue;
-
-
-    //         foreach (var keyValuePair in eventHandlers)
-    //         {
-    //             Component component = obj.GetComponent(keyValuePair.Key);
-    //             if (component != null)
-    //             {
-    //                 keyValuePair.Value(component);
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    //     spawnedObjects.Clear();
-    // }
 
     private void ResetChunk()
     {
@@ -94,12 +63,15 @@ public class ChunkController : MonoBehaviour
 
     private void RespawnMissingObjects()
     {
-        foreach (var initialObjectPosition in initialObjectPositions)
-        {
-            GameObject initialObject = initialObjectPosition.Key;
-            if (!IsObjectActiveInChunk(initialObject))
-                RespawnObject(initialObject);
-        }
+        if (!isThisRandomChunk)
+            foreach (var initialObjectPosition in initialObjectPositions)
+            {
+                GameObject initialObject = initialObjectPosition.Key;
+                if (!IsObjectActiveInChunk(initialObject))
+                {
+                    RespawnObject(initialObject);
+                }
+            }
     }
 
     private bool IsObjectActiveInChunk(GameObject obj)

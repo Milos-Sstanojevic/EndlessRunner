@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EventManager : MonoBehaviour
@@ -17,6 +18,9 @@ public class EventManager : MonoBehaviour
     private event Action<int> OnChangeScoreOnScreenAction;
     private event Action OnStartAddingPointsAction;
     private event Action OnStopAddingPointsAction;
+    private event Action<int> OnChangeNumberOfPlayersAction;
+    private event Action<int> OnNumberOfPlayersSavedAction;
+    private event Action<GameObject[]> OnNumberOfScreensChangedAction;
 
     private void Awake()
     {
@@ -28,6 +32,22 @@ public class EventManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SubscribeToOnNumberOfScreensChangedAction(Action<GameObject[]> action)
+    {
+        OnNumberOfScreensChangedAction += action;
+    }
+
+    public void SubscribeToOnNumberOfPlayersSavedAction(Action<int> action)
+    {
+        OnNumberOfPlayersSavedAction += action;
+    }
+
+
+    public void SubscribeToOnChangeNumberOfPlayersAction(Action<int> action)
+    {
+        OnChangeNumberOfPlayersAction += action;
     }
 
     public void SubscribeToStopAddingPointsAction(Action action)
@@ -160,6 +180,26 @@ public class EventManager : MonoBehaviour
         OnStartAddingPointsAction -= action;
     }
 
+    public void UnsubscribeToOnChangeNumberOfPlayersAction(Action<int> action)
+    {
+        OnChangeNumberOfPlayersAction -= action;
+    }
+
+    public void UnsubscribeToOnNumberOfPlayersSavedAction(Action<int> action)
+    {
+        OnNumberOfPlayersSavedAction -= action;
+    }
+
+    public void UnsubscribeToOnNumberOfScreensChangedAction(Action<GameObject[]> action)
+    {
+        OnNumberOfScreensChangedAction -= action;
+    }
+
+    public void OnNumberOfScreensChanged(GameObject[] screens)
+    {
+        OnNumberOfScreensChangedAction?.Invoke(screens);
+    }
+
     public void OnObjectsInSceneChanged()
     {
         OnObjectsInSceneChangedAction?.Invoke();
@@ -170,7 +210,15 @@ public class EventManager : MonoBehaviour
         OnChunkDestroyAction?.Invoke(chunk);
     }
 
+    public void OnNumberOfPlayersChanged(int number)
+    {
+        OnChangeNumberOfPlayersAction?.Invoke(number);
+    }
 
+    public void OnNumberOfPlayersSaved(int number)
+    {
+        OnNumberOfPlayersSavedAction?.Invoke(number);
+    }
     public void OnEnvironmentDestroyed(EnvironmentMovementController movable)
     {
         OnDestroyAction?.Invoke(movable);

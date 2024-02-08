@@ -48,10 +48,6 @@ public class EnemyController : MonoBehaviour, IDestroyable
     {
         MoveLeftAndRight();
 
-        //ovo treba preko audioMixera
-        if (audioSource.volume != PlayerPrefs.GetFloat(EffectsVolume))
-            audioSource.volume = PlayerPrefs.GetFloat(EffectsVolume);
-
         if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
             Destroy();
     }

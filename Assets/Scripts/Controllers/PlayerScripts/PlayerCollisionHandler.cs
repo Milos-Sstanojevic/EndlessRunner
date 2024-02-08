@@ -6,6 +6,7 @@ public class PlayerCollisionHandler : MonoBehaviour
     private const float OffsetForPrefab = 0.5f;
     private const string GroundTag = "Ground";
     private const string EnemyTag = "Enemy";
+    private const string ObstacleTag = "Obstacle";
     private AnimationManager characterAnimator;
     private PlayerController playerController;
     private ParticleSystemManager playerParticleSystem;
@@ -27,7 +28,7 @@ public class PlayerCollisionHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (/*other.gameObject.CompareTag(obstacleTag) ||*/other.gameObject.CompareTag(EnemyTag))
+        if (other.gameObject.CompareTag(ObstacleTag) || other.gameObject.CompareTag(EnemyTag))
         {
             HandleEnemyOrObstacleCollision();
         }

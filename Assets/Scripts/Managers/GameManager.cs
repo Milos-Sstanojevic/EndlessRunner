@@ -1,5 +1,3 @@
-
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +5,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const int ScoreStep = 100;
+    private const float minimumChunkSpawningDelay = 0.5f;
+    private const float spawningDelayDecreaser = 0.15f;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private UIManager uiManager;
     private int speedupRound = 1;
@@ -115,7 +115,27 @@ public class GameManager : MonoBehaviour
             return;
 
         MovementManager.Instance.IncreaseMovementSpeed();
+        DecreaseSpawningTime();
         speedupRound++;
+    }
+
+    private void DecreaseSpawningTime()
+    {
+        float chunkSpawnDelay = spawnManager.GetChunkSpawnDelay();
+        float spawnDelay;
+        if (chunkSpawnDelay > minimumChunkSpawningDelay)
+        {
+            spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay);
+            spawnManager.SetChunkSpawnDelay(spawnDelay);
+        }
+    }
+
+    private float HandleDecreasingSpawnDelay(float spawnDelay)
+    {
+        float delay = spawnDelay - spawningDelayDecreaser;
+        if (delay < minimumChunkSpawningDelay)
+            delay = minimumChunkSpawningDelay;
+        return delay;
     }
 
     private void SetupPlayingScreen()
@@ -147,6 +167,12 @@ public class GameManager : MonoBehaviour
     {
         playerScore = score;
         uiManager.SetScoreOnScoreScreen(score);
+    }
+
+    public void OpenNumberOfPlayersScreen()
+    {
+        uiManager.SetNumberOfPlayersScreenActive();
+        uiManager.SetStartScreenInactive();
     }
 
     //Unity event, this is called when settings button is clicked

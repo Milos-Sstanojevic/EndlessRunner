@@ -12,6 +12,7 @@ public class MovementManager : MonoBehaviour
     [SerializeField] private PlayerMovement player;
     private List<ChunkController> chunksInGame;
     [SerializeField] private List<EnvironmentMovementController> objectsMovements;
+    private GameObject[] screensInGame;
     private float speed;
 
     private void Awake()
@@ -29,6 +30,12 @@ public class MovementManager : MonoBehaviour
     private void OnEnable()
     {
         EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
+        EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(GetScreensInGame);
+    }
+
+    private void GetScreensInGame(GameObject[] screens)
+    {
+        screensInGame = screens;
     }
 
     private void Start()
@@ -55,7 +62,28 @@ public class MovementManager : MonoBehaviour
     public void EnableMovementOfObjects()
     {
         EnableMovement();
+        foreach (GameObject oneScreen in screensInGame)
+        {
+            PlayerMovement[] playerMovements = FindPlayerMovement(oneScreen);
+
+            if (playerMovements != null)
+            {
+                foreach (PlayerMovement player in playerMovements)
+                    player.EnableMovement();
+            }
+        }
         player.EnableMovement();
+    }
+
+    private PlayerMovement[] FindPlayerMovement(GameObject parentObject)
+    {
+        PlayerMovement[] playerMovements = parentObject.GetComponentsInChildren<PlayerMovement>(true);
+
+        if (playerMovements.Length > 0)
+        {
+            return playerMovements;
+        }
+        return null;
     }
 
     private void EnableMovement()
@@ -78,6 +106,17 @@ public class MovementManager : MonoBehaviour
     public void SetMovementSpeedOfObjects()
     {
         SetMovementSpeed();
+        foreach (GameObject oneScreen in screensInGame)
+        {
+            PlayerMovement[] playerMovements = FindPlayerMovement(oneScreen);
+
+            if (playerMovements != null)
+            {
+                foreach (PlayerMovement player in playerMovements)
+                    player.SetMovementSpeed(speed + PlayerSpeedBalancer);
+            }
+        }
+
         player.SetMovementSpeed(speed + PlayerSpeedBalancer);
     }
 
@@ -119,5 +158,6 @@ public class MovementManager : MonoBehaviour
     private void OnDisable()
     {
         EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
+        EventManager.Instance.UnsubscribeToOnNumberOfScreensChangedAction(GetScreensInGame);
     }
 }

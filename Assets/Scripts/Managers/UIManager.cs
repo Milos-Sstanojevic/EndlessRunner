@@ -10,12 +10,36 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private GameObject scoreScreen;
     [SerializeField] private TextMeshProUGUI pointsText;
+    [SerializeField] private TextMeshProUGUI numberOfPlayersText;
+    [SerializeField] private GameObject numberOfPlayersScreen;
     [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject gameOverScreen;
+
+    private void OnEnable()
+    {
+        EventManager.Instance.SubscribeToOnChangeNumberOfPlayersAction(ChangeNumberOfPlayers);
+        EventManager.Instance.SubscribeToOnNumberOfPlayersSavedAction(SetNumberOfPlayersScreenInactive);
+    }
+
+    private void ChangeNumberOfPlayers(int number)
+    {
+        numberOfPlayersText.text = number.ToString();
+    }
 
     private void Start()
     {
         pointsText.text = ScoreText + StartingScore;
+    }
+
+    private void SetNumberOfPlayersScreenInactive(int number)
+    {
+        numberOfPlayersScreen.SetActive(false);
+        startScreen.SetActive(true);
+    }
+
+    public void SetNumberOfPlayersScreenActive()
+    {
+        numberOfPlayersScreen.SetActive(true);
     }
 
     public void SetSettingsScreenActive()
@@ -82,5 +106,11 @@ public class UIManager : MonoBehaviour
     public void SetScoreOnScoreScreen(int score)
     {
         pointsText.text = ScoreText + score;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Instance.UnsubscribeToOnChangeNumberOfPlayersAction(ChangeNumberOfPlayers);
+        EventManager.Instance.UnsubscribeToOnNumberOfPlayersSavedAction(SetNumberOfPlayersScreenInactive);
     }
 }
