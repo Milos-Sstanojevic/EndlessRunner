@@ -1,9 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float gravityModifier;
     public ScoreManager ScoreManager { get; private set; }
+
 
     private void Awake()
     {
@@ -13,7 +14,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        Physics.gravity *= gravityModifier;
         Time.timeScale = 1f;
     }
 
@@ -23,10 +23,7 @@ public class PlayerController : MonoBehaviour
         EventManager.Instance.SubscribeToStopAddingPointsAction(ScoreManager.StopAddingPoints);
     }
 
-    private void OnDestroy()
-    {
-        Physics.gravity /= gravityModifier;
-    }
+
 
     private void OnDisable()
     {

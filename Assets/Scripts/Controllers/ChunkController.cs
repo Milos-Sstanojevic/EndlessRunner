@@ -117,9 +117,7 @@ public class ChunkController : MonoBehaviour
     private Vector3 GetOriginalObjectPosition(GameObject obj)
     {
         if (initialObjectPositions.TryGetValue(obj, out Vector3 originalPosition))
-        {
             return originalPosition;
-        }
 
         return Vector3.zero;
     }

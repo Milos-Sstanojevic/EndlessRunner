@@ -1,17 +1,20 @@
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private const int ScoreStep = 100;
-    private const float minimumChunkSpawningDelay = 0.5f;
-    private const float spawningDelayDecreaser = 0.15f;
+    private List<SpawnManager> spawnManagers;
     [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private UIManager uiManager;
-    private int speedupRound = 1;
+    [SerializeField] private int gravityModifier;
     private GameStates CurrentState;
-    private int playerScore;
+    [SerializeField] private List<MovementManager> movementManagers;
+    [SerializeField] private List<GameObject> screensInGame;
 
 
     private void Awake()
@@ -32,13 +35,51 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         SubscribeToEvents();
+        Physics.gravity *= gravityModifier;
     }
 
     private void SubscribeToEvents()
     {
+        EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(SetSpawnManagers);
         EventManager.Instance.SubscribeToOnPlayerDeadAction(GameOver);
-        EventManager.Instance.SubscribeToOnEnemyKilledAction(EnemyKilled);
         EventManager.Instance.SubscribeToChangeScoreOnScreen(SetScoreOnScreen);
+        EventManager.Instance.SubscribeToOnNumberOfMovementManagersChanged(SetMovementMangers);
+        EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(GetScreensInGame);
+        EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
+    }
+
+    private void EnableMovementForNewObjects()
+    {
+        if (CurrentState != GameStates.Playing)
+            return;
+
+        if (movementManagers != null && screensInGame != null)
+            for (int i = 0; i < movementManagers.Count; i++)
+            {
+                movementManagers[i].EnableMovementOfObjects(screensInGame[i]);
+                movementManagers[i].SetMovementSpeedOfObjects(screensInGame[i]);
+            }
+    }
+
+    private void GetScreensInGame(GameObject[] screens)
+    {
+        for (int i = 0; i < screens.Length; i++)
+            screensInGame.Add(screens[i]);
+    }
+
+    private void SetMovementMangers(List<MovementManager> managers)
+    {
+        foreach (MovementManager manager in managers)
+            movementManagers.Add(manager);
+    }
+
+    private void SetSpawnManagers(GameObject[] screens)
+    {
+        foreach (GameObject screen in screens)
+        {
+            SpawnManager managersInScreen = screen.GetComponentInChildren<SpawnManager>(true);
+            spawnManagers.Add(managersInScreen);
+        }
     }
 
     //Unity event, called when player is dead
@@ -48,11 +89,6 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.StopAddingPoints();
         uiManager.SetEndScreenActive();
         uiManager.SetScoreScreenInactive();
-    }
-
-    public void EnemyKilled(int enemyWorth)
-    {
-        uiManager.SetScoreOnScoreScreen(enemyWorth);
     }
 
     private void Update()
@@ -67,7 +103,6 @@ public class GameManager : MonoBehaviour
 
         HandlePlayingState();
         HandlePauseOrGameOverState();
-        SpeedupGame();
     }
 
     public void PauseGame()
@@ -94,9 +129,7 @@ public class GameManager : MonoBehaviour
         if (CurrentState != GameStates.Playing)
             return;
 
-        EnableSpawnManager();
-        MovementManager.Instance.EnableMovementOfObjects();
-        MovementManager.Instance.SetMovementSpeedOfObjects();
+        EnableSpawnManagers();
         SetupPlayingScreen();
     }
 
@@ -105,38 +138,13 @@ public class GameManager : MonoBehaviour
         if (CurrentState == GameStates.Playing || CurrentState == GameStates.MainMenu)
             return;
 
-        MovementManager.Instance.DisableMovementOfMovableObjects();
-        DisableSpawnManager();
+        if (movementManagers != null && screensInGame != null)
+            for (int i = 0; i < movementManagers.Count; i++)
+                movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
+
+        DisableSpawnManagers();
     }
 
-    private void SpeedupGame()
-    {
-        if (playerScore < ScoreStep * speedupRound)
-            return;
-
-        MovementManager.Instance.IncreaseMovementSpeed();
-        DecreaseSpawningTime();
-        speedupRound++;
-    }
-
-    private void DecreaseSpawningTime()
-    {
-        float chunkSpawnDelay = spawnManager.GetChunkSpawnDelay();
-        float spawnDelay;
-        if (chunkSpawnDelay > minimumChunkSpawningDelay)
-        {
-            spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay);
-            spawnManager.SetChunkSpawnDelay(spawnDelay);
-        }
-    }
-
-    private float HandleDecreasingSpawnDelay(float spawnDelay)
-    {
-        float delay = spawnDelay - spawningDelayDecreaser;
-        if (delay < minimumChunkSpawningDelay)
-            delay = minimumChunkSpawningDelay;
-        return delay;
-    }
 
     private void SetupPlayingScreen()
     {
@@ -144,14 +152,30 @@ public class GameManager : MonoBehaviour
         uiManager.SetStartScreenInactive();
     }
 
-    private void EnableSpawnManager()
+    private void EnableSpawnManagers()
     {
+        if (spawnManagers != null)
+        {
+            foreach (SpawnManager spawnManager in spawnManagers)
+            {
+                spawnManager.EnableSpawning();
+                spawnManager.gameObject.SetActive(true);
+            }
+        }
         spawnManager.EnableSpawning();
         spawnManager.gameObject.SetActive(true);
     }
 
-    private void DisableSpawnManager()
+    private void DisableSpawnManagers()
     {
+        if (spawnManagers != null)
+        {
+            foreach (SpawnManager spawnManager in spawnManagers)
+            {
+                spawnManager.DisableSpawning();
+                spawnManager.gameObject.SetActive(false);
+            }
+        }
         spawnManager.DisableSpawning();
         spawnManager.gameObject.SetActive(false);
     }
@@ -163,10 +187,9 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.StartAddingPoints();
     }
 
-    private void SetScoreOnScreen(int score)
+    private void SetScoreOnScreen(int score, TextMeshProUGUI playerScoreText)
     {
-        playerScore = score;
-        uiManager.SetScoreOnScoreScreen(score);
+        uiManager.SetScoreOnScoreScreen(score, playerScoreText);
     }
 
     public void OpenNumberOfPlayersScreen()
@@ -220,12 +243,15 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         UnsubscribeFromEvents();
+        Physics.gravity /= gravityModifier;
     }
 
     private void UnsubscribeFromEvents()
     {
         EventManager.Instance.UnsubscribeFromChangeScoreOnScreen(SetScoreOnScreen);
         EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(GameOver);
+        EventManager.Instance.UnsubscribeFromOnNumberOfScreensChangedAction(GetScreensInGame);
+        EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
     }
 }
 

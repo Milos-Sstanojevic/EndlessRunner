@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class PlayerInputController : MonoBehaviour
     private ParticleSystemManager playerParticleSystem;
     private PlayerJetHandler jetHandler;
     private Rigidbody playerRb;
+    private Vector2 movementInput = Vector2.zero;
+    private bool jumped;
 
     private void Awake()
     {
@@ -21,6 +24,16 @@ public class PlayerInputController : MonoBehaviour
         jetHandler = GetComponent<PlayerJetHandler>();
         gunHandler = GetComponent<PlayerGunHandler>();
         playerMovement = GetComponent<PlayerMovement>();
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        movementInput = context.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        jumped = context.action.triggered;
     }
 
     private void Update()
@@ -35,15 +48,12 @@ public class PlayerInputController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-        float horizontalInput = Input.GetAxisRaw(HorizontalAxis);
-        float verticalInput = Input.GetAxisRaw(VerticalAxis);
-
-        playerMovement.MovePlayer(horizontalInput, verticalInput);
+        playerMovement.MovePlayer(movementInput.x, movementInput.y);
     }
 
     private void HandleJumpInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canJump && !jetHandler.IsInAir())
+        if (jumped && canJump && !jetHandler.IsInAir())
             HandlePlayerJumping();
     }
 

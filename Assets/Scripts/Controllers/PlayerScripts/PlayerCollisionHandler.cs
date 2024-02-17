@@ -28,10 +28,10 @@ public class PlayerCollisionHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag(ObstacleTag) || other.gameObject.CompareTag(EnemyTag))
-        {
-            HandleEnemyOrObstacleCollision();
-        }
+        // if (/*other.gameObject.CompareTag(ObstacleTag) ||*/ other.gameObject.CompareTag(EnemyTag))
+        // {
+        //     HandleEnemyOrObstacleCollision();
+        // }
 
         if (other.gameObject.CompareTag(GroundTag))
         {
@@ -67,9 +67,7 @@ public class PlayerCollisionHandler : MonoBehaviour
         CollectableController collectable = other.GetComponent<CollectableController>();
 
         if (collectable != null)
-        {
             HandleCollectableCollision(collectable);
-        }
     }
 
     private void HandleCollectableCollision(CollectableController collectable)

@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chanceOfThisChunk: 45
+  isThisRandomChunk: 0
   startOfChunk: {fileID: 8772874697410250030}
   endOfChunk: {fileID: 8550519094976668986}
   positionsForRandomObstaclesOnChunk: []
@@ -285,7 +286,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6850901344987753111, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.68
+      value: -0.27
       objectReference: {fileID: 0}
     - target: {fileID: 6850901344987753111, guid: cedd9e511777d044b98602f1d6ee9262, type: 3}
       propertyPath: m_LocalPosition.y

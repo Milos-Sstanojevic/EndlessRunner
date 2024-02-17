@@ -2,23 +2,26 @@ using UnityEngine;
 
 public class UINumberOfPlayersController : MonoBehaviour
 {
-    private int currentNumber = 0;
+    private int currentNumber = 1;
 
     // Called when the add button is pressed
     public void OnAddButtonPressed()
     {
-        currentNumber++;
+
         if (currentNumber >= 4)
             currentNumber = 4;
+        else
+            currentNumber++;
         UpdateNumberText();
     }
 
     // Called when the subtract button is pressed
     public void OnSubtractButtonPressed()
     {
-        currentNumber--;
         if (currentNumber <= 1)
             currentNumber = 1;
+        else
+            currentNumber--;
         UpdateNumberText();
     }
 

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SplitScreenManager : MonoBehaviour
 {
@@ -12,7 +11,8 @@ public class SplitScreenManager : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject playerAndLevelPrefab;
     [SerializeField] private Canvas startMenuCanvas;
-    [SerializeField] private GameObject level;
+    [SerializeField] private List<Canvas> scoreCanvases;
+    [SerializeField] private List<MovementManager> movementManagers;
     private GameObject[] screenInstances;
 
     private void Awake()
@@ -33,8 +33,9 @@ public class SplitScreenManager : MonoBehaviour
 
         CleanupScene();
         EnableCamerasAndLevels(numberOfPlayers);
-        AdjustUI(numberOfPlayers);
         EventManager.Instance.OnNumberOfScreensChanged(screenInstances);
+        EventManager.Instance.OnNumberOfScoreScreensChanged(scoreCanvases);
+        EventManager.Instance.OnNumberOfMovementManagersChanged(movementManagers);
     }
 
     private void CleanupScene()
@@ -46,6 +47,8 @@ public class SplitScreenManager : MonoBehaviour
                 Destroy(instance);
             }
         }
+
+        scoreCanvases.Clear();
     }
 
     private void EnableCamerasAndLevels(int numberOfPlayers)
@@ -57,9 +60,16 @@ public class SplitScreenManager : MonoBehaviour
 
         for (int i = 0; i < numberOfPlayers - 1; i++)
         {
-            screenInstances[i] = Instantiate(playerAndLevelPrefab, new Vector3(-(i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), playerAndLevelPrefab.transform.rotation);
+            screenInstances[i] = Instantiate(playerAndLevelPrefab, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), playerAndLevelPrefab.transform.rotation);
             screenInstances[i].transform.SetParent(parentOfScreens);
+
+            screenInstances[i].GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3((i + 1) * SpaceBetweenStages, 0, 0));
+
             Camera playerCamera = screenInstances[i].GetComponentInChildren<Camera>();
+
+            scoreCanvases.Add(screenInstances[i].GetComponentInChildren<Canvas>());
+
+            movementManagers.Add(screenInstances[i].GetComponentInChildren<MovementManager>());
 
             if (playerCamera != null)
             {
@@ -67,28 +77,21 @@ public class SplitScreenManager : MonoBehaviour
                 playerCamera.gameObject.SetActive(true);
             }
         }
+
+        SetScoreCanvasPositions(numberOfPlayers);
     }
 
-    private void AdjustUI(int numberOfPlayers)
+    private void SetScoreCanvasPositions(int numberOfPlayers)
     {
-        CanvasScaler canvasScaler = startMenuCanvas.GetComponent<CanvasScaler>();
-        Rect[] splitRects = CalculateSplitRectangles(numberOfPlayers);
-
-        for (int i = 0; i < numberOfPlayers; i++)
+        for (int i = 0; i < numberOfPlayers - 1; i++)
         {
-            Rect normalizedRect = splitRects[i];
-            Vector2 referenceResolution = new Vector2(Screen.width * normalizedRect.width, Screen.height * normalizedRect.height);
+            Canvas scoreCanvas = scoreCanvases[i];
 
-            canvasScaler.referenceResolution = referenceResolution;
-            startMenuCanvas.renderMode = RenderMode.WorldSpace;
+            float canvasXPos = i % 2 == 0 ? 0f : 1f;
+            float canvasYPos = i > 0 ? 1f : 0f;
 
-            RectTransform canvasRect = startMenuCanvas.GetComponent<RectTransform>();
-            canvasRect.anchorMin = new Vector2(normalizedRect.x, normalizedRect.y);
-            canvasRect.anchorMax = new Vector2(normalizedRect.x + normalizedRect.width, normalizedRect.y + normalizedRect.height);
-            canvasRect.offsetMin = Vector2.zero;
-            canvasRect.offsetMax = Vector2.zero;
-
-            startMenuCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            scoreCanvas.GetComponent<RectTransform>().anchorMin = new Vector2(canvasXPos, 1f - canvasYPos);
+            scoreCanvas.GetComponent<RectTransform>().anchorMax = new Vector2(canvasXPos, 1f - canvasYPos);
         }
     }
 
@@ -96,7 +99,11 @@ public class SplitScreenManager : MonoBehaviour
     {
         Rect[] splitRects = new Rect[numberOfPlayers];
 
-        if (numberOfPlayers == 2)
+        if (numberOfPlayers == 1)
+        {
+            splitRects[0] = new Rect(0, 0, 1, 1);
+        }
+        else if (numberOfPlayers == 2)
         {
             splitRects[0] = new Rect(0.0f, 0.0f, 0.5f, 1.0f);
             splitRects[1] = new Rect(0.5f, 0.0f, 0.5f, 1.0f);

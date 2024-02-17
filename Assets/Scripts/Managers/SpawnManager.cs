@@ -5,6 +5,8 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     private const float OffsetFromCenterOfChunk = 12f;
+    private const float minimumChunkSpawningDelay = 0.5f;
+    private const float spawningDelayDecreaser = 0.15f;
     private List<EnvironmentMovementController> chancesForObstacles;
     private List<CollectableController> chancesForCollectables;
     private List<ChunkController> chancesForChunks;
@@ -14,6 +16,7 @@ public class SpawnManager : MonoBehaviour
     private bool spawnedEnemy;
     private Vector3 endOfPreviousChunk;
     private ChunkController chunk;
+    private Vector3 offsetToRespectedStage;
 
     private void Awake()
     {
@@ -57,6 +60,8 @@ public class SpawnManager : MonoBehaviour
 
     private void OnEnable()
     {
+        EventManager.Instance.SubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
+
         StartCoroutine(SpawnChunks());
         endOfPreviousChunk = Vector3.zero;
     }
@@ -128,8 +133,8 @@ public class SpawnManager : MonoBehaviour
     private void SetPositionOfChunk()
     {
         chunk.transform.position = endOfPreviousChunk == Vector3.zero
-            ? new Vector3(chunk.transform.position.x, chunk.transform.position.y, PosZ)
-            : chunk.transform.position = new Vector3(chunk.transform.position.x, chunk.transform.position.y, endOfPreviousChunk.z + OffsetFromCenterOfChunk);
+            ? new Vector3(offsetToRespectedStage.x, chunk.transform.position.y, PosZ)
+            : chunk.transform.position = new Vector3(offsetToRespectedStage.x, chunk.transform.position.y, endOfPreviousChunk.z + OffsetFromCenterOfChunk);
     }
 
     //If lists for positions of obstacles are not empty, it is not premade chunk
@@ -254,6 +259,7 @@ public class SpawnManager : MonoBehaviour
 
     private void OnDisable()
     {
+        EventManager.Instance.UnsubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
         StopCoroutine(SpawnChunks());
     }
 
@@ -261,5 +267,32 @@ public class SpawnManager : MonoBehaviour
     public void SetChunkSpawnDelay(float delay)
     {
         chunkSpawnDelay = delay;
+    }
+
+    public void SetOffsetToRespectedStage(Vector3 offset)
+    {
+        offsetToRespectedStage = offset;
+    }
+
+    private void DecreaseSpawningTime(SpawnManager spawnManager)
+    {
+        if (spawnManager == this)
+        {
+            float chunkSpawnDelay = GetChunkSpawnDelay();
+            float spawnDelay;
+            if (chunkSpawnDelay > minimumChunkSpawningDelay)
+            {
+                spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay);
+                SetChunkSpawnDelay(spawnDelay);
+            }
+        }
+    }
+
+    private float HandleDecreasingSpawnDelay(float spawnDelay)
+    {
+        float delay = spawnDelay - spawningDelayDecreaser;
+        if (delay < minimumChunkSpawningDelay)
+            delay = minimumChunkSpawningDelay;
+        return delay;
     }
 }

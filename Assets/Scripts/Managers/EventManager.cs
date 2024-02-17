@@ -1,26 +1,32 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
     public static EventManager Instance { get; private set; }
-    private event Action<EnvironmentMovementController> OnDestroyAction;
-    private event Action<GunController> OnDestroyGunAction;
-    private event Action<JetController> OnDestroyJetAction;
-    private event Action<EnemyController> OnDestroyEnemyAction;
-    private event Action<BulletController> OnBulletDestroyAction;
-    private event Action<CollectableController> OnSpaceshipDestroyAction;
-    private event Action<ChunkController> OnChunkDestroyAction;
-    private event Action<int> OnEnemyKilledAction;
-    private event Action OnPlayerDeadAction;
-    private event Action OnObjectsInSceneChangedAction;
-    private event Action<int> OnChangeScoreOnScreenAction;
-    private event Action OnStartAddingPointsAction;
-    private event Action OnStopAddingPointsAction;
-    private event Action<int> OnChangeNumberOfPlayersAction;
-    private event Action<int> OnNumberOfPlayersSavedAction;
-    private event Action<GameObject[]> OnNumberOfScreensChangedAction;
+    private event Action<EnvironmentMovementController> onDestroyAction;
+    private event Action<GunController> onDestroyGunAction;
+    private event Action<JetController> onDestroyJetAction;
+    private event Action<EnemyController> onDestroyEnemyAction;
+    private event Action<BulletController> onBulletDestroyAction;
+    private event Action<CollectableController> onSpaceshipDestroyAction;
+    private event Action<ChunkController> onChunkDestroyAction;
+    private event Action<int> onEnemyKilledAction;
+    private event Action onPlayerDeadAction;
+    private event Action onObjectsInSceneChangedAction;
+    private event Action<int, TextMeshProUGUI> onChangeScoreOnScreenAction;
+    private event Action onStartAddingPointsAction;
+    private event Action onStopAddingPointsAction;
+    private event Action<int> onChangeNumberOfPlayersAction;
+    private event Action<int> onNumberOfPlayersSavedAction;
+    private event Action<GameObject[]> onNumberOfScreensChangedAction;
+    private event Action<Vector3> onNewStagePositionSpawnedAction;
+    private event Action<List<Canvas>> onNumberOfScoreScreensChangedAction;
+    private event Action<SpawnManager> onDecreaseSpawningTimeOfChunkAction;
+    private event Action<List<MovementManager>> onNumberOfMovementManagersChangedAction;
+    private event Action<GameObject> onIncreaseSpeedAction;
 
     private void Awake()
     {
@@ -34,243 +40,318 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public void SubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
+    {
+        onIncreaseSpeedAction += action;
+    }
+
+    public void SubscribeToOnNumberOfMovementManagersChanged(Action<List<MovementManager>> action)
+    {
+        onNumberOfMovementManagersChangedAction += action;
+    }
+
+    public void SubscribeToOnDecreaseSpawningTimeOfChunk(Action<SpawnManager> action)
+    {
+        onDecreaseSpawningTimeOfChunkAction += action;
+    }
+
+    public void SubscribeToNumberOfScoreScreensChangedAction(Action<List<Canvas>> action)
+    {
+        onNumberOfScoreScreensChangedAction += action;
+    }
+
+    public void SubscribeToOnNewStagePositionSpawnedAction(Action<Vector3> action)
+    {
+        onNewStagePositionSpawnedAction += action;
+    }
+
     public void SubscribeToOnNumberOfScreensChangedAction(Action<GameObject[]> action)
     {
-        OnNumberOfScreensChangedAction += action;
+        onNumberOfScreensChangedAction += action;
     }
 
     public void SubscribeToOnNumberOfPlayersSavedAction(Action<int> action)
     {
-        OnNumberOfPlayersSavedAction += action;
+        onNumberOfPlayersSavedAction += action;
     }
 
 
     public void SubscribeToOnChangeNumberOfPlayersAction(Action<int> action)
     {
-        OnChangeNumberOfPlayersAction += action;
+        onChangeNumberOfPlayersAction += action;
     }
 
     public void SubscribeToStopAddingPointsAction(Action action)
     {
-        OnStopAddingPointsAction += action;
+        onStopAddingPointsAction += action;
     }
 
     public void SubscribeToStartAddingPointsAction(Action action)
     {
-        OnStartAddingPointsAction += action;
+        onStartAddingPointsAction += action;
     }
 
-    public void SubscribeToChangeScoreOnScreen(Action<int> action)
+    public void SubscribeToChangeScoreOnScreen(Action<int, TextMeshProUGUI> action)
     {
-        OnChangeScoreOnScreenAction += action;
+        onChangeScoreOnScreenAction += action;
     }
 
     public void SubscribeToOnDestroyAction(Action<EnvironmentMovementController> action)
     {
-        OnDestroyAction += action;
+        onDestroyAction += action;
     }
 
     public void SubscribeToOnDestroyGunAction(Action<GunController> action)
     {
-        OnDestroyGunAction += action;
+        onDestroyGunAction += action;
     }
 
     public void SubscribeToOnDestroyJetAction(Action<JetController> action)
     {
-        OnDestroyJetAction += action;
+        onDestroyJetAction += action;
     }
 
     public void SubscribeToOnDestroyEnemyAction(Action<EnemyController> action)
     {
-        OnDestroyEnemyAction += action;
+        onDestroyEnemyAction += action;
     }
 
     public void SubscribeToOnBulletDestroyAction(Action<BulletController> action)
     {
-        OnBulletDestroyAction += action;
+        onBulletDestroyAction += action;
     }
 
     public void SubscribeToOnSpaceshipDestroyAction(Action<CollectableController> action)
     {
-        OnSpaceshipDestroyAction += action;
+        onSpaceshipDestroyAction += action;
     }
 
     public void SubscribeToOnChunkDestroyAction(Action<ChunkController> action)
     {
-        OnChunkDestroyAction += action;
+        onChunkDestroyAction += action;
     }
 
     public void SubscribeToOnEnemyKilledAction(Action<int> action)
     {
-        OnEnemyKilledAction += action;
+        onEnemyKilledAction += action;
     }
 
     public void SubscribeToOnPlayerDeadAction(Action action)
     {
-        OnPlayerDeadAction += action;
+        onPlayerDeadAction += action;
     }
 
     public void SubscribeToOnObjectsInSceneChangedAction(Action action)
     {
-        OnObjectsInSceneChangedAction += action;
+        onObjectsInSceneChangedAction += action;
     }
 
     public void UnsubscribeFromOnDestroyAction(Action<EnvironmentMovementController> action)
     {
-        OnDestroyAction -= action;
+        onDestroyAction -= action;
     }
 
     public void UnsubscribeFromOnDestroyGunAction(Action<GunController> action)
     {
-        OnDestroyGunAction -= action;
+        onDestroyGunAction -= action;
     }
 
     public void UnsubscribeFromOnDestroyJetAction(Action<JetController> action)
     {
-        OnDestroyJetAction -= action;
+        onDestroyJetAction -= action;
     }
 
     public void UnsubscribeFromOnDestroyEnemyAction(Action<EnemyController> action)
     {
-        OnDestroyEnemyAction -= action;
+        onDestroyEnemyAction -= action;
     }
 
     public void UnsubscribeFromOnBulletDestroyAction(Action<BulletController> action)
     {
-        OnBulletDestroyAction -= action;
+        onBulletDestroyAction -= action;
     }
 
     public void UnsubscribeFromOnSpaceshipDestroyAction(Action<CollectableController> action)
     {
-        OnSpaceshipDestroyAction -= action;
+        onSpaceshipDestroyAction -= action;
     }
 
     public void UnsubscribeFromOnChunkDestroyAction(Action<ChunkController> action)
     {
-        OnChunkDestroyAction -= action;
+        onChunkDestroyAction -= action;
     }
 
     public void UnsubscribeFromOnEnemyKilledAction(Action<int> action)
     {
-        OnEnemyKilledAction -= action;
+        onEnemyKilledAction -= action;
     }
 
     public void UnsubscribeFromOnPlayerDeadAction(Action action)
     {
-        OnPlayerDeadAction -= action;
+        onPlayerDeadAction -= action;
     }
 
     public void UnsubscribeFromOnObjectsInSceneChangedAction(Action action)
     {
-        OnObjectsInSceneChangedAction -= action;
+        onObjectsInSceneChangedAction -= action;
     }
 
-    public void UnsubscribeFromChangeScoreOnScreen(Action<int> action)
+    public void UnsubscribeFromChangeScoreOnScreen(Action<int, TextMeshProUGUI> action)
     {
-        OnChangeScoreOnScreenAction -= action;
+        onChangeScoreOnScreenAction -= action;
     }
 
     public void UnsubscribeFromStopAddingPointsAction(Action action)
     {
-        OnStopAddingPointsAction -= action;
+        onStopAddingPointsAction -= action;
     }
 
     public void UnsubscribeFromStartAddingPointsAction(Action action)
     {
-        OnStartAddingPointsAction -= action;
+        onStartAddingPointsAction -= action;
     }
 
-    public void UnsubscribeToOnChangeNumberOfPlayersAction(Action<int> action)
+    public void UnsubscribeFromOnChangeNumberOfPlayersAction(Action<int> action)
     {
-        OnChangeNumberOfPlayersAction -= action;
+        onChangeNumberOfPlayersAction -= action;
     }
 
-    public void UnsubscribeToOnNumberOfPlayersSavedAction(Action<int> action)
+    public void UnsubscribeFromOnNumberOfPlayersSavedAction(Action<int> action)
     {
-        OnNumberOfPlayersSavedAction -= action;
+        onNumberOfPlayersSavedAction -= action;
     }
 
-    public void UnsubscribeToOnNumberOfScreensChangedAction(Action<GameObject[]> action)
+    public void UnsubscribeFromOnNumberOfScreensChangedAction(Action<GameObject[]> action)
     {
-        OnNumberOfScreensChangedAction -= action;
+        onNumberOfScreensChangedAction -= action;
+    }
+
+    public void UnsubscribeFromOnNewStagePositionSpawnedAction(Action<Vector3> action)
+    {
+        onNewStagePositionSpawnedAction -= action;
+    }
+
+    public void UnsubscribeFromAddScoreScreenAction(Action<List<Canvas>> action)
+    {
+        onNumberOfScoreScreensChangedAction -= action;
+    }
+
+    public void UnsubscribeToOnDecreaseSpawningTimeOfChunk(Action<SpawnManager> action)
+    {
+        onDecreaseSpawningTimeOfChunkAction -= action;
+    }
+
+    public void UnsubscribeToOnNumberOfMovementManagersChanged(Action<List<MovementManager>> action)
+    {
+        onNumberOfMovementManagersChangedAction -= action;
+    }
+
+    public void UnsubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
+    {
+        onIncreaseSpeedAction -= action;
     }
 
     public void OnNumberOfScreensChanged(GameObject[] screens)
     {
-        OnNumberOfScreensChangedAction?.Invoke(screens);
+        onNumberOfScreensChangedAction?.Invoke(screens);
+    }
+
+    public void OnNewStagePositionSpawned(Vector3 position)
+    {
+        onNewStagePositionSpawnedAction?.Invoke(position);
     }
 
     public void OnObjectsInSceneChanged()
     {
-        OnObjectsInSceneChangedAction?.Invoke();
+        onObjectsInSceneChangedAction?.Invoke();
     }
 
     public void OnChunkDestroyed(ChunkController chunk)
     {
-        OnChunkDestroyAction?.Invoke(chunk);
+        onChunkDestroyAction?.Invoke(chunk);
     }
 
     public void OnNumberOfPlayersChanged(int number)
     {
-        OnChangeNumberOfPlayersAction?.Invoke(number);
+        onChangeNumberOfPlayersAction?.Invoke(number);
     }
 
     public void OnNumberOfPlayersSaved(int number)
     {
-        OnNumberOfPlayersSavedAction?.Invoke(number);
+        onNumberOfPlayersSavedAction?.Invoke(number);
     }
     public void OnEnvironmentDestroyed(EnvironmentMovementController movable)
     {
-        OnDestroyAction?.Invoke(movable);
+        onDestroyAction?.Invoke(movable);
     }
 
     public void OnGunDestroyed(GunController gun)
     {
-        OnDestroyGunAction?.Invoke(gun);
+        onDestroyGunAction?.Invoke(gun);
     }
 
     public void OnJetDestroyed(JetController jet)
     {
-        OnDestroyJetAction?.Invoke(jet);
+        onDestroyJetAction?.Invoke(jet);
     }
 
     public void OnSpaceshipDestroyed(CollectableController spaceship)
     {
-        OnSpaceshipDestroyAction?.Invoke(spaceship);
+        onSpaceshipDestroyAction?.Invoke(spaceship);
     }
 
     public void OnBulletDestroyed(BulletController bullet)
     {
-        OnBulletDestroyAction?.Invoke(bullet);
+        onBulletDestroyAction?.Invoke(bullet);
     }
 
-    public void OnChangeScoreOnScreen(int score)
+    public void OnChangeScoreOnScreen(int score, TextMeshProUGUI playerScoreText)
     {
-        OnChangeScoreOnScreenAction?.Invoke(score);
+        onChangeScoreOnScreenAction?.Invoke(score, playerScoreText);
     }
 
     public void StartAddingPoints()
     {
-        OnStartAddingPointsAction?.Invoke();
+        onStartAddingPointsAction?.Invoke();
     }
 
     public void StopAddingPoints()
     {
-        OnStopAddingPointsAction?.Invoke();
+        onStopAddingPointsAction?.Invoke();
     }
 
     public void OnPlayerDead()
     {
-        OnPlayerDeadAction?.Invoke();
+        onPlayerDeadAction?.Invoke();
     }
 
     public void OnEnemyDestroyed(EnemyController enemy)
     {
-        OnDestroyEnemyAction?.Invoke(enemy);
+        onDestroyEnemyAction?.Invoke(enemy);
     }
 
     public void OnEnemyKilled(int enemyWorth)
     {
-        OnEnemyKilledAction?.Invoke(enemyWorth);
+        onEnemyKilledAction?.Invoke(enemyWorth);
+    }
+
+    public void OnNumberOfScoreScreensChanged(List<Canvas> canvas)
+    {
+        onNumberOfScoreScreensChangedAction?.Invoke(canvas);
+    }
+
+    public void OnDecreaseSpawningTimeOfChunk(SpawnManager spawnManager)
+    {
+        onDecreaseSpawningTimeOfChunkAction?.Invoke(spawnManager);
+    }
+
+    public void OnNumberOfMovementManagersChanged(List<MovementManager> movementManagers)
+    {
+        onNumberOfMovementManagersChangedAction?.Invoke(movementManagers);
+    }
+
+    public void OnIncreaseSpeed(GameObject screen)
+    {
+        onIncreaseSpeedAction?.Invoke(screen);
     }
 }

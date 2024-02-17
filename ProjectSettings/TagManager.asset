@@ -9,6 +9,7 @@ TagManager:
   - EndOfRoad
   - Collectable
   - Enemy
+  - Level
   layers:
   - Default
   - TransparentFX

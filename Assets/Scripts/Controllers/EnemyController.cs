@@ -17,10 +17,12 @@ public class EnemyController : MonoBehaviour, IDestroyable
     private EnvironmentMovementController environmentComponent;
     private ParticleSystemManager particleSystemManager;
     private AudioSource audioSource;
+    private Vector3 startPosition;
 
 
     private void Awake()
     {
+        startPosition = transform.position;
         audioSource = GetComponent<AudioSource>();
         environmentComponent = GetComponent<EnvironmentMovementController>();
         particleSystemManager = GetComponent<ParticleSystemManager>();
@@ -85,16 +87,33 @@ public class EnemyController : MonoBehaviour, IDestroyable
 
     private void RotateEnemy()
     {
-        if (!hasRotated && enemyScriptableObject.IsEnemyOnEdge(transform.position))
+        if (!hasRotated && IsEnemyOnEdge(transform.localPosition))
         {
             transform.Rotate(enemyScriptableObject.faceTheOtherWay * isOnEdge);
             isOnEdge *= Negator;
             hasRotated = true;
         }
-        else if (!enemyScriptableObject.IsEnemyOnEdge(transform.position))
+        else if (!IsEnemyOnEdge(transform.localPosition))
         {
             hasRotated = false;
         }
+    }
+
+    public bool IsEnemyOnEdge(Vector3 position)
+    {
+        if (position.x <= -MapEdgeConstants.EdgePosX + startPosition.x)
+            return true;
+
+        if (position.x >= MapEdgeConstants.EdgePosX + startPosition.x)
+            return true;
+
+        if (position.y >= EnemyScriptableObject.EdgePositionUpY)
+            return true;
+
+        if (position.y <= EnemyScriptableObject.EdgePositionDownY)
+            return true;
+
+        return false;
     }
 
     public void TakeDamage(int damage)

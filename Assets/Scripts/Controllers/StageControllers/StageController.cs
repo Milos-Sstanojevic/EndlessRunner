@@ -4,11 +4,21 @@ public class StageController : MonoBehaviour
 {
     private const string GroundTag = "Ground";
     private float totalStageLength;
-    [SerializeField] private GameObject spawnStagePoint;
+    private Vector3 spawnStagePoint;
 
     private void Awake()
     {
         CalculateTotalStageLength();
+    }
+
+    private void OnEnable()
+    {
+        EventManager.Instance.SubscribeToOnNewStagePositionSpawnedAction(SetStageSpawnPosition);
+    }
+
+    private void SetStageSpawnPosition(Vector3 position)
+    {
+        spawnStagePoint = position;
     }
 
     private void CalculateTotalStageLength()
@@ -40,6 +50,6 @@ public class StageController : MonoBehaviour
             return;
 
         float errorOffset = totalStageLength + transform.position.z;
-        transform.position = new Vector3(0, 0, spawnStagePoint.transform.position.z + errorOffset);
+        transform.position = new Vector3(transform.position.x, 0, spawnStagePoint.z + errorOffset);
     }
 }

@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3604097429087743224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3728870269056295211}
+  - component: {fileID: 2030229195780225781}
+  m_Layer: 0
+  m_Name: StageSpawningPosition
+  m_TagString: EndOfRoad
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3728870269056295211
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3604097429087743224}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.43853378, z: 89.99968}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5340790431636367008}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2030229195780225781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3604097429087743224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e74d529deaa3d7a48958e5a18c78183a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8323218390141226748
 GameObject:
   m_ObjectHideFlags: 0
@@ -68,6 +112,7 @@ Transform:
   - {fileID: 4935822566514878044}
   - {fileID: 4552887987988720761}
   - {fileID: 6627880442774967458}
+  - {fileID: 3728870269056295211}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &2626585316715121748
@@ -104,7 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f367891c72010164cae9714da7784f09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnStagePoint: {fileID: 0}
 --- !u!114 &5576771393723482401
 MonoBehaviour:
   m_ObjectHideFlags: 0
