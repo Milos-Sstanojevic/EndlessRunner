@@ -14,7 +14,6 @@ public class PlayerCollisionHandler : MonoBehaviour
     private PlayerJetHandler jetHandler;
     private PlayerCollectingHandler playerCollectingHandler;
     private PlayerInputController playerInputController;
-    private bool isPlayerDead;
 
     private void Start()
     {
@@ -46,7 +45,10 @@ public class PlayerCollisionHandler : MonoBehaviour
         playerController.PlayerDied();
 
         if (!IsPlayerOnGround())
+        {
             playerController.transform.position = new Vector3(playerController.transform.position.x, ZeroPosition + OffsetForPrefab, playerController.transform.position.z);
+            playerController.transform.eulerAngles = Vector3.zero;
+        }
 
         characterAnimator.PlayDeadAnimation();
         AudioManager.Instance.PlayDeathSound();

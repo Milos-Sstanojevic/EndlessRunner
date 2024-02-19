@@ -25,9 +25,7 @@ public class PlayerJetHandler : MonoBehaviour
     private void Update()
     {
         if (playerMovement.IsMovementEnabled())
-            ContinueGunCoroutine();
-        else
-            StopGunCoroutine();
+            ContinueJetCoroutine();
 
 
         if (jetOnBack?.HasJet == false && isInAir)
@@ -82,16 +80,10 @@ public class PlayerJetHandler : MonoBehaviour
         return CollectablePointsWorth * 2;
     }
 
-    private void ContinueGunCoroutine()
+    private void ContinueJetCoroutine()
     {
         if (jetOnBack != null)
             jetOnBack.UnpauseCoroutine();
-    }
-
-    private void StopGunCoroutine()
-    {
-        if (jetOnBack != null)
-            jetOnBack.PauseCoroutine();
     }
 
     public void ReleaseJetIfHaveOne()
@@ -103,7 +95,7 @@ public class PlayerJetHandler : MonoBehaviour
     private IEnumerator ReleaseJetCoroutine()
     {
         jetOnBack.ReleaseJetToPool();
-        yield return null;
+        yield return new WaitForEndOfFrame();
         jetOnBack = null;
     }
 

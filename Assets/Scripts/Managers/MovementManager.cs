@@ -135,6 +135,7 @@ public class MovementManager : MonoBehaviour
         {
             speed += SpeedIncrease;
             SetMovementSpeedOfObjects(oneScreen);
+            Debug.Log(speed);
         }
     }
 

@@ -126,10 +126,10 @@ public class GunController : MonoBehaviour, IDestroyable
         HasGun = true;
         environmentComponent.enabled = false;
         collectableComponent.enabled = false;
-        StartCoroutine(GunExpiration());
+        StartCoroutine(GunExpiration(player));
     }
 
-    private IEnumerator GunExpiration()
+    private IEnumerator GunExpiration(PlayerGunHandler player)
     {
         yield return new WaitForSeconds(GunTimeToLive);
         HasGun = false;
@@ -137,6 +137,7 @@ public class GunController : MonoBehaviour, IDestroyable
         muzzleParticleObject.SetActive(false);
         DeactivateAllBullets();
         gunExpired = true;
+        player.SetGunInHandsToNull();
     }
 
 

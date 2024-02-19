@@ -32,7 +32,9 @@ public class PlayerGunHandler : MonoBehaviour
             gun.MoveToPlayerHand(this, gunPosition.transform.position);
         }
         else
+        {
             gun.ReleaseGunInPool();
+        }
 
         AudioManager.Instance.PlayGunCollectedSound();
 
