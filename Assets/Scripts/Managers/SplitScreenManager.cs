@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SplitScreenManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SplitScreenManager : MonoBehaviour
     private List<MovementManager> movementManagers = new List<MovementManager>();
     private GameObject[] screenInstances;
     private bool shouldReset;
+    private List<string> controlSchemes = new List<string> { "ArrowsControlls", "IJKLControlls", "NumControlls" };
 
     private void Awake()
     {
@@ -74,7 +76,10 @@ public class SplitScreenManager : MonoBehaviour
             screenInstances[i].GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3((i + 1) * SpaceBetweenStages, 0, 0));
 
             Camera playerCamera = screenInstances[i].GetComponentInChildren<Camera>();
-            scoreCanvases.Add(playerCamera.GetComponentInChildren<Canvas>());
+
+            scoreCanvases.Add(playerCamera.GetComponentInChildren<Canvas>(true));
+
+            screenInstances[i].GetComponentInChildren<PlayerInput>(true).SwitchCurrentControlScheme(controlSchemes[i], Keyboard.current);
 
             movementManagers.Add(screenInstances[i].GetComponentInChildren<MovementManager>());
 

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    private const int DefaultNumberOfManagers = 1;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int gravityModifier;
     private GameStates CurrentState;
@@ -71,21 +72,21 @@ public class GameManager : MonoBehaviour
 
     private void SetScreensInGame(GameObject[] screens)
     {
-        screensInGame.RemoveRange(1, screensInGame.Count - 1);
+        screensInGame.RemoveRange(DefaultNumberOfManagers, screensInGame.Count - DefaultNumberOfManagers);
         for (int i = 0; i < screens.Length; i++)
             screensInGame.Add(screens[i]);
     }
 
     private void SetMovementMangers(List<MovementManager> managers)
     {
-        movementManagers.RemoveRange(1, movementManagers.Count - 1);
+        movementManagers.RemoveRange(DefaultNumberOfManagers, movementManagers.Count - DefaultNumberOfManagers);
         foreach (MovementManager manager in managers)
             movementManagers.Add(manager);
     }
 
     private void SetSpawnManagers(GameObject[] screens)
     {
-        spawnManagers.RemoveRange(1, spawnManagers.Count - 1);
+        spawnManagers.RemoveRange(DefaultNumberOfManagers, spawnManagers.Count - DefaultNumberOfManagers);
         foreach (GameObject screen in screens)
         {
             SpawnManager managersInScreen = screen.GetComponentInChildren<SpawnManager>(true);
@@ -163,7 +164,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     private void SetupPlayingScreen()
     {
         uiManager.SetScoreScreenActive();
@@ -203,6 +203,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         SetGameState(GameStates.Playing);
+        uiManager.SetScoreScreenActive();
         EventManager.Instance.StartAddingPoints();
     }
 

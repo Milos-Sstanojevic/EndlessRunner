@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
-    private const string HorizontalAxis = "Horizontal";
-    private const string VerticalAxis = "Vertical";
     private bool canJump = true;
     private PlayerMovement playerMovement;
     [SerializeField] private float jumpForce;
@@ -15,6 +13,7 @@ public class PlayerInputController : MonoBehaviour
     private Rigidbody playerRb;
     private Vector2 movementInput = Vector2.zero;
     private bool jumped;
+    private bool shoot;
 
     private void Awake()
     {
@@ -34,6 +33,11 @@ public class PlayerInputController : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         jumped = context.action.triggered;
+    }
+
+    public void OnShoot(InputAction.CallbackContext context)
+    {
+        shoot = context.action.triggered;
     }
 
     private void Update()
@@ -68,9 +72,9 @@ public class PlayerInputController : MonoBehaviour
 
     private void HandleShootInput()
     {
-        if (Input.GetKey(KeyCode.Mouse0) && gunHandler.HasGun())
+        if (shoot && gunHandler.HasGun())
         {
-            gunHandler.GetGunInHands().ShootFromGun();
+            gunHandler.GetGunInHands().ShootFromGun(shoot);
         }
     }
 

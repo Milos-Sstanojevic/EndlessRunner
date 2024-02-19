@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject numberOfPlayersScreen;
     [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject gameOverScreen;
-    private List<Canvas> scoreScreens;
+    [SerializeField] private List<Canvas> scoreScreens;
 
     private void OnEnable()
     {
@@ -23,7 +23,8 @@ public class UIManager : MonoBehaviour
 
     private void SetScoreScreens(List<Canvas> screens)
     {
-        scoreScreens = screens;
+        foreach (Canvas screen in screens)
+            scoreScreens.Add(screen);
     }
 
     private void ChangeNumberOfPlayers(int number)
@@ -31,7 +32,14 @@ public class UIManager : MonoBehaviour
         numberOfPlayersText.text = number.ToString();
     }
 
-    private void SetNumberOfPlayersScreenInactive(int number)
+    //Called when Cancel button is clicked in menu fro choosing number of players
+    public void CancelSettingNumberOfPlayers()
+    {
+        numberOfPlayersScreen.SetActive(false);
+        startScreen.SetActive(true);
+    }
+
+    private void SetNumberOfPlayersScreenInactive()
     {
         numberOfPlayersScreen.SetActive(false);
         startScreen.SetActive(true);

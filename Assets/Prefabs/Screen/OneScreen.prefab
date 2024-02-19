@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8230948431997840352
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2008,8 +2008,24 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 52f5277b-473a-47b2-bc53-0f6ccba86b05
     m_ActionName: Player/Jump[/Keyboard/space,/Keyboard/rightCtrl]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1370757877494405126}
+        m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
+        m_MethodName: OnShoot
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 06587cfe-19d5-4481-87f9-9b5408caf93c
+    m_ActionName: Player/Shoot
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: KeyboardWSAD
+  m_DefaultControlScheme: WASDControlls
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1706472164213161939}

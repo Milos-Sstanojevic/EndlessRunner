@@ -20,7 +20,7 @@ public class EventManager : MonoBehaviour
     private event Action onStartAddingPointsAction;
     private event Action onStopAddingPointsAction;
     private event Action<int> onChangeNumberOfPlayersAction;
-    private event Action<int> onNumberOfPlayersSavedAction;
+    private event Action onNumberOfPlayersSavedAction;
     private event Action<GameObject[]> onNumberOfScreensChangedAction;
     private event Action<Vector3> onNewStagePositionSpawnedAction;
     private event Action<List<Canvas>> onNumberOfScoreScreensChangedAction;
@@ -71,7 +71,7 @@ public class EventManager : MonoBehaviour
         onNumberOfScreensChangedAction += action;
     }
 
-    public void SubscribeToOnNumberOfPlayersSavedAction(Action<int> action)
+    public void SubscribeToOnNumberOfPlayersSavedAction(Action action)
     {
         onNumberOfPlayersSavedAction += action;
     }
@@ -217,7 +217,7 @@ public class EventManager : MonoBehaviour
         onChangeNumberOfPlayersAction -= action;
     }
 
-    public void UnsubscribeFromOnNumberOfPlayersSavedAction(Action<int> action)
+    public void UnsubscribeFromOnNumberOfPlayersSavedAction(Action action)
     {
         onNumberOfPlayersSavedAction -= action;
     }
@@ -277,9 +277,9 @@ public class EventManager : MonoBehaviour
         onChangeNumberOfPlayersAction?.Invoke(number);
     }
 
-    public void OnNumberOfPlayersSaved(int number)
+    public void OnNumberOfPlayersSaved()
     {
-        onNumberOfPlayersSavedAction?.Invoke(number);
+        onNumberOfPlayersSavedAction?.Invoke();
     }
     public void OnEnvironmentDestroyed(EnvironmentMovementController movable)
     {

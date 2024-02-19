@@ -38,7 +38,7 @@ public class GunController : MonoBehaviour, IDestroyable
             gunExpired = false;
         }
 
-        ShootFromGun();
+        ShootFromGun(false);
 
         if (transform.position.z < MapEdgeConstants.PositionBehindPlayerAxisZ)
             Destroy();
@@ -49,18 +49,18 @@ public class GunController : MonoBehaviour, IDestroyable
         EventManager.Instance.OnGunDestroyed(this);
     }
 
-    public void ShootFromGun()
+    public void ShootFromGun(bool shoot)
     {
         if (!HasGun)
             return;
 
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (shoot)
         {
             muzzleParticleObject.SetActive(true);
             ShootBullet();
         }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (!shoot)
         {
             muzzleParticleObject.SetActive(false);
         }

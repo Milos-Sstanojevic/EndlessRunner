@@ -78,17 +78,12 @@ public class MovementManager : MonoBehaviour
         playerMovement.SetMovementSpeed(speed + PlayerSpeedBalancer);
     }
 
-    private void SetMovementSpeedOfEnvironments(Transform parent)
+    private void SetMovementSpeedOfEnvironments(Transform oneScreen)
     {
-        foreach (Transform child in parent)
-        {
-            EnvironmentMovementController environmentController = child.GetComponent<EnvironmentMovementController>();
-
-            if (environmentController != null)
-                environmentController.SetMovementSpeed(speed);
-
-            SetMovementSpeedOfEnvironments(child);
-        }
+        if (oneScreen != null)
+            foreach (EnvironmentMovementController movable in oneScreen.GetComponentsInChildren<EnvironmentMovementController>())
+                if (movable != null)
+                    movable.SetMovementSpeed(speed);
     }
 
     private void SetMovementSpeed()
@@ -100,9 +95,7 @@ public class MovementManager : MonoBehaviour
     private void DisableMovementForOneScreen(PlayerController playerController)
     {
         if (playerMovement == playerController.GetComponent<PlayerMovement>())
-        {
             DisableMovementOfMovableObjects(playerMovement.transform.parent.gameObject);
-        }
     }
 
     public void DisableMovementOfMovableObjects(GameObject oneScreen)
@@ -112,17 +105,11 @@ public class MovementManager : MonoBehaviour
         playerMovement.DisableMovement();
     }
 
-    private void DisableEnvironmentMovementControllers(Transform parent)
+    private void DisableEnvironmentMovementControllers(Transform oneScreen)
     {
-        foreach (Transform child in parent)
-        {
-            EnvironmentMovementController environmentController = child.GetComponent<EnvironmentMovementController>();
-
-            if (environmentController != null)
-                environmentController.DisableMovement();
-
-            DisableEnvironmentMovementControllers(child);
-        }
+        if (oneScreen != null)
+            foreach (EnvironmentMovementController movable in oneScreen.GetComponentsInChildren<EnvironmentMovementController>())
+                movable.DisableMovement();
     }
 
     private void DisableMovement()
