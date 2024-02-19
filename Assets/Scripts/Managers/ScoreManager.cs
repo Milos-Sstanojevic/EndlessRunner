@@ -21,6 +21,7 @@ public class ScoreManager : MonoBehaviour
     private void OnEnable()
     {
         EventManager.Instance.SubscribeToOnEnemyKilledAction(AddPoints);
+        EventManager.Instance.SubscribeToOnPlayerDeadAction(StopAddingPointsForThisPlayer);
     }
 
     public void StartAddingPoints()
@@ -46,9 +47,14 @@ public class ScoreManager : MonoBehaviour
             return;
 
         EventManager.Instance.OnDecreaseSpawningTimeOfChunk(spawnManager);
-        //MovementManager.Instance.IncreaseMovementSpeed();
         EventManager.Instance.OnIncreaseSpeed(transform.parent.gameObject);
         speedupRound++;
+    }
+
+    public void StopAddingPointsForThisPlayer(PlayerController player)
+    {
+        if (player == GetComponent<PlayerController>())
+            canAddPoints = false;
     }
 
     public void StopAddingPoints()

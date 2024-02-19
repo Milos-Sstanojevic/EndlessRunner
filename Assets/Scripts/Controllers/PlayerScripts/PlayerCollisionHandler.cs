@@ -14,6 +14,7 @@ public class PlayerCollisionHandler : MonoBehaviour
     private PlayerJetHandler jetHandler;
     private PlayerCollectingHandler playerCollectingHandler;
     private PlayerInputController playerInputController;
+    private bool isPlayerDead;
 
     private void Start()
     {
@@ -28,10 +29,10 @@ public class PlayerCollisionHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        // if (/*other.gameObject.CompareTag(ObstacleTag) ||*/ other.gameObject.CompareTag(EnemyTag))
-        // {
-        //     HandleEnemyOrObstacleCollision();
-        // }
+        if (/*other.gameObject.CompareTag(ObstacleTag) ||*/ other.gameObject.CompareTag(EnemyTag))
+        {
+            HandleEnemyOrObstacleCollision();
+        }
 
         if (other.gameObject.CompareTag(GroundTag))
         {
@@ -41,7 +42,8 @@ public class PlayerCollisionHandler : MonoBehaviour
 
     private void HandleEnemyOrObstacleCollision()
     {
-        EventManager.Instance.OnPlayerDead();
+        EventManager.Instance.OnPlayerDead(playerController);
+        playerController.PlayerDied();
 
         if (!IsPlayerOnGround())
             playerController.transform.position = new Vector3(playerController.transform.position.x, ZeroPosition + OffsetForPrefab, playerController.transform.position.z);

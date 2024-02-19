@@ -61,6 +61,7 @@ public class SpawnManager : MonoBehaviour
     private void OnEnable()
     {
         EventManager.Instance.SubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
+        EventManager.Instance.SubscribeToOnPlayerDeadAction(DisableSpawningForThisPlayer);
 
         StartCoroutine(SpawnChunks());
         endOfPreviousChunk = Vector3.zero;
@@ -81,7 +82,7 @@ public class SpawnManager : MonoBehaviour
         PickTypeOfChunk();
         HandleChunkSpawning();
 
-        EventManager.Instance.OnObjectsInSceneChanged();
+        EventManager.Instance.OnObjectsInSceneChanged(this);
     }
 
     private void SetEndOfPreviousChunk()
@@ -112,6 +113,7 @@ public class SpawnManager : MonoBehaviour
     private void HandleChunkSpawning()
     {
         chunk = PoolingSystemController.Instance.GetChunkPoolingSystem().GetObjectFromPool();
+        chunk.SetSpawnManagerOfChunk(this);
 
         List<GameObject> randomObstaclesOnChunk = chunk.GetPositionsForRandomObstaclesOnChunk();
         List<GameObject> randomCollectablesOnChunk = chunk.GetPositionsForRandomCollectablesOnChunk();
@@ -257,9 +259,17 @@ public class SpawnManager : MonoBehaviour
         canSpawn = false;
     }
 
+    public void DisableSpawningForThisPlayer(PlayerController player)
+    {
+        if (player == transform.parent.gameObject.GetComponentInChildren<PlayerController>())
+            canSpawn = false;
+    }
+
     private void OnDisable()
     {
         EventManager.Instance.UnsubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
+        EventManager.Instance.SubscribeToOnPlayerDeadAction(DisableSpawningForThisPlayer);
+
         StopCoroutine(SpawnChunks());
     }
 

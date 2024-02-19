@@ -3848,7 +3848,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1073428258}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7309fd14f3075345b1c2a1fc69a0c4e, type: 3}
   m_Name: 
@@ -7334,7 +7334,6 @@ MonoBehaviour:
   startMenuCanvas: {fileID: 1691291086}
   scoreCanvases:
   - {fileID: 677421857}
-  movementManagers: []
 --- !u!1 &1678952510
 GameObject:
   m_ObjectHideFlags: 0
@@ -8584,13 +8583,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41618d3f73359b24c920f5756bdf8475, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnManager: {fileID: 832086703}
   uiManager: {fileID: 247620758}
   gravityModifier: 2
   movementManagers:
   - {fileID: 1235297523}
   screensInGame:
   - {fileID: 1746139869}
+  spawnManagers:
+  - {fileID: 832086703}
 --- !u!4 &1981790934
 Transform:
   m_ObjectHideFlags: 0

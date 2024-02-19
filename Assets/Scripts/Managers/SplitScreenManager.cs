@@ -12,8 +12,9 @@ public class SplitScreenManager : MonoBehaviour
     [SerializeField] private GameObject playerAndLevelPrefab;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> scoreCanvases;
-    [SerializeField] private List<MovementManager> movementManagers;
+    private List<MovementManager> movementManagers = new List<MovementManager>();
     private GameObject[] screenInstances;
+    private bool shouldReset;
 
     private void Awake()
     {
@@ -48,7 +49,14 @@ public class SplitScreenManager : MonoBehaviour
             }
         }
 
-        scoreCanvases.Clear();
+        if (shouldReset)
+        {
+            scoreCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scoreCanvases[0].GetComponent<RectTransform>().rect.width * 2);
+            shouldReset = false;
+        }
+
+        scoreCanvases.RemoveRange(1, scoreCanvases.Count - 1);
+        movementManagers.Clear();
     }
 
     private void EnableCamerasAndLevels(int numberOfPlayers)
@@ -66,8 +74,7 @@ public class SplitScreenManager : MonoBehaviour
             screenInstances[i].GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3((i + 1) * SpaceBetweenStages, 0, 0));
 
             Camera playerCamera = screenInstances[i].GetComponentInChildren<Camera>();
-
-            scoreCanvases.Add(screenInstances[i].GetComponentInChildren<Canvas>());
+            scoreCanvases.Add(playerCamera.GetComponentInChildren<Canvas>());
 
             movementManagers.Add(screenInstances[i].GetComponentInChildren<MovementManager>());
 
@@ -78,22 +85,15 @@ public class SplitScreenManager : MonoBehaviour
             }
         }
 
-        SetScoreCanvasPositions(numberOfPlayers);
-    }
-
-    private void SetScoreCanvasPositions(int numberOfPlayers)
-    {
-        for (int i = 0; i < numberOfPlayers - 1; i++)
+        if (numberOfPlayers == 2)
         {
-            Canvas scoreCanvas = scoreCanvases[i];
-
-            float canvasXPos = i % 2 == 0 ? 0f : 1f;
-            float canvasYPos = i > 0 ? 1f : 0f;
-
-            scoreCanvas.GetComponent<RectTransform>().anchorMin = new Vector2(canvasXPos, 1f - canvasYPos);
-            scoreCanvas.GetComponent<RectTransform>().anchorMax = new Vector2(canvasXPos, 1f - canvasYPos);
+            shouldReset = true;
+            scoreCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scoreCanvases[0].GetComponent<RectTransform>().rect.width / 2);
+            scoreCanvases[1].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scoreCanvases[1].GetComponent<RectTransform>().rect.width / 2);
         }
+
     }
+
 
     private Rect[] CalculateSplitRectangles(int numberOfPlayers)
     {

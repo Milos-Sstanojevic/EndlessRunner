@@ -12,6 +12,7 @@ public class ChunkController : MonoBehaviour
     [SerializeField] private List<GameObject> positionsForRandomCollectablesOnChunk;
     private List<GameObject> spawnedObjects = new List<GameObject>();
     private Dictionary<GameObject, Vector3> initialObjectPositions = new Dictionary<GameObject, Vector3>();
+    private SpawnManager spawnManagerOfChunk;
 
     private void OnEnable()
     {
@@ -131,4 +132,10 @@ public class ChunkController : MonoBehaviour
     public List<GameObject> GetPositionsForRandomObstaclesOnChunk() => positionsForRandomObstaclesOnChunk;
     public List<GameObject> GetPositionsForRandomCollectablesOnChunk() => positionsForRandomCollectablesOnChunk;
     public int GetChanceForThisChunk() => chanceOfThisChunk;
+    public void SetSpawnManagerOfChunk(SpawnManager spawnManager)
+    {
+        spawnManagerOfChunk = spawnManager;
+    }
+
+    public SpawnManager GetSpawnManagerOfChunk() => spawnManagerOfChunk;
 }

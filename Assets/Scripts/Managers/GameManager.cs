@@ -1,20 +1,20 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private List<SpawnManager> spawnManagers;
-    [SerializeField] private SpawnManager spawnManager;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int gravityModifier;
     private GameStates CurrentState;
     [SerializeField] private List<MovementManager> movementManagers;
     [SerializeField] private List<GameObject> screensInGame;
+    [SerializeField] private List<SpawnManager> spawnManagers;
+    private int numberOfPlayersDead = 1;
+    private bool canEnableSpawnManagers = true;
 
 
     private void Awake()
@@ -44,37 +44,48 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.SubscribeToOnPlayerDeadAction(GameOver);
         EventManager.Instance.SubscribeToChangeScoreOnScreen(SetScoreOnScreen);
         EventManager.Instance.SubscribeToOnNumberOfMovementManagersChanged(SetMovementMangers);
-        EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(GetScreensInGame);
+        EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(SetScreensInGame);
         EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
     }
 
-    private void EnableMovementForNewObjects()
+    private IEnumerator EnableMovementForNewObjectsCoroutine(SpawnManager spawnManager)
     {
-        if (CurrentState != GameStates.Playing)
-            return;
+        yield return new WaitForEndOfFrame();
 
         if (movementManagers != null && screensInGame != null)
+        {
             for (int i = 0; i < movementManagers.Count; i++)
             {
                 movementManagers[i].EnableMovementOfObjects(screensInGame[i]);
                 movementManagers[i].SetMovementSpeedOfObjects(screensInGame[i]);
             }
+        }
     }
 
-    private void GetScreensInGame(GameObject[] screens)
+    private void EnableMovementForNewObjects(SpawnManager spawnManager)
     {
+        if (CurrentState != GameStates.Playing)
+            return;
+        StartCoroutine(EnableMovementForNewObjectsCoroutine(spawnManager));
+    }
+
+    private void SetScreensInGame(GameObject[] screens)
+    {
+        screensInGame.RemoveRange(1, screensInGame.Count - 1);
         for (int i = 0; i < screens.Length; i++)
             screensInGame.Add(screens[i]);
     }
 
     private void SetMovementMangers(List<MovementManager> managers)
     {
+        movementManagers.RemoveRange(1, movementManagers.Count - 1);
         foreach (MovementManager manager in managers)
             movementManagers.Add(manager);
     }
 
     private void SetSpawnManagers(GameObject[] screens)
     {
+        spawnManagers.RemoveRange(1, spawnManagers.Count - 1);
         foreach (GameObject screen in screens)
         {
             SpawnManager managersInScreen = screen.GetComponentInChildren<SpawnManager>(true);
@@ -83,12 +94,15 @@ public class GameManager : MonoBehaviour
     }
 
     //Unity event, called when player is dead
-    public void GameOver()
+    public void GameOver(PlayerController player)
     {
-        SetGameState(GameStates.GameOver);
-        EventManager.Instance.StopAddingPoints();
-        uiManager.SetEndScreenActive();
-        uiManager.SetScoreScreenInactive();
+        if (numberOfPlayersDead == movementManagers.Count)
+        {
+            SetGameState(GameStates.GameOver);
+            uiManager.SetEndScreenActive();
+            uiManager.SetScoreScreenInactive();
+        }
+        numberOfPlayersDead++;
     }
 
     private void Update()
@@ -138,11 +152,15 @@ public class GameManager : MonoBehaviour
         if (CurrentState == GameStates.Playing || CurrentState == GameStates.MainMenu)
             return;
 
-        if (movementManagers != null && screensInGame != null)
-            for (int i = 0; i < movementManagers.Count; i++)
-                movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
+        if (CurrentState == GameStates.Paused)
+        {
+            if (movementManagers != null && screensInGame != null)
+                for (int i = 0; i < movementManagers.Count; i++)
+                    movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
 
-        DisableSpawnManagers();
+            EventManager.Instance.StopAddingPoints();
+            DisableSpawnManagers();
+        }
     }
 
 
@@ -154,16 +172,18 @@ public class GameManager : MonoBehaviour
 
     private void EnableSpawnManagers()
     {
-        if (spawnManagers != null)
+        if (canEnableSpawnManagers)
         {
-            foreach (SpawnManager spawnManager in spawnManagers)
+            if (spawnManagers != null)
             {
-                spawnManager.EnableSpawning();
-                spawnManager.gameObject.SetActive(true);
+                foreach (SpawnManager spawnManager in spawnManagers)
+                {
+                    spawnManager.EnableSpawning();
+                    spawnManager.gameObject.SetActive(true);
+                }
             }
+            canEnableSpawnManagers = false;
         }
-        spawnManager.EnableSpawning();
-        spawnManager.gameObject.SetActive(true);
     }
 
     private void DisableSpawnManagers()
@@ -176,8 +196,7 @@ public class GameManager : MonoBehaviour
                 spawnManager.gameObject.SetActive(false);
             }
         }
-        spawnManager.DisableSpawning();
-        spawnManager.gameObject.SetActive(false);
+        canEnableSpawnManagers = true;
     }
 
     //Bind with Unity event, on start game button
@@ -250,7 +269,7 @@ public class GameManager : MonoBehaviour
     {
         EventManager.Instance.UnsubscribeFromChangeScoreOnScreen(SetScoreOnScreen);
         EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(GameOver);
-        EventManager.Instance.UnsubscribeFromOnNumberOfScreensChangedAction(GetScreensInGame);
+        EventManager.Instance.UnsubscribeFromOnNumberOfScreensChangedAction(SetScreensInGame);
         EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
     }
 }

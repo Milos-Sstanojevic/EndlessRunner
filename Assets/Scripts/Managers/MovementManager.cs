@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +8,7 @@ public class MovementManager : MonoBehaviour
     private const int NumberOfStagesInScene = 2;
     private const float SpeedIncrease = 1f;
     private const float PlayerSpeedBalancer = 1;
-    [SerializeField] private PlayerMovement player;
+    [SerializeField] private PlayerMovement playerMovement;
     private List<ChunkController> chunksInGame;
     [SerializeField] private List<EnvironmentMovementController> objectsMovements;
     private float speed;
@@ -16,46 +17,40 @@ public class MovementManager : MonoBehaviour
     {
         EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
         EventManager.Instance.SubscribeToOnIncreaseSpeedAction(IncreaseMovementSpeed);
+        EventManager.Instance.SubscribeToOnPlayerDeadAction(DisableMovementForOneScreen);
     }
 
     private void Start()
     {
         chunksInGame = new List<ChunkController>();
-        GetCollectablesAndObstaclesInGame();
+        objectsMovements = objectsMovements.Take(NumberOfStagesInScene).ToList();
         speed = 8;
     }
 
-    public void GetCollectablesAndObstaclesInGame()
+    public void GetCollectablesAndObstaclesInGame(SpawnManager spawnManager)
     {
-        chunksInGame = PoolingSystemController.Instance.GetChunkPoolingSystem().GetInstantiatedObjects();
-        AddObjectsInSceneToMovementList();
+        if (spawnManager == transform.parent.gameObject.GetComponentInChildren<SpawnManager>())
+        {
+            chunksInGame = PoolingSystemController.Instance.GetChunkPoolingSystem().GetInstantiatedObjects();
+            AddObjectsInSceneToMovementList(spawnManager);
+        }
     }
 
-    private void AddObjectsInSceneToMovementList()
+    private void AddObjectsInSceneToMovementList(SpawnManager spawnManager)
     {
-        objectsMovements = objectsMovements.Take(NumberOfStagesInScene).ToList();
+        objectsMovements.RemoveRange(NumberOfStagesInScene, objectsMovements.Count - NumberOfStagesInScene);
 
-        foreach (EnvironmentMovementController movement in chunksInGame.Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
+        foreach (EnvironmentMovementController movement in chunksInGame.Where(chunk => chunk.GetSpawnManagerOfChunk() == spawnManager).Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
             objectsMovements.Add(movement);
+
     }
 
     public void EnableMovementOfObjects(GameObject oneScreen)
     {
-        EnableMovement();
-        EnableEnvironmentMovementControllers(oneScreen.transform);
-        player.EnableMovement();
-    }
-
-    private void EnableEnvironmentMovementControllers(Transform parent)
-    {
-        foreach (Transform child in parent)
+        if (!playerMovement.GetComponent<PlayerController>().IsPlayerDead() && playerMovement == oneScreen.GetComponentInChildren<PlayerMovement>())
         {
-            EnvironmentMovementController environmentController = child.GetComponent<EnvironmentMovementController>();
-
-            if (environmentController != null)
-                environmentController.EnableMovement();
-
-            EnableEnvironmentMovementControllers(child);
+            EnableMovement();
+            playerMovement.EnableMovement();
         }
     }
 
@@ -80,7 +75,7 @@ public class MovementManager : MonoBehaviour
     {
         SetMovementSpeed();
         SetMovementSpeedOfEnvironments(oneScreen.transform);
-        player.SetMovementSpeed(speed + PlayerSpeedBalancer);
+        playerMovement.SetMovementSpeed(speed + PlayerSpeedBalancer);
     }
 
     private void SetMovementSpeedOfEnvironments(Transform parent)
@@ -102,11 +97,19 @@ public class MovementManager : MonoBehaviour
             movement.SetMovementSpeed(speed);
     }
 
+    private void DisableMovementForOneScreen(PlayerController playerController)
+    {
+        if (playerMovement == playerController.GetComponent<PlayerMovement>())
+        {
+            DisableMovementOfMovableObjects(playerMovement.transform.parent.gameObject);
+        }
+    }
+
     public void DisableMovementOfMovableObjects(GameObject oneScreen)
     {
         DisableMovement();
         DisableEnvironmentMovementControllers(oneScreen.transform);
-        player.DisableMovement();
+        playerMovement.DisableMovement();
     }
 
     private void DisableEnvironmentMovementControllers(Transform parent)
@@ -152,5 +155,6 @@ public class MovementManager : MonoBehaviour
     {
         EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
         EventManager.Instance.UnsubscribeToOnIncreaseSpeedAction(IncreaseMovementSpeed);
+        EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(DisableMovementForOneScreen);
     }
 }

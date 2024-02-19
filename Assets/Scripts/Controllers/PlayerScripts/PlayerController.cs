@@ -1,10 +1,9 @@
-using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public ScoreManager ScoreManager { get; private set; }
-
+    [SerializeField] private bool isPlayerDead;
 
     private void Awake()
     {
@@ -23,6 +22,12 @@ public class PlayerController : MonoBehaviour
         EventManager.Instance.SubscribeToStopAddingPointsAction(ScoreManager.StopAddingPoints);
     }
 
+    public void PlayerDied()
+    {
+        isPlayerDead = true;
+    }
+
+    public bool IsPlayerDead() => isPlayerDead;
 
 
     private void OnDisable()

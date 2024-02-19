@@ -14,8 +14,8 @@ public class EventManager : MonoBehaviour
     private event Action<CollectableController> onSpaceshipDestroyAction;
     private event Action<ChunkController> onChunkDestroyAction;
     private event Action<int> onEnemyKilledAction;
-    private event Action onPlayerDeadAction;
-    private event Action onObjectsInSceneChangedAction;
+    private event Action<PlayerController> onPlayerDeadAction;
+    private event Action<SpawnManager> onObjectsInSceneChangedAction;
     private event Action<int, TextMeshProUGUI> onChangeScoreOnScreenAction;
     private event Action onStartAddingPointsAction;
     private event Action onStopAddingPointsAction;
@@ -39,6 +39,7 @@ public class EventManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
     public void SubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
     {
@@ -136,12 +137,12 @@ public class EventManager : MonoBehaviour
         onEnemyKilledAction += action;
     }
 
-    public void SubscribeToOnPlayerDeadAction(Action action)
+    public void SubscribeToOnPlayerDeadAction(Action<PlayerController> action)
     {
         onPlayerDeadAction += action;
     }
 
-    public void SubscribeToOnObjectsInSceneChangedAction(Action action)
+    public void SubscribeToOnObjectsInSceneChangedAction(Action<SpawnManager> action)
     {
         onObjectsInSceneChangedAction += action;
     }
@@ -186,12 +187,12 @@ public class EventManager : MonoBehaviour
         onEnemyKilledAction -= action;
     }
 
-    public void UnsubscribeFromOnPlayerDeadAction(Action action)
+    public void UnsubscribeFromOnPlayerDeadAction(Action<PlayerController> action)
     {
         onPlayerDeadAction -= action;
     }
 
-    public void UnsubscribeFromOnObjectsInSceneChangedAction(Action action)
+    public void UnsubscribeFromOnObjectsInSceneChangedAction(Action<SpawnManager> action)
     {
         onObjectsInSceneChangedAction -= action;
     }
@@ -261,9 +262,9 @@ public class EventManager : MonoBehaviour
         onNewStagePositionSpawnedAction?.Invoke(position);
     }
 
-    public void OnObjectsInSceneChanged()
+    public void OnObjectsInSceneChanged(SpawnManager spawnManager)
     {
-        onObjectsInSceneChangedAction?.Invoke();
+        onObjectsInSceneChangedAction?.Invoke(spawnManager);
     }
 
     public void OnChunkDestroyed(ChunkController chunk)
@@ -320,9 +321,9 @@ public class EventManager : MonoBehaviour
         onStopAddingPointsAction?.Invoke();
     }
 
-    public void OnPlayerDead()
+    public void OnPlayerDead(PlayerController player)
     {
-        onPlayerDeadAction?.Invoke();
+        onPlayerDeadAction?.Invoke(player);
     }
 
     public void OnEnemyDestroyed(EnemyController enemy)
