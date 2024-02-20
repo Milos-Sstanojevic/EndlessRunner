@@ -14,7 +14,7 @@ public class EventManager : MonoBehaviour
     private event Action<CollectableController> onSpaceshipDestroyAction;
     private event Action<ChunkController> onChunkDestroyAction;
     private event Action<int> onEnemyKilledAction;
-    private event Action<PlayerController> onPlayerDeadAction;
+    private event Action<PlayerController, GameObject> onPlayerDeadAction;
     private event Action<SpawnManager> onObjectsInSceneChangedAction;
     private event Action<int, TextMeshProUGUI> onChangeScoreOnScreenAction;
     private event Action onStartAddingPointsAction;
@@ -27,6 +27,10 @@ public class EventManager : MonoBehaviour
     private event Action<SpawnManager> onDecreaseSpawningTimeOfChunkAction;
     private event Action<List<MovementManager>> onNumberOfMovementManagersChangedAction;
     private event Action<GameObject> onIncreaseSpeedAction;
+    private event Action onNumberOfPlayersChosenAction;
+    private event Action<int> onLoadNumberOfPlayersAction;
+    private event Action<GameObject> onEnableMovementOfObject;
+
 
     private void Awake()
     {
@@ -40,6 +44,20 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public void SubscribeToOnEnableMovementOfObject(Action<GameObject> action)
+    {
+        onEnableMovementOfObject += action;
+    }
+
+    public void SubscribeToOnNumberOfPlayersChosen(Action action)
+    {
+        onNumberOfPlayersChosenAction += action;
+    }
+
+    public void SubscribeToOnLoadNumberOfPlayersFromStart(Action<int> action)
+    {
+        onLoadNumberOfPlayersAction += action;
+    }
 
     public void SubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
     {
@@ -137,7 +155,7 @@ public class EventManager : MonoBehaviour
         onEnemyKilledAction += action;
     }
 
-    public void SubscribeToOnPlayerDeadAction(Action<PlayerController> action)
+    public void SubscribeToOnPlayerDeadAction(Action<PlayerController, GameObject> action)
     {
         onPlayerDeadAction += action;
     }
@@ -187,7 +205,7 @@ public class EventManager : MonoBehaviour
         onEnemyKilledAction -= action;
     }
 
-    public void UnsubscribeFromOnPlayerDeadAction(Action<PlayerController> action)
+    public void UnsubscribeFromOnPlayerDeadAction(Action<PlayerController, GameObject> action)
     {
         onPlayerDeadAction -= action;
     }
@@ -250,6 +268,26 @@ public class EventManager : MonoBehaviour
     public void UnsubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
     {
         onIncreaseSpeedAction -= action;
+    }
+
+    public void UnsubscribeFromOnNumberOfPlayersChosen(Action action)
+    {
+        onNumberOfPlayersChosenAction -= action;
+    }
+
+    public void UnsubscribeFromOnLoadNumberOfPlayersFromStart(Action<int> action)
+    {
+        onLoadNumberOfPlayersAction -= action;
+    }
+
+    public void UnsubscribeFromOnEnableMovementOfObject(Action<GameObject> action)
+    {
+        onEnableMovementOfObject -= action;
+    }
+
+    public void OnNumberOfPlayersChosen()
+    {
+        onNumberOfPlayersChosenAction?.Invoke();
     }
 
     public void OnNumberOfScreensChanged(GameObject[] screens)
@@ -321,9 +359,9 @@ public class EventManager : MonoBehaviour
         onStopAddingPointsAction?.Invoke();
     }
 
-    public void OnPlayerDead(PlayerController player)
+    public void OnPlayerDead(PlayerController player, GameObject gameOverScreen)
     {
-        onPlayerDeadAction?.Invoke(player);
+        onPlayerDeadAction?.Invoke(player, gameOverScreen);
     }
 
     public void OnEnemyDestroyed(EnemyController enemy)
@@ -354,5 +392,15 @@ public class EventManager : MonoBehaviour
     public void OnIncreaseSpeed(GameObject screen)
     {
         onIncreaseSpeedAction?.Invoke(screen);
+    }
+
+    public void OnLoadNumberOfPlayers(int numberOfPlayers)
+    {
+        onLoadNumberOfPlayersAction?.Invoke(numberOfPlayers);
+    }
+
+    public void OnEnableMovementOfObject(GameObject gameObject)
+    {
+        onEnableMovementOfObject?.Invoke(gameObject);
     }
 }

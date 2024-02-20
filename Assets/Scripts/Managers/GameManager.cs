@@ -7,16 +7,17 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    private const string IsRestarted = "IsRestarted";
     private const int DefaultNumberOfManagers = 1;
+    private const string NumberOfPlayers = "NumberOfPlayers";
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int gravityModifier;
     private GameStates CurrentState;
     [SerializeField] private List<MovementManager> movementManagers;
     [SerializeField] private List<GameObject> screensInGame;
     [SerializeField] private List<SpawnManager> spawnManagers;
-    private int numberOfPlayersDead = 1;
     private bool canEnableSpawnManagers = true;
-
+    private int numberOfPlayers = 0;
 
     private void Awake()
     {
@@ -33,6 +34,19 @@ public class GameManager : MonoBehaviour
         CurrentState = state;
     }
 
+    private void Start()
+    {
+        if (PlayerPrefs.GetInt(IsRestarted) == 1)
+        {
+            numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
+            if (numberOfPlayers > 1)
+            {
+                EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
+                SplitScreenManager.Instance.Split(numberOfPlayers);
+            }
+        }
+    }
+
     private void OnEnable()
     {
         SubscribeToEvents();
@@ -47,9 +61,15 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.SubscribeToOnNumberOfMovementManagersChanged(SetMovementMangers);
         EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(SetScreensInGame);
         EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
+        EventManager.Instance.SubscribeToOnChangeNumberOfPlayersAction(SetNumberOfPlayers);
     }
 
-    private IEnumerator EnableMovementForNewObjectsCoroutine(SpawnManager spawnManager)
+    private void SetNumberOfPlayers(int number)
+    {
+        numberOfPlayers = number;
+    }
+
+    private IEnumerator EnableMovementForNewObjectsCoroutine()
     {
         yield return new WaitForEndOfFrame();
 
@@ -67,7 +87,7 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState != GameStates.Playing)
             return;
-        StartCoroutine(EnableMovementForNewObjectsCoroutine(spawnManager));
+        StartCoroutine(EnableMovementForNewObjectsCoroutine());
     }
 
     private void SetScreensInGame(GameObject[] screens)
@@ -95,15 +115,11 @@ public class GameManager : MonoBehaviour
     }
 
     //Unity event, called when player is dead
-    public void GameOver(PlayerController player)
+    public void GameOver(PlayerController player, GameObject endScreen)
     {
-        if (numberOfPlayersDead == movementManagers.Count)
-        {
-            SetGameState(GameStates.GameOver);
-            uiManager.SetEndScreenActive();
-            uiManager.SetScoreScreenInactive();
-        }
-        numberOfPlayersDead++;
+        SetGameState(GameStates.GameOver);
+        uiManager.SetEndScreenActive(endScreen);
+        uiManager.SetScoreScreenInactive(player);
     }
 
     private void Update()
@@ -202,8 +218,20 @@ public class GameManager : MonoBehaviour
     //Bind with Unity event, on start game button
     public void StartGame()
     {
+        if (PlayerPrefs.GetInt(IsRestarted) == 0 || PlayerPrefs.GetInt(NumberOfPlayers) != numberOfPlayers)
+            EventManager.Instance.OnNumberOfPlayersChosen();
+        else
+            PlayerPrefs.SetInt(IsRestarted, 0);
+        StartCoroutine(StartPlaying());
+
+    }
+
+    private IEnumerator StartPlaying()
+    {
+        yield return new WaitForEndOfFrame();
         SetGameState(GameStates.Playing);
         uiManager.SetScoreScreenActive();
+        uiManager.SetNumberOfPlayersScreenInactive();
         EventManager.Instance.StartAddingPoints();
     }
 
@@ -251,6 +279,7 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        PlayerPrefs.SetInt(IsRestarted, 1);
     }
 
     //Bind with Unity event, on exit game button
@@ -272,6 +301,11 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(GameOver);
         EventManager.Instance.UnsubscribeFromOnNumberOfScreensChangedAction(SetScreensInGame);
         EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetInt(NumberOfPlayers, 1);
     }
 }
 

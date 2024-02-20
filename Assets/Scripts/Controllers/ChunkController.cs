@@ -128,6 +128,8 @@ public class ChunkController : MonoBehaviour
         spawnedObjects.Add(spawnedObject);
     }
 
+
+
     public Vector3 GetEndOfChunk() => endOfChunk.position;
     public List<GameObject> GetPositionsForRandomObstaclesOnChunk() => positionsForRandomObstaclesOnChunk;
     public List<GameObject> GetPositionsForRandomCollectablesOnChunk() => positionsForRandomCollectablesOnChunk;

@@ -51,7 +51,7 @@ public class ScoreManager : MonoBehaviour
         speedupRound++;
     }
 
-    public void StopAddingPointsForThisPlayer(PlayerController player)
+    public void StopAddingPointsForThisPlayer(PlayerController player, GameObject endScreen)
     {
         if (player == GetComponent<PlayerController>())
             canAddPoints = false;

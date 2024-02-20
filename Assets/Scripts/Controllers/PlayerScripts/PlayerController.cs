@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public ScoreManager ScoreManager { get; private set; }
-    [SerializeField] private bool isPlayerDead;
+    private bool isPlayerDead;
 
     private void Awake()
     {

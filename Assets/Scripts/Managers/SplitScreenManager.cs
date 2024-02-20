@@ -12,7 +12,7 @@ public class SplitScreenManager : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject playerAndLevelPrefab;
     [SerializeField] private Canvas startMenuCanvas;
-    [SerializeField] private List<Canvas> scoreCanvases;
+    [SerializeField] private List<Canvas> playerCanvases;
     private List<MovementManager> movementManagers = new List<MovementManager>();
     private GameObject[] screenInstances;
     private bool shouldReset;
@@ -37,7 +37,7 @@ public class SplitScreenManager : MonoBehaviour
         CleanupScene();
         EnableCamerasAndLevels(numberOfPlayers);
         EventManager.Instance.OnNumberOfScreensChanged(screenInstances);
-        EventManager.Instance.OnNumberOfScoreScreensChanged(scoreCanvases);
+        EventManager.Instance.OnNumberOfScoreScreensChanged(playerCanvases);
         EventManager.Instance.OnNumberOfMovementManagersChanged(movementManagers);
     }
 
@@ -53,11 +53,11 @@ public class SplitScreenManager : MonoBehaviour
 
         if (shouldReset)
         {
-            scoreCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scoreCanvases[0].GetComponent<RectTransform>().rect.width * 2);
+            playerCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[0].GetComponent<RectTransform>().rect.width * 2);
             shouldReset = false;
         }
 
-        scoreCanvases.RemoveRange(1, scoreCanvases.Count - 1);
+        playerCanvases.RemoveRange(1, playerCanvases.Count - 1);
         movementManagers.Clear();
     }
 
@@ -77,7 +77,7 @@ public class SplitScreenManager : MonoBehaviour
 
             Camera playerCamera = screenInstances[i].GetComponentInChildren<Camera>();
 
-            scoreCanvases.Add(playerCamera.GetComponentInChildren<Canvas>(true));
+            playerCanvases.Add(playerCamera.GetComponentInChildren<Canvas>(true));
 
             screenInstances[i].GetComponentInChildren<PlayerInput>(true).SwitchCurrentControlScheme(controlSchemes[i], Keyboard.current);
 
@@ -93,8 +93,8 @@ public class SplitScreenManager : MonoBehaviour
         if (numberOfPlayers == 2)
         {
             shouldReset = true;
-            scoreCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scoreCanvases[0].GetComponent<RectTransform>().rect.width / 2);
-            scoreCanvases[1].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, scoreCanvases[1].GetComponent<RectTransform>().rect.width / 2);
+            playerCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[0].GetComponent<RectTransform>().rect.width / 2);
+            playerCanvases[1].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[1].GetComponent<RectTransform>().rect.width / 2);
         }
 
     }
@@ -126,6 +126,19 @@ public class SplitScreenManager : MonoBehaviour
             splitRects[2] = new Rect(0.0f, 0.0f, 0.5f, 0.5f);
             splitRects[3] = new Rect(0.5f, 0.0f, 0.5f, 0.5f);
         }
+        // for (int i = 0; i < numberOfPlayers; i++)
+        // {
+        //     float columns = Mathf.Ceil(Mathf.Sqrt(numberOfPlayers));
+        //     float rows = Mathf.Ceil((float)numberOfPlayers / columns);
+
+        //     float width = 1.0f / columns;
+        //     float height = 1.0f / rows;
+
+        //     float xPos = (i % columns) * width;
+        //     float yPos = Mathf.Floor(i / columns) * height;
+
+        //     splitRects[i] = new Rect(xPos, yPos, width, height);
+        // }
 
         return splitRects;
     }

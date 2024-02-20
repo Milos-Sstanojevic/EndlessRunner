@@ -18,6 +18,7 @@ public class MovementManager : MonoBehaviour
         EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
         EventManager.Instance.SubscribeToOnIncreaseSpeedAction(IncreaseMovementSpeed);
         EventManager.Instance.SubscribeToOnPlayerDeadAction(DisableMovementForOneScreen);
+        EventManager.Instance.SubscribeToOnEnableMovementOfObject(EnableMovementOfObject);
     }
 
     private void Start()
@@ -25,6 +26,13 @@ public class MovementManager : MonoBehaviour
         chunksInGame = new List<ChunkController>();
         objectsMovements = objectsMovements.Take(NumberOfStagesInScene).ToList();
         speed = 8;
+    }
+
+    private void EnableMovementOfObject(GameObject gameObject)
+    {
+        Debug.Log(gameObject.name);
+        gameObject.GetComponent<EnvironmentMovementController>().EnableMovement();
+        gameObject.GetComponent<EnvironmentMovementController>().SetMovementSpeed(speed);
     }
 
     public void GetCollectablesAndObstaclesInGame(SpawnManager spawnManager)
@@ -42,7 +50,6 @@ public class MovementManager : MonoBehaviour
 
         foreach (EnvironmentMovementController movement in chunksInGame.Where(chunk => chunk.GetSpawnManagerOfChunk() == spawnManager).Select(chunk => chunk.GetComponent<EnvironmentMovementController>()))
             objectsMovements.Add(movement);
-
     }
 
     public void EnableMovementOfObjects(GameObject oneScreen)
@@ -92,7 +99,7 @@ public class MovementManager : MonoBehaviour
             movement.SetMovementSpeed(speed);
     }
 
-    private void DisableMovementForOneScreen(PlayerController playerController)
+    private void DisableMovementForOneScreen(PlayerController playerController, GameObject endScreen)
     {
         if (playerMovement == playerController.GetComponent<PlayerMovement>())
             DisableMovementOfMovableObjects(playerMovement.transform.parent.gameObject);
@@ -144,5 +151,6 @@ public class MovementManager : MonoBehaviour
         EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(GetCollectablesAndObstaclesInGame);
         EventManager.Instance.UnsubscribeToOnIncreaseSpeedAction(IncreaseMovementSpeed);
         EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(DisableMovementForOneScreen);
+        EventManager.Instance.UnsubscribeFromOnEnableMovementOfObject(EnableMovementOfObject);
     }
 }

@@ -113,6 +113,7 @@ public class SpawnManager : MonoBehaviour
     private void HandleChunkSpawning()
     {
         chunk = PoolingSystemController.Instance.GetChunkPoolingSystem().GetObjectFromPool();
+        EnableMovementOnTakingFromPool(chunk.gameObject);
         chunk.SetSpawnManagerOfChunk(this);
 
         List<GameObject> randomObstaclesOnChunk = chunk.GetPositionsForRandomObstaclesOnChunk();
@@ -169,18 +170,25 @@ public class SpawnManager : MonoBehaviour
                     spawnedEnemy = true;
                     PoolingSystemController.Instance.GetEnemyPoolingSystem().SetBasePrefab(chance.GetComponent<EnemyController>());
                     EnemyController enemy = PoolingSystemController.Instance.GetEnemyPoolingSystem().GetObjectFromPool();
+                    EnableMovementOnTakingFromPool(enemy.gameObject);
                     SetPositionAndParentOfObjectFromPool(enemy.gameObject, obstaclePos.transform.position);
                 }
                 else
                 {
                     PoolingSystemController.Instance.GetObstaclesPoolingSystem().SetBasePrefab(chance);
                     EnvironmentMovementController obstacle = PoolingSystemController.Instance.GetObstaclesPoolingSystem().GetObjectFromPool();
+                    EnableMovementOnTakingFromPool(obstacle.gameObject);
                     SetPositionAndParentOfObjectFromPool(obstacle.gameObject, obstaclePos.transform.position);
                 }
 
                 break;
             }
         }
+    }
+
+    private void EnableMovementOnTakingFromPool(GameObject gameObject)
+    {
+        EventManager.Instance.OnEnableMovementOfObject(gameObject);
     }
 
     private void SetPositionAndParentOfObjectFromPool(GameObject obj, Vector3 positionToSpawn)
@@ -208,12 +216,10 @@ public class SpawnManager : MonoBehaviour
     private void CollectableWeightedRandomAlgorithm(GameObject collectablePos)
     {
         int totalWeight = 0;
-
         foreach (var chance in chancesForCollectables)
             totalWeight += chance.GetChanceForThisCollectable();
 
         int randomValue = Random.Range(0, totalWeight);
-
         int coursor = 0;
 
         foreach (var chance in chancesForCollectables)
@@ -233,6 +239,7 @@ public class SpawnManager : MonoBehaviour
     private void SpawnGun(Vector3 positionToSpawn)
     {
         GunController gun = PoolingSystemController.Instance.GetGunPoolingSystem().GetObjectFromPool();
+        EnableMovementOnTakingFromPool(gun.gameObject);
         SetPositionAndParentOfObjectFromPool(gun.gameObject, positionToSpawn);
         spawnedEnemy = false;
     }
@@ -240,12 +247,14 @@ public class SpawnManager : MonoBehaviour
     private void SpawnJet(Vector3 positionToSpawn)
     {
         JetController jet = PoolingSystemController.Instance.GetJetPoolingSystem().GetObjectFromPool();
+        EnableMovementOnTakingFromPool(jet.gameObject);
         SetPositionAndParentOfObjectFromPool(jet.gameObject, positionToSpawn);
     }
 
     private void SpawnSpaceship(Vector3 positionToSpawn)
     {
         CollectableController spaceship = PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetObjectFromPool();
+        EnableMovementOnTakingFromPool(spaceship.gameObject);
         SetPositionAndParentOfObjectFromPool(spaceship.gameObject, positionToSpawn);
     }
 
@@ -259,7 +268,7 @@ public class SpawnManager : MonoBehaviour
         canSpawn = false;
     }
 
-    public void DisableSpawningForThisPlayer(PlayerController player)
+    public void DisableSpawningForThisPlayer(PlayerController player, GameObject endScreen)
     {
         if (player == transform.parent.gameObject.GetComponentInChildren<PlayerController>())
             canSpawn = false;
