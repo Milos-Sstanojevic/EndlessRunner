@@ -15,11 +15,11 @@ public class PlayerCollisionHandler : MonoBehaviour
     private PlayerGunHandler gunHandler;
     private PlayerJetHandler jetHandler;
     private PlayerCollectingHandler playerCollectingHandler;
-    private PlayerInputController playerInputController;
+    private PlayerMovement playerMovement;
 
     private void Start()
     {
-        playerInputController = GetComponent<PlayerInputController>();
+        playerMovement = GetComponent<PlayerMovement>();
         playerCollectingHandler = GetComponent<PlayerCollectingHandler>();
         jetHandler = GetComponent<PlayerJetHandler>();
         gunHandler = GetComponent<PlayerGunHandler>();
@@ -67,7 +67,7 @@ public class PlayerCollisionHandler : MonoBehaviour
     private IEnumerator WaitToLoad()
     {
         yield return new WaitForEndOfFrame();
-        playerInputController.SetCanJumpToTrue();
+        playerMovement.SetCanJumpToTrue();
         playerParticleSystem.PlayLandingParticleEffect();
         characterAnimator.StopJumpAnimation();
     }

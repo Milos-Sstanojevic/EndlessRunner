@@ -21,12 +21,12 @@ public class EventManager : MonoBehaviour
     private event Action onStopAddingPointsAction;
     private event Action<int> onChangeNumberOfPlayersAction;
     private event Action onNumberOfPlayersSavedAction;
-    private event Action<GameObject[]> onNumberOfScreensChangedAction;
+    private event Action<OneScreenController[]> onNumberOfScreensChangedAction;
     private event Action<Vector3> onNewStagePositionSpawnedAction;
     private event Action<List<Canvas>> onNumberOfScoreScreensChangedAction;
     private event Action<SpawnManager> onDecreaseSpawningTimeOfChunkAction;
     private event Action<List<MovementManager>> onNumberOfMovementManagersChangedAction;
-    private event Action<GameObject> onIncreaseSpeedAction;
+    private event Action<OneScreenController> onIncreaseSpeedAction;
     private event Action onNumberOfPlayersChosenAction;
     private event Action<int> onLoadNumberOfPlayersAction;
     private event Action<GameObject> onEnableMovementOfObject;
@@ -59,7 +59,7 @@ public class EventManager : MonoBehaviour
         onLoadNumberOfPlayersAction += action;
     }
 
-    public void SubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
+    public void SubscribeToOnIncreaseSpeedAction(Action<OneScreenController> action)
     {
         onIncreaseSpeedAction += action;
     }
@@ -84,7 +84,7 @@ public class EventManager : MonoBehaviour
         onNewStagePositionSpawnedAction += action;
     }
 
-    public void SubscribeToOnNumberOfScreensChangedAction(Action<GameObject[]> action)
+    public void SubscribeToOnNumberOfScreensChangedAction(Action<OneScreenController[]> action)
     {
         onNumberOfScreensChangedAction += action;
     }
@@ -240,7 +240,7 @@ public class EventManager : MonoBehaviour
         onNumberOfPlayersSavedAction -= action;
     }
 
-    public void UnsubscribeFromOnNumberOfScreensChangedAction(Action<GameObject[]> action)
+    public void UnsubscribeFromOnNumberOfScreensChangedAction(Action<OneScreenController[]> action)
     {
         onNumberOfScreensChangedAction -= action;
     }
@@ -265,7 +265,7 @@ public class EventManager : MonoBehaviour
         onNumberOfMovementManagersChangedAction -= action;
     }
 
-    public void UnsubscribeToOnIncreaseSpeedAction(Action<GameObject> action)
+    public void UnsubscribeToOnIncreaseSpeedAction(Action<OneScreenController> action)
     {
         onIncreaseSpeedAction -= action;
     }
@@ -290,7 +290,7 @@ public class EventManager : MonoBehaviour
         onNumberOfPlayersChosenAction?.Invoke();
     }
 
-    public void OnNumberOfScreensChanged(GameObject[] screens)
+    public void OnNumberOfScreensChanged(OneScreenController[] screens)
     {
         onNumberOfScreensChangedAction?.Invoke(screens);
     }
@@ -389,7 +389,7 @@ public class EventManager : MonoBehaviour
         onNumberOfMovementManagersChangedAction?.Invoke(movementManagers);
     }
 
-    public void OnIncreaseSpeed(GameObject screen)
+    public void OnIncreaseSpeed(OneScreenController screen)
     {
         onIncreaseSpeedAction?.Invoke(screen);
     }

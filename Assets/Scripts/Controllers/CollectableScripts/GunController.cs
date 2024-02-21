@@ -54,52 +54,45 @@ public class GunController : MonoBehaviour, IDestroyable
         if (!HasGun)
             return;
 
-        if (shoot)
-        {
-            muzzleParticleObject.SetActive(true);
-            ShootBullet();
-        }
+        muzzleParticleObject.SetActive(shoot);
 
-        if (!shoot)
-        {
-            muzzleParticleObject.SetActive(false);
-        }
+        if (shoot)
+            ShootBullet();
     }
 
     public void ShootBullet()
     {
-        if (lastShootTime + shootDelay < Time.time)
+        if (lastShootTime + shootDelay > Time.time)
+            return;
+
+        RaycastHit hit;
+        BulletController bullet = PoolingSystemController.Instance.GetBulletPoolingSystem().GetObjectFromPool();
+
+        bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
+
+        if (Physics.Raycast(transform.position, Vector3.forward, out hit, range))
         {
-            RaycastHit hit;
-            BulletController bullet = PoolingSystemController.Instance.GetBulletPoolingSystem().GetObjectFromPool();
+            enemyIsHit = false;
+            EnemyController enemy = hit.transform.GetComponent<EnemyController>();
 
-            bullet.transform.SetPositionAndRotation(muzzleParticleObject.transform.position, Quaternion.identity);
-
-            if (Physics.Raycast(transform.position, Vector3.forward, out hit, range))
+            if (enemy != null)
             {
-                enemyIsHit = false;
-                EnemyController enemy = hit.transform.GetComponent<EnemyController>();
-
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(bullet.GetBulletDamage());
-                    enemy.PlayBloodParticles();
-                    enemyIsHit = true;
-                }
-
-                StartCoroutine(MakeTrail(bullet, hit.point));
-
-                lastShootTime = Time.time;
+                enemy.TakeDamage(bullet.GetBulletDamage());
+                enemy.PlayBloodParticles();
+                enemyIsHit = true;
             }
-            else
-            {
-                StartCoroutine(MakeTrail(bullet, transform.position + Vector3.forward * range));
-                lastShootTime = Time.time;
-            }
+
+            StartCoroutine(MakeTrail(bullet, hit.point));
+            lastShootTime = Time.time;
+        }
+        else
+        {
+            StartCoroutine(MakeTrail(bullet, transform.position + Vector3.forward * range));
+            lastShootTime = Time.time;
         }
     }
 
-    public IEnumerator MakeTrail(BulletController bullet, Vector3 hitPoint)
+    private IEnumerator MakeTrail(BulletController bullet, Vector3 hitPoint)
     {
         Vector3 startPosition = bullet.transform.position;
         float distance = Vector3.Distance(bullet.transform.position, hitPoint);

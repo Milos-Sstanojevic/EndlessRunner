@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerGunHandler : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class PlayerGunHandler : MonoBehaviour
     private PlayerMovement playerMovement;
     private GunController gunInHands;
     private PlayerJetHandler jetHandler;
+    private bool shoot;
 
     private void Awake()
     {
@@ -15,12 +17,28 @@ public class PlayerGunHandler : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
     }
 
+    public void OnShoot(InputAction.CallbackContext context)
+    {
+        shoot = context.action.triggered;
+    }
+
     private void Update()
     {
         if (playerMovement.IsMovementEnabled())
+        {
+            HandleShootInput();
             ContinueGunCoroutine();
+        }
         else
             StopGunCoroutine();
+    }
+
+    private void HandleShootInput()
+    {
+        if (shoot && HasGun())
+        {
+            gunInHands.ShootFromGun(shoot);
+        }
     }
 
     public int CollectGun(GunController collectable)

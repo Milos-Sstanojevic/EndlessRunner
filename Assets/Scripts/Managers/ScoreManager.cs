@@ -47,7 +47,7 @@ public class ScoreManager : MonoBehaviour
             return;
 
         EventManager.Instance.OnDecreaseSpawningTimeOfChunk(spawnManager);
-        EventManager.Instance.OnIncreaseSpeed(transform.parent.gameObject);
+        EventManager.Instance.OnIncreaseSpeed(transform.GetComponentInParent<OneScreenController>());
         speedupRound++;
     }
 

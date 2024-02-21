@@ -7,10 +7,12 @@ public class SpawnManager : MonoBehaviour
     private const float OffsetFromCenterOfChunk = 12f;
     private const float minimumChunkSpawningDelay = 0.5f;
     private const float spawningDelayDecreaser = 0.15f;
+    private const float PosZ = 50f;
+
     private List<EnvironmentMovementController> chancesForObstacles;
     private List<CollectableController> chancesForCollectables;
     private List<ChunkController> chancesForChunks;
-    private const float PosZ = 50f;
+
     private float chunkSpawnDelay = 3.5f;
     private bool canSpawn;
     private bool spawnedEnemy;
@@ -25,39 +27,6 @@ public class SpawnManager : MonoBehaviour
         InitializeChancesForChunks();
     }
 
-    private void InitializeChancesForObstacles()
-    {
-        chancesForObstacles = new List<EnvironmentMovementController>
-        {
-            { PoolingSystemController.Instance.GetRoadblockObstaclePrefab()},
-            { PoolingSystemController.Instance.GetRightObstaclePrefab()},
-            { PoolingSystemController.Instance.GetLeftObstaclePrefab()},
-            { PoolingSystemController.Instance.GetLeftAndRightObstaclePrefab()},
-            { PoolingSystemController.Instance.GetGroundEnemyPrefab().GetComponent<EnvironmentMovementController>()},
-            { PoolingSystemController.Instance.GetFlyingEnemyPrefab().GetComponent<EnvironmentMovementController>()}
-        };
-    }
-
-    private void InitializeChancesForCollectables()
-    {
-        chancesForCollectables = new List<CollectableController>
-        {
-            { PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetBasePrefab() },
-            { PoolingSystemController.Instance.GetJetPoolingSystem().GetBasePrefab().GetComponent<CollectableController>()}
-        };
-    }
-
-    private void InitializeChancesForChunks()
-    {
-        chancesForChunks = new List<ChunkController>
-        {
-            {PoolingSystemController.Instance.GetCompleteChunk()},
-            {PoolingSystemController.Instance.GetChunkWithTwoEnemies()},
-            {PoolingSystemController.Instance.GetChunkWithFlyingEnemy()},
-            {PoolingSystemController.Instance.GetChunkWithRandomObstacles()}
-        };
-    }
-
     private void OnEnable()
     {
         EventManager.Instance.SubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
@@ -65,6 +34,39 @@ public class SpawnManager : MonoBehaviour
 
         StartCoroutine(SpawnChunks());
         endOfPreviousChunk = Vector3.zero;
+    }
+
+    private void InitializeChancesForObstacles()
+    {
+        chancesForObstacles = new List<EnvironmentMovementController>
+        {
+            PoolingSystemController.Instance.GetRoadblockObstaclePrefab(),
+            PoolingSystemController.Instance.GetRightObstaclePrefab(),
+            PoolingSystemController.Instance.GetLeftObstaclePrefab(),
+            PoolingSystemController.Instance.GetLeftAndRightObstaclePrefab(),
+            PoolingSystemController.Instance.GetGroundEnemyPrefab().GetComponent<EnvironmentMovementController>(),
+            PoolingSystemController.Instance.GetFlyingEnemyPrefab().GetComponent<EnvironmentMovementController>()
+        };
+    }
+
+    private void InitializeChancesForCollectables()
+    {
+        chancesForCollectables = new List<CollectableController>
+        {
+            PoolingSystemController.Instance.GetSpaceshipPoolingSystem().GetBasePrefab(),
+            PoolingSystemController.Instance.GetJetPoolingSystem().GetBasePrefab().GetComponent<CollectableController>()
+        };
+    }
+
+    private void InitializeChancesForChunks()
+    {
+        chancesForChunks = new List<ChunkController>
+        {
+            PoolingSystemController.Instance.GetCompleteChunk(),
+            PoolingSystemController.Instance.GetChunkWithTwoEnemies(),
+            PoolingSystemController.Instance.GetChunkWithFlyingEnemy(),
+            PoolingSystemController.Instance.GetChunkWithRandomObstacles()
+        };
     }
 
     public IEnumerator SpawnChunks()
@@ -274,14 +276,6 @@ public class SpawnManager : MonoBehaviour
             canSpawn = false;
     }
 
-    private void OnDisable()
-    {
-        EventManager.Instance.UnsubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
-        EventManager.Instance.SubscribeToOnPlayerDeadAction(DisableSpawningForThisPlayer);
-
-        StopCoroutine(SpawnChunks());
-    }
-
     public float GetChunkSpawnDelay() => chunkSpawnDelay;
     public void SetChunkSpawnDelay(float delay)
     {
@@ -295,23 +289,33 @@ public class SpawnManager : MonoBehaviour
 
     private void DecreaseSpawningTime(SpawnManager spawnManager)
     {
-        if (spawnManager == this)
+        if (spawnManager != this)
+            return;
+
+        float chunkSpawnDelay = GetChunkSpawnDelay();
+        float spawnDelay;
+        if (chunkSpawnDelay > minimumChunkSpawningDelay)
         {
-            float chunkSpawnDelay = GetChunkSpawnDelay();
-            float spawnDelay;
-            if (chunkSpawnDelay > minimumChunkSpawningDelay)
-            {
-                spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay);
-                SetChunkSpawnDelay(spawnDelay);
-            }
+            spawnDelay = HandleDecreasingSpawnDelay(chunkSpawnDelay);
+            SetChunkSpawnDelay(spawnDelay);
         }
     }
 
     private float HandleDecreasingSpawnDelay(float spawnDelay)
     {
         float delay = spawnDelay - spawningDelayDecreaser;
+
         if (delay < minimumChunkSpawningDelay)
             delay = minimumChunkSpawningDelay;
+
         return delay;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Instance.UnsubscribeToOnDecreaseSpawningTimeOfChunk(DecreaseSpawningTime);
+        EventManager.Instance.SubscribeToOnPlayerDeadAction(DisableSpawningForThisPlayer);
+
+        StopCoroutine(SpawnChunks());
     }
 }

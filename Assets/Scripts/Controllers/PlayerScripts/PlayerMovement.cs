@@ -7,26 +7,79 @@ public class PlayerMovement : MonoBehaviour
     private const float EdgePositionZWithJet = -5f;
     private const float PlayerEdgePositionBackZ = -10.5f;
     private const float PlayerEdgePositionFrontZ = -2;
+
+    [SerializeField] private float jumpForce;
+
+    private PlayerAnimationHandler playerAnimationHandler;
+    private ParticleSystemManager playerParticleSystem;
     private float playerStartPositionX;
     private Rigidbody playerRb;
     private float movementSpeed;
-    private PlayerController playerController;
     private PlayerJetHandler jetHandler;
     private bool movementEnabled;
+    private Vector2 movementInput = Vector2.zero;
+    private bool jumped;
+    private bool canJump = true;
+
 
     private void Awake()
     {
+        playerParticleSystem = GetComponent<ParticleSystemManager>();
+        playerAnimationHandler = GetComponent<PlayerAnimationHandler>();
         jetHandler = GetComponent<PlayerJetHandler>();
-        playerController = GetComponent<PlayerController>();
         playerRb = GetComponent<Rigidbody>();
         playerStartPositionX = transform.position.x;
     }
 
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        movementInput = context.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        jumped = context.action.triggered;
+    }
+
+
 
     private void Update()
     {
+
         KeepPlayerOnRoad();
         KeepPlayerInCameraFieldIfHasJet();
+
+        if (!movementEnabled)
+            return;
+
+        HandleMovementInput();
+        HandleJumpInput();
+    }
+
+
+    private void HandleMovementInput()
+    {
+        MovePlayer(movementInput.x, movementInput.y);
+    }
+
+    private void HandleJumpInput()
+    {
+        if (jumped && canJump && !jetHandler.IsInAir())
+            HandlePlayerJumping();
+    }
+
+    private void HandlePlayerJumping()
+    {
+        playerParticleSystem.PlayJumpingParticleEffect();
+        playerAnimationHandler.PlayJumpAnimation();
+        AudioManager.Instance.PlayJumpSound();
+        canJump = false;
+        playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    public void SetCanJumpToTrue()
+    {
+        canJump = true;
     }
 
     private void KeepPlayerInCameraFieldIfHasJet()
@@ -83,5 +136,6 @@ public class PlayerMovement : MonoBehaviour
     {
         movementEnabled = false;
     }
+
     public bool IsMovementEnabled() => movementEnabled;
 }

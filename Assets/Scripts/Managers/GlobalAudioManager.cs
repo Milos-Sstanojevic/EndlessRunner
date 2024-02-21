@@ -9,7 +9,6 @@ public class GlobalAudioManager : MonoBehaviour
     private const string EffectsVolumePref = "effectsVolume";
     private const string AudioMixerMusicVolume = "Music Volume";
     private const string AudioMixerEffectsVolume = "Effects Volume";
-    private const int ZeroVolume = 0;
     [SerializeField] private AudioMixerGroup musicMixerGroup;
     [SerializeField] private AudioMixerGroup effectsMixerGroup;
     [SerializeField] private TextMeshProUGUI musicSliderText;

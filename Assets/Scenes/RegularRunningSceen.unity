@@ -4156,7 +4156,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1117733304
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7387,7 +7387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentOfScreens: {fileID: 695137337}
   mainCamera: {fileID: 1957653429}
-  playerAndLevelPrefab: {fileID: 7618326425196305196, guid: a1f07e4a5242ae944a3213ab8ba16e6a, type: 3}
+  oneScreenInstance: {fileID: 6441918331126861878, guid: a1f07e4a5242ae944a3213ab8ba16e6a, type: 3}
   startMenuCanvas: {fileID: 1691291086}
   playerCanvases:
   - {fileID: 677421857}
@@ -7672,7 +7672,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1680704927
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8336,6 +8336,7 @@ Transform:
   - {fileID: 952731859}
   - {fileID: 1073428259}
   - {fileID: 1627847478}
+  - {fileID: 1981790934}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1957653429 stripped
@@ -8389,11 +8390,11 @@ Transform:
   m_GameObject: {fileID: 1981790932}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.17718029, y: -2.3123627, z: 2.6556358}
+  m_LocalPosition: {x: -15.584655, y: -39.146465, z: -15.156141}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1950996646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1986442695
 GameObject:
@@ -9692,7 +9693,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1986442696}
-  - {fileID: 1981790934}
   - {fileID: 1950996646}
   - {fileID: 425346591}
   - {fileID: 1081107745}

@@ -23,29 +23,29 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private void StartPlayerAnimations()
     {
-        if (playerMovement.IsMovementEnabled())
-        {
-            animationManager.PlayRunAnimation();
+        if (!playerMovement.IsMovementEnabled())
+            return;
 
-            if (playerGunHandler.GetGunInHands()?.HasGun == true)
-                animationManager.StartRunningWithGunAnimation();
-            else
-                animationManager.StopRunningWithGunAnimation();
+        animationManager.PlayRunAnimation();
 
-            if (playerJetHandler.GetJetOnBack()?.HasJet == true)
-                animationManager.StartFlyingAnimation();
-            else
-                animationManager.StopFlyingAnimation();
-        }
+        if (playerGunHandler.GetGunInHands()?.HasGun == true)
+            animationManager.StartRunningWithGunAnimation();
+        else
+            animationManager.StopRunningWithGunAnimation();
+
+        if (playerJetHandler.GetJetOnBack()?.HasJet == true)
+            animationManager.StartFlyingAnimation();
+        else
+            animationManager.StopFlyingAnimation();
     }
 
     private void StopPlayerAnimations()
     {
-        if (!playerMovement.IsMovementEnabled())
-        {
-            animationManager.StopRunAnimation();
-            animationManager.StopRunningWithGunAnimation();
-        }
+        if (playerMovement.IsMovementEnabled())
+            return;
+
+        animationManager.StopRunAnimation();
+        animationManager.StopRunningWithGunAnimation();
     }
 
     public void PlayJumpAnimation()

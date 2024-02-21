@@ -1719,7 +1719,6 @@ GameObject:
   - component: {fileID: 7650731265471318536}
   - component: {fileID: 2096580037405694883}
   - component: {fileID: 1783849880203526105}
-  - component: {fileID: 1370757877494405126}
   - component: {fileID: 9068577000497774441}
   - component: {fileID: 3459866399018535750}
   - component: {fileID: 1030513343537558010}
@@ -1822,6 +1821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9f94d7d2a5212140aadbedbca358d10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenOfPlayer: {fileID: 6441918331126861878}
 --- !u!114 &4209229184480366727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1883,19 +1883,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playersScoreText: {fileID: 8368287458791747556}
   spawnManager: {fileID: 1492624950714565178}
---- !u!114 &1370757877494405126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3885534082976925528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56b7b02d52320704cbef04dddb5478ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpForce: 600
 --- !u!114 &9068577000497774441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1921,6 +1908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d482ec9af2a9cbc458a965d1cf523cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpForce: 600
 --- !u!114 &1030513343537558010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2115,8 +2103,8 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1370757877494405126}
-        m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
+      - m_Target: {fileID: 3459866399018535750}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
         m_Arguments:
@@ -2131,8 +2119,8 @@ MonoBehaviour:
     m_ActionName: Player/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1370757877494405126}
-        m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
+      - m_Target: {fileID: 3459866399018535750}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnJump
         m_Mode: 0
         m_Arguments:
@@ -2147,8 +2135,8 @@ MonoBehaviour:
     m_ActionName: Player/Jump[/Keyboard/space,/Keyboard/rightCtrl]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1370757877494405126}
-        m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
+      - m_Target: {fileID: 1030513343537558010}
+        m_TargetAssemblyTypeName: PlayerGunHandler, Assembly-CSharp
         m_MethodName: OnShoot
         m_Mode: 0
         m_Arguments:
@@ -13869,6 +13857,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6201597918341140812}
+  - component: {fileID: 6441918331126861878}
   m_Layer: 0
   m_Name: OneScreen
   m_TagString: Untagged
@@ -13895,6 +13884,21 @@ Transform:
   - {fileID: 6405300965265490366}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6441918331126861878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7618326425196305196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d152a843768511b49bfa7a7c46d3b9fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementManager: {fileID: 6731334085410074389}
+  playerController: {fileID: 8933957819721502937}
+  spawnManager: {fileID: 1492624950714565178}
 --- !u!1 &7680927281916761822
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class EnemyController : MonoBehaviour, IDestroyable
 {
     private const int Negator = -1;
-    private const string EffectsVolume = "effectsVolume";
     private int minimumHealth;
     [SerializeField] private int chanceForThisEnemy;
     [SerializeField] private Slider healthSlider;
@@ -37,7 +36,7 @@ public class EnemyController : MonoBehaviour, IDestroyable
 
     private void UpdateHealthSlider()
     {
-        if (healthSlider.value != health)
+        if ((int)healthSlider.value != health)
             healthSlider.value = health;
     }
 
@@ -76,9 +75,10 @@ public class EnemyController : MonoBehaviour, IDestroyable
     public void MoveEnemy(AnimationManager enemyAnimator, int isOnEdge)
     {
         if (!enemyScriptableObject.isGroundEnemy)
+        {
             transform.Translate(Vector3.up * isOnEdge * enemyScriptableObject.movementSpeed * Time.deltaTime, Space.World);
-
-        if (enemyScriptableObject.isGroundEnemy)
+        }
+        else
         {
             enemyAnimator.StartWalkAnimation();
             transform.Translate(Vector3.left * isOnEdge * enemyScriptableObject.movementSpeed * Time.deltaTime, Space.World);
@@ -122,30 +122,28 @@ public class EnemyController : MonoBehaviour, IDestroyable
 
         UpdateHealthSlider();
 
-        if (health <= minimumHealth)
-        {
-            health = enemyScriptableObject.fullHealth;
-            PlayDeathParticles();
-            EventManager.Instance.OnEnemyDestroyed(this);
-            EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
-        }
+        if (health >= minimumHealth)
+            return;
+
+        health = enemyScriptableObject.fullHealth;
+        PlayDeathParticles();
+        EventManager.Instance.OnEnemyDestroyed(this);
+        EventManager.Instance.OnEnemyKilled(enemyScriptableObject.enemyWorth);
     }
 
     public void PlayDeathParticles()
     {
-        if (!enemyScriptableObject.isGroundEnemy)
-        {
-            Instantiate(deathExplosion, transform.position, Quaternion.identity);
-            deathExplosion.GetComponent<ParticleSystem>().Play();
-        }
+        if (enemyScriptableObject.isGroundEnemy)
+            return;
+
+        Instantiate(deathExplosion, transform.position, Quaternion.identity);
+        deathExplosion.GetComponent<ParticleSystem>().Play();
     }
 
     public void PlayBloodParticles()
     {
         if (enemyScriptableObject.isGroundEnemy)
-        {
             particleSystemManager.PlayBloodParticleEffect();
-        }
     }
 
     public int GetChanceForThisEnemy() => chanceForThisEnemy;

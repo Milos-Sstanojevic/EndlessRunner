@@ -5,24 +5,26 @@ using UnityEngine.InputSystem;
 public class SplitScreenManager : MonoBehaviour
 {
     public static SplitScreenManager Instance { get; private set; }
+    private static readonly List<string> controlSchemes = new List<string> { "ArrowsControlls", "IJKLControlls", "NumControlls" };
     private const float SpaceBetweenStages = 94.77f;
     private const float StagePositionZ = 0;
     private const float StagePositionY = 0;
+
     [SerializeField] private Transform parentOfScreens;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private GameObject playerAndLevelPrefab;
+    [SerializeField] private OneScreenController oneScreenInstance;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> playerCanvases;
+
     private List<MovementManager> movementManagers = new List<MovementManager>();
-    private GameObject[] screenInstances;
+    private OneScreenController[] screenInstances;
     private bool shouldReset;
-    private List<string> controlSchemes = new List<string> { "ArrowsControlls", "IJKLControlls", "NumControlls" };
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {
@@ -45,7 +47,7 @@ public class SplitScreenManager : MonoBehaviour
     {
         if (screenInstances != null)
         {
-            foreach (GameObject instance in screenInstances)
+            foreach (OneScreenController instance in screenInstances)
             {
                 Destroy(instance);
             }
@@ -66,11 +68,11 @@ public class SplitScreenManager : MonoBehaviour
         Rect[] splitRects = CalculateSplitRectangles(numberOfPlayers);
         mainCamera.rect = splitRects[0];
 
-        screenInstances = new GameObject[numberOfPlayers - 1];
+        screenInstances = new OneScreenController[numberOfPlayers - 1];
 
         for (int i = 0; i < numberOfPlayers - 1; i++)
         {
-            screenInstances[i] = Instantiate(playerAndLevelPrefab, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), playerAndLevelPrefab.transform.rotation);
+            screenInstances[i] = Instantiate(oneScreenInstance, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), oneScreenInstance.transform.rotation);
             screenInstances[i].transform.SetParent(parentOfScreens);
 
             screenInstances[i].GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3((i + 1) * SpaceBetweenStages, 0, 0));
@@ -83,11 +85,8 @@ public class SplitScreenManager : MonoBehaviour
 
             movementManagers.Add(screenInstances[i].GetComponentInChildren<MovementManager>());
 
-            if (playerCamera != null)
-            {
-                playerCamera.rect = splitRects[i + 1];
-                playerCamera.gameObject.SetActive(true);
-            }
+            playerCamera.rect = splitRects[i + 1];
+            playerCamera.gameObject.SetActive(true);
         }
 
         if (numberOfPlayers == 2)

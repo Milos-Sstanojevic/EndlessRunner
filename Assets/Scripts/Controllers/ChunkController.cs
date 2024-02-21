@@ -10,6 +10,7 @@ public class ChunkController : MonoBehaviour
     [SerializeField] private Transform endOfChunk;
     [SerializeField] private List<GameObject> positionsForRandomObstaclesOnChunk;
     [SerializeField] private List<GameObject> positionsForRandomCollectablesOnChunk;
+
     private List<GameObject> spawnedObjects = new List<GameObject>();
     private Dictionary<GameObject, Vector3> initialObjectPositions = new Dictionary<GameObject, Vector3>();
     private SpawnManager spawnManagerOfChunk;
@@ -38,8 +39,9 @@ public class ChunkController : MonoBehaviour
 
     private void Destroy()
     {
-        if (isThisRandomChunk)
+        if (!isThisRandomChunk)
             ResetChunk();
+
         EventManager.Instance.OnChunkDestroyed(this);
 
         RespawnMissingObjects();
@@ -53,10 +55,9 @@ public class ChunkController : MonoBehaviour
                 continue;
 
             IDestroyable destroyableComponent = obj.GetComponent<IDestroyable>();
+
             if (destroyableComponent != null)
-            {
                 destroyableComponent.Destroy();
-            }
         }
 
         spawnedObjects.Clear();
@@ -64,15 +65,17 @@ public class ChunkController : MonoBehaviour
 
     private void RespawnMissingObjects()
     {
-        if (!isThisRandomChunk)
-            foreach (var initialObjectPosition in initialObjectPositions)
+        if (isThisRandomChunk)
+            return;
+
+        foreach (var initialObjectPosition in initialObjectPositions)
+        {
+            GameObject initialObject = initialObjectPosition.Key;
+            if (!IsObjectActiveInChunk(initialObject))
             {
-                GameObject initialObject = initialObjectPosition.Key;
-                if (!IsObjectActiveInChunk(initialObject))
-                {
-                    RespawnObject(initialObject);
-                }
+                RespawnObject(initialObject);
             }
+        }
     }
 
     private bool IsObjectActiveInChunk(GameObject obj)

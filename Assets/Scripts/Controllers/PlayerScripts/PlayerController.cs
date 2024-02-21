@@ -4,9 +4,12 @@ public class PlayerController : MonoBehaviour
 {
     public ScoreManager ScoreManager { get; private set; }
     private bool isPlayerDead;
+    private PlayerMovement playerMovement;
+    [SerializeField] private OneScreenController screenOfPlayer;
 
     private void Awake()
     {
+        playerMovement = GetComponent<PlayerMovement>();
         ScoreManager = GetComponent<ScoreManager>();
         ScoreManager.Initialize();
     }
@@ -29,6 +32,9 @@ public class PlayerController : MonoBehaviour
 
     public bool IsPlayerDead() => isPlayerDead;
 
+    public PlayerMovement GetPlayerMovementComponentOfPlayer() => playerMovement;
+
+    public OneScreenController GetScreenOfPlayer() => screenOfPlayer;
 
     private void OnDisable()
     {

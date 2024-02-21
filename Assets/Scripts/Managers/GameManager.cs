@@ -64,52 +64,12 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.SubscribeToOnChangeNumberOfPlayersAction(SetNumberOfPlayers);
     }
 
-    private void SetNumberOfPlayers(int number)
-    {
-        numberOfPlayers = number;
-    }
-
-    private IEnumerator EnableMovementForNewObjectsCoroutine()
-    {
-        yield return new WaitForEndOfFrame();
-
-        if (movementManagers != null && screensInGame != null)
-        {
-            for (int i = 0; i < movementManagers.Count; i++)
-            {
-                movementManagers[i].EnableMovementOfObjects(screensInGame[i]);
-                movementManagers[i].SetMovementSpeedOfObjects(screensInGame[i]);
-            }
-        }
-    }
-
-    private void EnableMovementForNewObjects(SpawnManager spawnManager)
-    {
-        if (CurrentState != GameStates.Playing)
-            return;
-        StartCoroutine(EnableMovementForNewObjectsCoroutine());
-    }
-
-    private void SetScreensInGame(GameObject[] screens)
-    {
-        screensInGame.RemoveRange(DefaultNumberOfManagers, screensInGame.Count - DefaultNumberOfManagers);
-        for (int i = 0; i < screens.Length; i++)
-            screensInGame.Add(screens[i]);
-    }
-
-    private void SetMovementMangers(List<MovementManager> managers)
-    {
-        movementManagers.RemoveRange(DefaultNumberOfManagers, movementManagers.Count - DefaultNumberOfManagers);
-        foreach (MovementManager manager in managers)
-            movementManagers.Add(manager);
-    }
-
-    private void SetSpawnManagers(GameObject[] screens)
+    private void SetSpawnManagers(OneScreenController[] screens)
     {
         spawnManagers.RemoveRange(DefaultNumberOfManagers, spawnManagers.Count - DefaultNumberOfManagers);
-        foreach (GameObject screen in screens)
+        foreach (OneScreenController screen in screens)
         {
-            SpawnManager managersInScreen = screen.GetComponentInChildren<SpawnManager>(true);
+            SpawnManager managersInScreen = screen.GetSpawnManagerOfOneScreen();
             spawnManagers.Add(managersInScreen);
         }
     }
@@ -120,6 +80,53 @@ public class GameManager : MonoBehaviour
         SetGameState(GameStates.GameOver);
         uiManager.SetEndScreenActive(endScreen);
         uiManager.SetScoreScreenInactive(player);
+    }
+
+    private void SetScoreOnScreen(int score, TextMeshProUGUI playerScoreText)
+    {
+        uiManager.SetScoreOnScoreScreen(score, playerScoreText);
+    }
+
+    private void SetMovementMangers(List<MovementManager> managers)
+    {
+        movementManagers.RemoveRange(DefaultNumberOfManagers, movementManagers.Count - DefaultNumberOfManagers);
+        foreach (MovementManager manager in managers)
+            movementManagers.Add(manager);
+    }
+
+    private void SetScreensInGame(OneScreenController[] screens)
+    {
+        //screensInGame.RemoveRange(DefaultNumberOfManagers, screensInGame.Count - DefaultNumberOfManagers);
+        foreach (OneScreenController screen in screens)
+            screensInGame.Add(screen.gameObject);
+    }
+
+    private void EnableMovementForNewObjects(SpawnManager spawnManager)
+    {
+        if (CurrentState != GameStates.Playing)
+            return;
+        StartCoroutine(EnableMovementForNewObjectsCoroutine());
+    }
+
+    private IEnumerator EnableMovementForNewObjectsCoroutine()
+    {
+        yield return new WaitForEndOfFrame();
+
+        if (IsThereMovementAndSpawnManagersInLists())
+        {
+            for (int i = 0; i < movementManagers.Count; i++)
+            {
+                // movementManagers[i].EnableMovementOfObjects(screensInGame[i]);
+                // movementManagers[i].SetMovementSpeedOfObjects(screensInGame[i]);
+            }
+        }
+    }
+
+    private bool IsThereMovementAndSpawnManagersInLists() => movementManagers != null && screensInGame != null;
+
+    private void SetNumberOfPlayers(int number)
+    {
+        numberOfPlayers = number;
     }
 
     private void Update()
@@ -166,18 +173,15 @@ public class GameManager : MonoBehaviour
 
     private void HandlePauseOrGameOverState()
     {
-        if (CurrentState == GameStates.Playing || CurrentState == GameStates.MainMenu)
+        if (CurrentState == GameStates.Playing || CurrentState == GameStates.MainMenu || CurrentState == GameStates.Playing)
             return;
 
-        if (CurrentState == GameStates.Paused)
-        {
-            if (movementManagers != null && screensInGame != null)
-                for (int i = 0; i < movementManagers.Count; i++)
-                    movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
+        if (IsThereMovementAndSpawnManagersInLists())
+            for (int i = 0; i < movementManagers.Count; i++)
+                //movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
 
-            EventManager.Instance.StopAddingPoints();
-            DisableSpawnManagers();
-        }
+                EventManager.Instance.StopAddingPoints();
+        DisableSpawnManagers();
     }
 
     private void SetupPlayingScreen()
@@ -188,18 +192,18 @@ public class GameManager : MonoBehaviour
 
     private void EnableSpawnManagers()
     {
-        if (canEnableSpawnManagers)
+        if (!canEnableSpawnManagers)
+            return;
+
+        if (spawnManagers != null)
         {
-            if (spawnManagers != null)
+            foreach (SpawnManager spawnManager in spawnManagers)
             {
-                foreach (SpawnManager spawnManager in spawnManagers)
-                {
-                    spawnManager.EnableSpawning();
-                    spawnManager.gameObject.SetActive(true);
-                }
+                spawnManager.EnableSpawning();
+                spawnManager.gameObject.SetActive(true);
             }
-            canEnableSpawnManagers = false;
         }
+        canEnableSpawnManagers = false;
     }
 
     private void DisableSpawnManagers()
@@ -235,10 +239,7 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.StartAddingPoints();
     }
 
-    private void SetScoreOnScreen(int score, TextMeshProUGUI playerScoreText)
-    {
-        uiManager.SetScoreOnScoreScreen(score, playerScoreText);
-    }
+
 
     public void OpenNumberOfPlayersScreen()
     {
