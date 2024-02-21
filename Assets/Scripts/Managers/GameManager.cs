@@ -13,11 +13,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int gravityModifier;
     private GameStates CurrentState;
-    [SerializeField] private List<MovementManager> movementManagers;
-    [SerializeField] private List<GameObject> screensInGame;
-    [SerializeField] private List<SpawnManager> spawnManagers;
+    [SerializeField] private List<MovementManager> movementManagers = new List<MovementManager>();
+    private List<OneScreenController> screensInGame = new List<OneScreenController>();
+    [SerializeField] private List<SpawnManager> spawnManagers = new List<SpawnManager>();
     private bool canEnableSpawnManagers = true;
     private int numberOfPlayers = 0;
+    private int numberOfDeadPlayers = 0;
 
     private void Awake()
     {
@@ -39,11 +40,10 @@ public class GameManager : MonoBehaviour
         if (PlayerPrefs.GetInt(IsRestarted) == 1)
         {
             numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
-            if (numberOfPlayers > 1)
-            {
-                EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
-                SplitScreenManager.Instance.Split(numberOfPlayers);
-            }
+
+            EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
+            SplitScreenManager.Instance.Split(numberOfPlayers);
+
         }
     }
 
@@ -62,11 +62,14 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(SetScreensInGame);
         EventManager.Instance.SubscribeToOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
         EventManager.Instance.SubscribeToOnChangeNumberOfPlayersAction(SetNumberOfPlayers);
+        EventManager.Instance.SubscribeToOnRestartButtonClickedAction(RestartGameAction);
+        EventManager.Instance.SubscribeToOnSettingsButtonClickedAction(OpenSettingsAction);
+        EventManager.Instance.SubscribeToOnExitButtonClickedAction(QuitGameAction);
     }
 
     private void SetSpawnManagers(OneScreenController[] screens)
     {
-        spawnManagers.RemoveRange(DefaultNumberOfManagers, spawnManagers.Count - DefaultNumberOfManagers);
+        spawnManagers.Clear();
         foreach (OneScreenController screen in screens)
         {
             SpawnManager managersInScreen = screen.GetSpawnManagerOfOneScreen();
@@ -77,7 +80,9 @@ public class GameManager : MonoBehaviour
     //Unity event, called when player is dead
     public void GameOver(PlayerController player, GameObject endScreen)
     {
-        SetGameState(GameStates.GameOver);
+        numberOfDeadPlayers++;
+        if (numberOfDeadPlayers == screensInGame.Count)
+            SetGameState(GameStates.GameOver);
         uiManager.SetEndScreenActive(endScreen);
         uiManager.SetScoreScreenInactive(player);
     }
@@ -89,16 +94,16 @@ public class GameManager : MonoBehaviour
 
     private void SetMovementMangers(List<MovementManager> managers)
     {
-        movementManagers.RemoveRange(DefaultNumberOfManagers, movementManagers.Count - DefaultNumberOfManagers);
+        movementManagers.Clear();
         foreach (MovementManager manager in managers)
             movementManagers.Add(manager);
     }
 
     private void SetScreensInGame(OneScreenController[] screens)
     {
-        //screensInGame.RemoveRange(DefaultNumberOfManagers, screensInGame.Count - DefaultNumberOfManagers);
+        screensInGame.Clear();
         foreach (OneScreenController screen in screens)
-            screensInGame.Add(screen.gameObject);
+            screensInGame.Add(screen);
     }
 
     private void EnableMovementForNewObjects(SpawnManager spawnManager)
@@ -116,8 +121,8 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < movementManagers.Count; i++)
             {
-                // movementManagers[i].EnableMovementOfObjects(screensInGame[i]);
-                // movementManagers[i].SetMovementSpeedOfObjects(screensInGame[i]);
+                movementManagers[i].EnableMovementOfObjects(screensInGame[i]);
+                movementManagers[i].SetMovementSpeedOfObjects(screensInGame[i]);
             }
         }
     }
@@ -127,6 +132,24 @@ public class GameManager : MonoBehaviour
     private void SetNumberOfPlayers(int number)
     {
         numberOfPlayers = number;
+    }
+
+    private void RestartGameAction()
+    {
+        if (numberOfDeadPlayers == screensInGame.Count)
+            RestartGame();
+    }
+
+    private void OpenSettingsAction()
+    {
+        if (numberOfDeadPlayers == screensInGame.Count)
+            OpenSettings();
+    }
+
+    private void QuitGameAction()
+    {
+        if (numberOfDeadPlayers == screensInGame.Count)
+            QuitGame();
     }
 
     private void Update()
@@ -178,9 +201,9 @@ public class GameManager : MonoBehaviour
 
         if (IsThereMovementAndSpawnManagersInLists())
             for (int i = 0; i < movementManagers.Count; i++)
-                //movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
+                movementManagers[i].DisableMovementOfMovableObjects(screensInGame[i]);
 
-                EventManager.Instance.StopAddingPoints();
+        EventManager.Instance.StopAddingPoints();
         DisableSpawnManagers();
     }
 
@@ -238,8 +261,6 @@ public class GameManager : MonoBehaviour
         uiManager.SetNumberOfPlayersScreenInactive();
         EventManager.Instance.StartAddingPoints();
     }
-
-
 
     public void OpenNumberOfPlayersScreen()
     {
@@ -302,6 +323,9 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(GameOver);
         EventManager.Instance.UnsubscribeFromOnNumberOfScreensChangedAction(SetScreensInGame);
         EventManager.Instance.UnsubscribeFromOnObjectsInSceneChangedAction(EnableMovementForNewObjects);
+        EventManager.Instance.UnsubscribeFromOnRestartButtonClickedAction(RestartGame);
+        EventManager.Instance.UnsubscribeFromOnSettingsButtonClickedAction(OpenSettings);
+        EventManager.Instance.UnsubscribeFromOnExitButtonClickedAction(QuitGame);
     }
 
     private void OnApplicationQuit()

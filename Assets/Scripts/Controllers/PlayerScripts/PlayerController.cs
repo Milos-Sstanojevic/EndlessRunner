@@ -36,6 +36,21 @@ public class PlayerController : MonoBehaviour
 
     public OneScreenController GetScreenOfPlayer() => screenOfPlayer;
 
+    public void RestartGame()
+    {
+        EventManager.Instance.OnRestartButtonClicked();
+    }
+
+    public void ExitGame()
+    {
+        EventManager.Instance.OnExitButtonClicked();
+    }
+
+    public void OpenSettings()
+    {
+        EventManager.Instance.OnSettingsButtonClicked();
+    }
+
     private void OnDisable()
     {
         EventManager.Instance.UnsubscribeFromStartAddingPointsAction(ScoreManager.StartAddingPoints);

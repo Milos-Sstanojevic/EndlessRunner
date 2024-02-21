@@ -30,6 +30,9 @@ public class EventManager : MonoBehaviour
     private event Action onNumberOfPlayersChosenAction;
     private event Action<int> onLoadNumberOfPlayersAction;
     private event Action<GameObject> onEnableMovementOfObject;
+    private event Action onRestartButtonClickedAction;
+    private event Action onExitButtonClickedAction;
+    private event Action onSettingsButtonClickedAction;
 
 
     private void Awake()
@@ -42,6 +45,21 @@ public class EventManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SubscribeToOnSettingsButtonClickedAction(Action action)
+    {
+        onSettingsButtonClickedAction += action;
+    }
+
+    public void SubscribeToOnExitButtonClickedAction(Action action)
+    {
+        onExitButtonClickedAction += action;
+    }
+
+    public void SubscribeToOnRestartButtonClickedAction(Action action)
+    {
+        onRestartButtonClickedAction += action;
     }
 
     public void SubscribeToOnEnableMovementOfObject(Action<GameObject> action)
@@ -285,6 +303,21 @@ public class EventManager : MonoBehaviour
         onEnableMovementOfObject -= action;
     }
 
+    public void UnsubscribeFromOnSettingsButtonClickedAction(Action action)
+    {
+        onSettingsButtonClickedAction -= action;
+    }
+
+    public void UnsubscribeFromOnExitButtonClickedAction(Action action)
+    {
+        onExitButtonClickedAction -= action;
+    }
+
+    public void UnsubscribeFromOnRestartButtonClickedAction(Action action)
+    {
+        onRestartButtonClickedAction -= action;
+    }
+
     public void OnNumberOfPlayersChosen()
     {
         onNumberOfPlayersChosenAction?.Invoke();
@@ -402,5 +435,18 @@ public class EventManager : MonoBehaviour
     public void OnEnableMovementOfObject(GameObject gameObject)
     {
         onEnableMovementOfObject?.Invoke(gameObject);
+    }
+
+    public void OnRestartButtonClicked()
+    {
+        onRestartButtonClickedAction?.Invoke();
+    }
+    public void OnExitButtonClicked()
+    {
+        onExitButtonClickedAction?.Invoke();
+    }
+    public void OnSettingsButtonClicked()
+    {
+        onSettingsButtonClickedAction?.Invoke();
     }
 }

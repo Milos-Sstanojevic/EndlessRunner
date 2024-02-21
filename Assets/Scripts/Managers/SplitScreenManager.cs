@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,19 +6,18 @@ using UnityEngine.InputSystem;
 public class SplitScreenManager : MonoBehaviour
 {
     public static SplitScreenManager Instance { get; private set; }
-    private static readonly List<string> controlSchemes = new List<string> { "ArrowsControlls", "IJKLControlls", "NumControlls" };
+    private static readonly List<string> controlSchemes = new List<string> { "WASDControlls", "ArrowsControlls", "IJKLControlls", "NumControlls" };
     private const float SpaceBetweenStages = 94.77f;
     private const float StagePositionZ = 0;
     private const float StagePositionY = 0;
 
     [SerializeField] private Transform parentOfScreens;
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private OneScreenController oneScreenInstance;
+    [SerializeField] private OneScreenController oneScreenInstancePrefab;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> playerCanvases;
 
     private List<MovementManager> movementManagers = new List<MovementManager>();
-    private OneScreenController[] screenInstances;
+    [SerializeField] private OneScreenController[] screenInstances;
     private bool shouldReset;
 
     private void Awake()
@@ -34,8 +34,6 @@ public class SplitScreenManager : MonoBehaviour
 
     public void Split(int numberOfPlayers)
     {
-        mainCamera.gameObject.SetActive(true);
-
         CleanupScene();
         EnableCamerasAndLevels(numberOfPlayers);
         EventManager.Instance.OnNumberOfScreensChanged(screenInstances);
@@ -49,7 +47,7 @@ public class SplitScreenManager : MonoBehaviour
         {
             foreach (OneScreenController instance in screenInstances)
             {
-                Destroy(instance);
+                Destroy(instance.gameObject);
             }
         }
 
@@ -59,20 +57,19 @@ public class SplitScreenManager : MonoBehaviour
             shouldReset = false;
         }
 
-        playerCanvases.RemoveRange(1, playerCanvases.Count - 1);
+        playerCanvases.Clear();
         movementManagers.Clear();
     }
 
     private void EnableCamerasAndLevels(int numberOfPlayers)
     {
         Rect[] splitRects = CalculateSplitRectangles(numberOfPlayers);
-        mainCamera.rect = splitRects[0];
 
-        screenInstances = new OneScreenController[numberOfPlayers - 1];
+        screenInstances = new OneScreenController[numberOfPlayers];
 
-        for (int i = 0; i < numberOfPlayers - 1; i++)
+        for (int i = 0; i < numberOfPlayers; i++)
         {
-            screenInstances[i] = Instantiate(oneScreenInstance, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), oneScreenInstance.transform.rotation);
+            screenInstances[i] = Instantiate(oneScreenInstancePrefab, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), oneScreenInstancePrefab.transform.rotation);
             screenInstances[i].transform.SetParent(parentOfScreens);
 
             screenInstances[i].GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3((i + 1) * SpaceBetweenStages, 0, 0));
@@ -81,11 +78,15 @@ public class SplitScreenManager : MonoBehaviour
 
             playerCanvases.Add(playerCamera.GetComponentInChildren<Canvas>(true));
 
-            screenInstances[i].GetComponentInChildren<PlayerInput>(true).SwitchCurrentControlScheme(controlSchemes[i], Keyboard.current);
+            if (i == 0)
+                screenInstances[i].GetComponentInChildren<PlayerInput>(true).SwitchCurrentControlScheme(controlSchemes[i], new InputDevice[] { Keyboard.current, Mouse.current });
+
+            else
+                screenInstances[i].GetComponentInChildren<PlayerInput>(true).SwitchCurrentControlScheme(controlSchemes[i], Keyboard.current);
 
             movementManagers.Add(screenInstances[i].GetComponentInChildren<MovementManager>());
 
-            playerCamera.rect = splitRects[i + 1];
+            playerCamera.rect = splitRects[i];
             playerCamera.gameObject.SetActive(true);
         }
 

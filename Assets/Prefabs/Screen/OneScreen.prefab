@@ -1717,7 +1717,6 @@ GameObject:
   - component: {fileID: 8933957819721502937}
   - component: {fileID: 4209229184480366727}
   - component: {fileID: 7650731265471318536}
-  - component: {fileID: 2096580037405694883}
   - component: {fileID: 1783849880203526105}
   - component: {fileID: 9068577000497774441}
   - component: {fileID: 3459866399018535750}
@@ -1851,24 +1850,6 @@ MonoBehaviour:
   enemyBloodParticles: {fileID: 0}
   jetEngineParticles: []
   flyingEnemyExplosion: {fileID: 0}
---- !u!114 &2096580037405694883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3885534082976925528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74bc6b98caf68ea48b541d075a99f262, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpSound: {fileID: 8300000, guid: 113ee460fadc340e4957a7404a9fbb27, type: 3}
-  deathSound: {fileID: 8300000, guid: 07fc76fde664654468afff3bc12f84b0, type: 3}
-  spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
-  jetCollectedSound: {fileID: 8300000, guid: 7875d3cec6e352143b14cb1f472f1153, type: 3}
-  gunCollectedSound: {fileID: 8300000, guid: 5b948c8857a97b64391116612365171f, type: 3}
-  enemyShotSound: {fileID: 0}
 --- !u!114 &1783849880203526105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2544,8 +2525,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+      - m_Target: {fileID: 8933957819721502937}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
@@ -13265,9 +13246,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: QuitGame
+      - m_Target: {fileID: 8933957819721502937}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: ExitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13756,8 +13737,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+      - m_Target: {fileID: 8933957819721502937}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: OpenSettings
         m_Mode: 1
         m_Arguments:

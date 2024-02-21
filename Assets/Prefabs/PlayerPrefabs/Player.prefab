@@ -10939,9 +10939,7 @@ GameObject:
   - component: {fileID: 5072763247599114993}
   - component: {fileID: 5935847692933754051}
   - component: {fileID: 5605359223869833552}
-  - component: {fileID: 4910153093682061335}
   - component: {fileID: 4022415395586803856}
-  - component: {fileID: 881625447501161721}
   - component: {fileID: 1887022153824580685}
   - component: {fileID: 5124421175465626206}
   - component: {fileID: 4166172323358265100}
@@ -11008,7 +11006,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 881625447501161721}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -11024,7 +11022,7 @@ MonoBehaviour:
     m_ActionName: Player/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 881625447501161721}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
         m_MethodName: OnJump
         m_Mode: 0
@@ -11038,6 +11036,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 52f5277b-473a-47b2-bc53-0f6ccba86b05
     m_ActionName: Player/Jump[/Keyboard/space,/Keyboard/rightCtrl]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 06587cfe-19d5-4481-87f9-9b5408caf93c
+    m_ActionName: Player/Shoot[/Keyboard/rightCtrl,/Keyboard/b,/Keyboard/numpad1,/Mouse/press]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -11105,6 +11107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9f94d7d2a5212140aadbedbca358d10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenOfPlayer: {fileID: 0}
 --- !u!114 &5935847692933754051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11134,24 +11137,6 @@ MonoBehaviour:
   enemyBloodParticles: {fileID: 0}
   jetEngineParticles: []
   flyingEnemyExplosion: {fileID: 0}
---- !u!114 &4910153093682061335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3976238698996553829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74bc6b98caf68ea48b541d075a99f262, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpSound: {fileID: 8300000, guid: 113ee460fadc340e4957a7404a9fbb27, type: 3}
-  deathSound: {fileID: 8300000, guid: 07fc76fde664654468afff3bc12f84b0, type: 3}
-  spaceshipCollectedSound: {fileID: 8300000, guid: 6755bdc920f494522898217783f24875, type: 3}
-  jetCollectedSound: {fileID: 8300000, guid: 7875d3cec6e352143b14cb1f472f1153, type: 3}
-  gunCollectedSound: {fileID: 8300000, guid: 5b948c8857a97b64391116612365171f, type: 3}
-  enemyShotSound: {fileID: 0}
 --- !u!114 &4022415395586803856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11164,19 +11149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac04ed360de7474dac5c44896637d1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &881625447501161721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3976238698996553829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56b7b02d52320704cbef04dddb5478ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpForce: 600
+  playersScoreText: {fileID: 0}
+  spawnManager: {fileID: 0}
 --- !u!114 &1887022153824580685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11189,6 +11163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59c8b8c0aad970440885df11d1532b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverScreen: {fileID: 0}
 --- !u!114 &5124421175465626206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11201,6 +11176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d482ec9af2a9cbc458a965d1cf523cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpForce: 0
 --- !u!114 &4166172323358265100
 MonoBehaviour:
   m_ObjectHideFlags: 0

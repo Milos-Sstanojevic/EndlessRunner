@@ -68,4 +68,9 @@ public class ScoreManager : MonoBehaviour
         EventManager.Instance.OnChangeScoreOnScreen(score, playersScoreText);
     }
 
+    private void OnDestroy()
+    {
+        EventManager.Instance.UnsubscribeFromOnEnemyKilledAction(AddPoints);
+        EventManager.Instance.UnsubscribeFromOnPlayerDeadAction(StopAddingPointsForThisPlayer);
+    }
 }
