@@ -1,6 +1,7 @@
+using Fusion;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     public ScoreManager ScoreManager { get; private set; }
     private bool isPlayerDead;
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         ScoreManager = GetComponent<ScoreManager>();
         ScoreManager.Initialize();
+
     }
 
     private void Start()

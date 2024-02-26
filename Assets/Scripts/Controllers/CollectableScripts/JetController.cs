@@ -1,7 +1,8 @@
 using System.Collections;
+using Fusion;
 using UnityEngine;
 
-public class JetController : MonoBehaviour, IDestroyable
+public class JetController : NetworkBehaviour, IDestroyable
 {
     private const int JetTimeToLive = 5;
     private static Vector3 DefaultJetOrientation = new Vector3(-90, 0, 0);

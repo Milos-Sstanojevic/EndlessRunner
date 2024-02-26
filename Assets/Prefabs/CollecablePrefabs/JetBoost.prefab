@@ -9787,6 +9787,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
       insertIndex: -1
       addedObject: {fileID: -49817474904436873}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7429658946978414261}
   m_SourcePrefab: {fileID: 100100000, guid: 247766e192f437c4680b63372b7cb017, type: 3}
 --- !u!1 &183490728635858045 stripped
 GameObject:
@@ -9875,6 +9878,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chanceForThisCollectable: 20
+--- !u!114 &-7429658946978414261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183490728635858045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 649053324
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 3609463062443591020}
+  - {fileID: -49817474904436873}
 --- !u!4 &183490728636014685 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 247766e192f437c4680b63372b7cb017, type: 3}

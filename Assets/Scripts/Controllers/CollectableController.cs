@@ -1,9 +1,10 @@
+using Fusion;
 using UnityEngine;
 
-public class CollectableController : MonoBehaviour, IDestroyable
+public class CollectableController : NetworkBehaviour, IDestroyable
 {
     private const float RotationSpeed = 80;
-    [SerializeField] private int chanceForThisCollectable;//70
+    [SerializeField] private int chanceForThisCollectable;
 
     private void Update()
     {

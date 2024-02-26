@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class EnvironmentMovementController : MonoBehaviour, IDestroyable
@@ -7,7 +8,7 @@ public class EnvironmentMovementController : MonoBehaviour, IDestroyable
     public bool MovementEnabled { get; private set; }
     public float MovementSpeed { get; private set; }
 
-    private void Update()
+    public void Update()
     {
         MoveObject();
     }

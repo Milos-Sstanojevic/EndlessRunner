@@ -1,6 +1,7 @@
+using Fusion;
 using UnityEngine;
 
-public class BulletController : MonoBehaviour
+public class BulletController : NetworkBehaviour
 {
     private const float BulletSpeed = 100;
     private const int BulletDamage = 20;

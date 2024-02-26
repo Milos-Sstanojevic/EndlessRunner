@@ -1,7 +1,8 @@
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyController : MonoBehaviour, IDestroyable
+public class EnemyController : NetworkBehaviour, IDestroyable
 {
     private const int Negator = -1;
     private int minimumHealth;

@@ -161,6 +161,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: fccd8e251d698f7449ed9aca4bacc50e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4990789305200109867}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: fccd8e251d698f7449ed9aca4bacc50e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2298142648898576575}
   m_SourcePrefab: {fileID: 100100000, guid: fccd8e251d698f7449ed9aca4bacc50e, type: 3}
 --- !u!1 &7809502727854186693 stripped
 GameObject:
@@ -242,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 0
   isStage: 0
 --- !u!114 &4990789305200109867
 MonoBehaviour:
@@ -255,6 +259,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a94452cdaca25564ba8896f78c134a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisCollectable: 0
+--- !u!114 &2298142648898576575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7809502727854186693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 274892979
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 8404797518885804989}
+  - {fileID: 4990789305200109867}
 --- !u!4 &7809502727854554341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: fccd8e251d698f7449ed9aca4bacc50e, type: 3}

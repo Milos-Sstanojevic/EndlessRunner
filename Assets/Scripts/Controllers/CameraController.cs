@@ -1,6 +1,7 @@
+using Fusion;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : NetworkBehaviour
 {
     [SerializeField] private Transform player;
     private float startPositionZ;

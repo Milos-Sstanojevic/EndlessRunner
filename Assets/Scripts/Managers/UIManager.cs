@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject numberOfPlayersScreen;
     [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject gameOverScreen;
+    [SerializeField] private GameObject onlineScreen;
     [SerializeField] private List<Canvas> playerCanvases;
 
     private void OnEnable()
@@ -44,6 +45,11 @@ public class UIManager : MonoBehaviour
     {
         numberOfPlayersScreen.SetActive(false);
         startScreen.SetActive(true);
+    }
+
+    public void SetOnlinePanelInactive()
+    {
+        onlineScreen.SetActive(false);
     }
 
     public void SetNumberOfPlayersScreenActive()
@@ -96,9 +102,12 @@ public class UIManager : MonoBehaviour
         if (playerCanvases != null)
             foreach (Canvas playerScreen in playerCanvases)
             {
-                TextMeshProUGUI points = playerScreen.GetComponentInChildren<TextMeshProUGUI>(true);
-                if (points != null)
-                    points.gameObject.SetActive(true);
+                if (playerScreen != null)
+                {
+                    TextMeshProUGUI points = playerScreen.GetComponentInChildren<TextMeshProUGUI>(true);
+                    if (points != null)
+                        points.gameObject.SetActive(true);
+                }
             }
     }
 
@@ -125,6 +134,18 @@ public class UIManager : MonoBehaviour
     public void SetGameOverScreenInactive()
     {
         gameOverScreen.SetActive(false);
+    }
+
+    public void OpenOnlinePannel()
+    {
+        onlineScreen.SetActive(true);
+        startScreen.SetActive(false);
+    }
+
+    public void GoBackToMainMenu()
+    {
+        onlineScreen.SetActive(false);
+        startScreen.SetActive(true);
     }
 
     public void SetScoreOnScoreScreen(int score, TextMeshProUGUI playerTextScore)

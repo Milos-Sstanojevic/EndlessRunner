@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
-public class GunController : MonoBehaviour, IDestroyable
+public class GunController : NetworkBehaviour, IDestroyable
 {
     private const int GunTimeToLive = 5;
     private static Vector3 RotateAroundX = new Vector3(90, 0, 0);

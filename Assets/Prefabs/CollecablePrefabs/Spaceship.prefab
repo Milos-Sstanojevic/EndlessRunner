@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5507666528279299201}
   - component: {fileID: 7561113041584329290}
   - component: {fileID: 6841406600436158523}
+  - component: {fileID: -1917053701883523776}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Collectable
@@ -138,3 +139,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chanceForThisObstacle: 60
   isStage: 0
+--- !u!114 &-1917053701883523776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8515461803559923569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 3144640245
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 5507666528279299201}

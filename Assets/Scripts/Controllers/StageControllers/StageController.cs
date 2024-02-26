@@ -1,6 +1,7 @@
+using Fusion;
 using UnityEngine;
 
-public class StageController : MonoBehaviour
+public class StageController : NetworkBehaviour
 {
     private const string GroundTag = "Ground";
     private float totalStageLength;
@@ -39,7 +40,7 @@ public class StageController : MonoBehaviour
         }
     }
 
-    private void Update()
+    public void Update()
     {
         MoveStageToTheEnd();
     }

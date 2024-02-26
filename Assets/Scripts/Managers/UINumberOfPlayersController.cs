@@ -44,7 +44,7 @@ public class UINumberOfPlayersController : MonoBehaviour
     {
         PlayerPrefs.SetInt(NumberOfPlayers, currentNumber);
         EventManager.Instance.OnNumberOfPlayersSaved();
-        SplitScreenManager.Instance.Split(currentNumber);
+        //SplitScreenManager.Instance.Split(currentNumber);
     }
 
     // Update the UI text with the current number

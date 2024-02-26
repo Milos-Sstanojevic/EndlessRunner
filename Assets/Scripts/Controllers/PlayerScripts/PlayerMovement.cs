@@ -1,7 +1,9 @@
+using Fusion;
+using Fusion.Addons.Physics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     private const float EdgePositionYWithJet = 4.65f;
     private const float EdgePositionZWithJet = -5f;
@@ -29,11 +31,13 @@ public class PlayerMovement : MonoBehaviour
         jetHandler = GetComponent<PlayerJetHandler>();
         playerRb = GetComponent<Rigidbody>();
         playerStartPositionX = transform.position.x;
+        // gameObject.AddComponent<RunnerSimulatePhysics3D>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         movementInput = context.ReadValue<Vector2>();
+
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -41,9 +45,7 @@ public class PlayerMovement : MonoBehaviour
         jumped = context.action.triggered;
     }
 
-
-
-    private void Update()
+    public void Update()
     {
 
         KeepPlayerOnRoad();

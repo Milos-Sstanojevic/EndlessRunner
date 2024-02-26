@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const string IsRestarted = "IsRestarted";
-    private const int DefaultNumberOfManagers = 1;
     private const string NumberOfPlayers = "NumberOfPlayers";
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int gravityModifier;
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
             numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
 
             EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
-            SplitScreenManager.Instance.Split(numberOfPlayers);
+            // SplitScreenManager.Instance.Split(numberOfPlayers);
 
         }
     }
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
         spawnManagers.Clear();
         foreach (OneScreenController screen in screens)
         {
-            SpawnManager managersInScreen = screen.GetSpawnManagerOfOneScreen();
+            SpawnManager managersInScreen = screen.GetComponent<OneScreenController>().GetSpawnManagerOfOneScreen();
             spawnManagers.Add(managersInScreen);
         }
     }
@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
     {
         screensInGame.Clear();
         foreach (OneScreenController screen in screens)
-            screensInGame.Add(screen);
+            screensInGame.Add(screen.GetComponent<OneScreenController>());
     }
 
     private void EnableMovementForNewObjects(SpawnManager spawnManager)
@@ -116,7 +116,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator EnableMovementForNewObjectsCoroutine()
     {
         yield return new WaitForEndOfFrame();
-
         if (IsThereMovementAndSpawnManagersInLists())
         {
             for (int i = 0; i < movementManagers.Count; i++)
@@ -222,8 +221,11 @@ public class GameManager : MonoBehaviour
         {
             foreach (SpawnManager spawnManager in spawnManagers)
             {
-                spawnManager.EnableSpawning();
-                spawnManager.gameObject.SetActive(true);
+                if (spawnManager != null)
+                {
+                    spawnManager.EnableSpawning();
+                    spawnManager.gameObject.SetActive(true);
+                }
             }
         }
         canEnableSpawnManagers = false;
@@ -250,7 +252,6 @@ public class GameManager : MonoBehaviour
         else
             PlayerPrefs.SetInt(IsRestarted, 0);
         StartCoroutine(StartPlaying());
-
     }
 
     private IEnumerator StartPlaying()
@@ -259,6 +260,7 @@ public class GameManager : MonoBehaviour
         SetGameState(GameStates.Playing);
         uiManager.SetScoreScreenActive();
         uiManager.SetNumberOfPlayersScreenInactive();
+        uiManager.SetOnlinePanelInactive();
         EventManager.Instance.StartAddingPoints();
     }
 
@@ -309,6 +311,18 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Exit");
         Application.Quit();
+    }
+
+    //Go to online pannel when Online button is pressed
+    public void OpenOnlinePannel()
+    {
+        uiManager.OpenOnlinePannel();
+    }
+
+    //Go back to main menu from Online menu when Back button is pressed
+    public void GoBackToMainMenu()
+    {
+        uiManager.GoBackToMainMenu();
     }
 
     private void OnDisable()

@@ -1,9 +1,10 @@
-using System;
+
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SplitScreenManager : MonoBehaviour
+public class SplitScreenManager : NetworkBehaviour
 {
     public static SplitScreenManager Instance { get; private set; }
     private static readonly List<string> controlSchemes = new List<string> { "WASDControlls", "ArrowsControlls", "IJKLControlls", "NumControlls" };
@@ -15,9 +16,14 @@ public class SplitScreenManager : MonoBehaviour
     [SerializeField] private OneScreenController oneScreenInstancePrefab;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> playerCanvases;
+    [SerializeField] private GameObject cameraSplitController;
 
     private List<MovementManager> movementManagers = new List<MovementManager>();
+
+
     [SerializeField] private OneScreenController[] screenInstances;
+
+    private OneScreenController screenForClient;
     private bool shouldReset;
 
     private void Awake()
@@ -31,6 +37,20 @@ public class SplitScreenManager : MonoBehaviour
             Instance = this;
         }
     }
+
+
+    public NetworkObject SpawnOnlineScreen(NetworkRunner runner, PlayerRef player)
+    {
+        NetworkObject screen = runner.Spawn(oneScreenInstancePrefab.gameObject, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
+
+        Rect[] rects = CalculateSplitRectangles(player.PlayerId);
+
+        Camera playerCamera = screen.GetComponentInChildren<Camera>();
+        playerCamera.rect = rects[player.PlayerId - 1];
+
+        return screen;
+    }
+
 
     public void Split(int numberOfPlayers)
     {
@@ -96,7 +116,6 @@ public class SplitScreenManager : MonoBehaviour
             playerCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[0].GetComponent<RectTransform>().rect.width / 2);
             playerCanvases[1].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[1].GetComponent<RectTransform>().rect.width / 2);
         }
-
     }
 
 
@@ -126,19 +145,6 @@ public class SplitScreenManager : MonoBehaviour
             splitRects[2] = new Rect(0.0f, 0.0f, 0.5f, 0.5f);
             splitRects[3] = new Rect(0.5f, 0.0f, 0.5f, 0.5f);
         }
-        // for (int i = 0; i < numberOfPlayers; i++)
-        // {
-        //     float columns = Mathf.Ceil(Mathf.Sqrt(numberOfPlayers));
-        //     float rows = Mathf.Ceil((float)numberOfPlayers / columns);
-
-        //     float width = 1.0f / columns;
-        //     float height = 1.0f / rows;
-
-        //     float xPos = (i % columns) * width;
-        //     float yPos = Mathf.Floor(i / columns) * height;
-
-        //     splitRects[i] = new Rect(xPos, yPos, width, height);
-        // }
 
         return splitRects;
     }
