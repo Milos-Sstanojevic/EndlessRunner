@@ -37,14 +37,13 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
-        if (PlayerPrefs.GetInt(IsRestarted) == 1)
-        {
-            numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
+        // if (PlayerPrefs.GetInt(IsRestarted) == 1)
+        // {
+        //     numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
 
-            EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
-            // SplitScreenManager.Instance.Split(numberOfPlayers);
-
-        }
+        //     EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
+        //     SplitScreenManager.Instance.Split(numberOfPlayers);
+        // }
     }
 
     private void OnEnable()
@@ -303,7 +302,7 @@ public class GameManager : NetworkBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        PlayerPrefs.SetInt(IsRestarted, 1);
+        // PlayerPrefs.SetInt(IsRestarted, 1);
     }
 
     //Bind with Unity event, on exit game button

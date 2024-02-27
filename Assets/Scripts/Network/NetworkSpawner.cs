@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
@@ -16,6 +17,9 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public Dictionary<PlayerRef, NetworkObject> SpawnedScreens = new Dictionary<PlayerRef, NetworkObject>();
     private NetworkRunner _runner;
     public PlayerRef playerRef;
+    private List<OneScreenController> screensInGame = new List<OneScreenController>();
+    private List<Canvas> playerCanvases = new List<Canvas>();
+    private List<MovementManager> movementManagers = new List<MovementManager>();
 
 
     private void Awake()
@@ -70,10 +74,83 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (SpawnedScreens.TryGetValue(player, out NetworkObject screen))
+        {
+            runner.Despawn(screen);
+            SpawnedScreens.Remove(player);
+        }
+    }
+
     public void OnConnectedToServer(NetworkRunner runner)
     {
-        Debug.Log("PlayerJoinedServer");
+
     }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_SpawnedObject(OneScreenController screen)
+    {
+        if (screensInGame.Contains(screen))
+            return;
+
+        screensInGame.Add(screen);
+        if (screensInGame != null)
+        {
+            SetupListsForEvents();
+            SetCamerasForPlayers();
+            StartGames();
+        }
+    }
+
+    private void SetupListsForEvents()
+    {
+        foreach (OneScreenController screen in screensInGame)
+        {
+            if (!playerCanvases.Contains(screen.GetComponentInChildren<Canvas>()))
+                playerCanvases.Add(screen.GetComponentInChildren<Canvas>());
+
+            if (!movementManagers.Contains(screen.GetComponentInChildren<MovementManager>()))
+                movementManagers.Add(screen.GetComponentInChildren<MovementManager>());
+        }
+    }
+
+    private void StartGames()
+    {
+        EventManager.Instance.OnNumberOfScreensChanged(screensInGame.ToArray());
+        EventManager.Instance.OnNumberOfScoreScreensChanged(playerCanvases);
+        EventManager.Instance.OnNumberOfMovementManagersChanged(movementManagers);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_DespawnedObject(OneScreenController screen)
+    {
+        foreach (OneScreenController s in screensInGame)
+        {
+            if (s == screen)
+            {
+                screensInGame.Remove(s);
+                break;
+            }
+        }
+
+        SetCamerasForPlayers();
+    }
+
+    private void SetCamerasForPlayers()
+    {
+        Rect[] rects = SplitScreenManager.Instance.CalculateSplitRectangles(screensInGame.Count);
+
+        for (int i = 0; i < screensInGame.Count; i++)
+            screensInGame[i].SetCameraRect(rects[i]);
+
+        if (screensInGame.Count == 2)
+        {
+            playerCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[0].GetComponent<RectTransform>().rect.width / 2);
+            playerCanvases[1].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[1].GetComponent<RectTransform>().rect.width / 2);
+        }
+    }
+
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
     {
@@ -116,12 +193,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-    {
-
-    }
-
-
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
 
     }

@@ -13834,8 +13834,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6201597918341140812}
   - component: {fileID: 6441918331126861878}
-  - component: {fileID: -5580272367343872108}
   - component: {fileID: 5449301783632978041}
+  - component: {fileID: 5401693283439188571}
   m_Layer: 0
   m_Name: OneScreen
   m_TagString: Untagged
@@ -13878,22 +13878,7 @@ MonoBehaviour:
   playerController: {fileID: 8933957819721502937}
   spawnManager: {fileID: 1492624950714565178}
   playerCamera: {fileID: 1706472164213161939}
---- !u!114 &-5580272367343872108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7618326425196305196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
+  _numberOfPlayers: 0
 --- !u!114 &5449301783632978041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13916,7 +13901,23 @@ MonoBehaviour:
   - {fileID: 22468364567808996}
   NetworkedBehaviours:
   - {fileID: 6441918331126861878}
-  - {fileID: -5580272367343872108}
+  - {fileID: 5401693283439188571}
+--- !u!114 &5401693283439188571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7618326425196305196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &7680927281916761822
 GameObject:
   m_ObjectHideFlags: 0

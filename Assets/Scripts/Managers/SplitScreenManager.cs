@@ -13,7 +13,8 @@ public class SplitScreenManager : NetworkBehaviour
     private const float StagePositionY = 0;
 
     [SerializeField] private Transform parentOfScreens;
-    [SerializeField] private OneScreenController oneScreenInstancePrefab;
+    [SerializeField] private NetworkPrefabRef oneScreenInstancePrefabNetwork;
+    [SerializeField] private OneScreenController oneScreenInstance;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> playerCanvases;
     [SerializeField] private GameObject cameraSplitController;
@@ -21,9 +22,9 @@ public class SplitScreenManager : NetworkBehaviour
     private List<MovementManager> movementManagers = new List<MovementManager>();
 
 
+    private static List<OneScreenController> screensInGame = new List<OneScreenController>();
     [SerializeField] private OneScreenController[] screenInstances;
 
-    private OneScreenController screenForClient;
     private bool shouldReset;
 
     private void Awake()
@@ -41,16 +42,13 @@ public class SplitScreenManager : NetworkBehaviour
 
     public NetworkObject SpawnOnlineScreen(NetworkRunner runner, PlayerRef player)
     {
-        NetworkObject screen = runner.Spawn(oneScreenInstancePrefab.gameObject, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
+        NetworkObject screen = runner.Spawn(oneScreenInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
 
-        Rect[] rects = CalculateSplitRectangles(player.PlayerId);
-
-        Camera playerCamera = screen.GetComponentInChildren<Camera>();
-        playerCamera.rect = rects[player.PlayerId - 1];
+        screen.GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3(player.PlayerId * SpaceBetweenStages, 0, 0));
+        screensInGame.Add(screen.GetComponent<OneScreenController>());
 
         return screen;
     }
-
 
     public void Split(int numberOfPlayers)
     {
@@ -89,7 +87,7 @@ public class SplitScreenManager : NetworkBehaviour
 
         for (int i = 0; i < numberOfPlayers; i++)
         {
-            screenInstances[i] = Instantiate(oneScreenInstancePrefab, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), oneScreenInstancePrefab.transform.rotation);
+            screenInstances[i] = Instantiate(oneScreenInstance, new Vector3((i + 1) * SpaceBetweenStages, StagePositionY, StagePositionZ), oneScreenInstance.transform.rotation);
             screenInstances[i].transform.SetParent(parentOfScreens);
 
             screenInstances[i].GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3((i + 1) * SpaceBetweenStages, 0, 0));
@@ -119,7 +117,7 @@ public class SplitScreenManager : NetworkBehaviour
     }
 
 
-    private Rect[] CalculateSplitRectangles(int numberOfPlayers)
+    public Rect[] CalculateSplitRectangles(int numberOfPlayers)
     {
         Rect[] splitRects = new Rect[numberOfPlayers];
 
