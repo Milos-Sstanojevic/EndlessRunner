@@ -8,7 +8,7 @@ public class SplitScreenManager : NetworkBehaviour
 {
     public static SplitScreenManager Instance { get; private set; }
     private static readonly List<string> controlSchemes = new List<string> { "WASDControlls", "ArrowsControlls", "IJKLControlls", "NumControlls" };
-    private const float SpaceBetweenStages = 94.77f;
+    public const float SpaceBetweenStages = 94.77f;
     private const float StagePositionZ = 0;
     private const float StagePositionY = 0;
 

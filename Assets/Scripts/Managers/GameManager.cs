@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const string IsRestarted = "IsRestarted";
@@ -150,7 +150,7 @@ public class GameManager : NetworkBehaviour
             QuitGame();
     }
 
-    private void Update()
+    public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -246,21 +246,26 @@ public class GameManager : NetworkBehaviour
     //Bind with Unity event, on start game button
     public void StartGame()
     {
-        if (PlayerPrefs.GetInt(IsRestarted) == 0 || PlayerPrefs.GetInt(NumberOfPlayers) != numberOfPlayers)
-            EventManager.Instance.OnNumberOfPlayersChosen();
-        else
-            PlayerPrefs.SetInt(IsRestarted, 0);
-        StartCoroutine(StartPlaying());
+        // if (PlayerPrefs.GetInt(IsRestarted) == 0 || PlayerPrefs.GetInt(NumberOfPlayers) != numberOfPlayers)
+        EventManager.Instance.OnNumberOfPlayersChosen();
+        // else
+        //     PlayerPrefs.SetInt(IsRestarted, 0);
+        // StartCoroutine(StartPlaying());
+        uiManager.SetScoreScreenActive();
+        uiManager.SetNumberOfPlayersScreenInactive();
+        uiManager.SetOnlinePanelInactive();
+        EventManager.Instance.StartAddingPoints();
+        SetGameState(GameStates.Playing);
     }
 
     private IEnumerator StartPlaying()
     {
         yield return new WaitForEndOfFrame();
-        SetGameState(GameStates.Playing);
-        uiManager.SetScoreScreenActive();
-        uiManager.SetNumberOfPlayersScreenInactive();
-        uiManager.SetOnlinePanelInactive();
-        EventManager.Instance.StartAddingPoints();
+        // SetGameState(GameStates.Playing);
+        // uiManager.SetScoreScreenActive();
+        // uiManager.SetNumberOfPlayersScreenInactive();
+        // uiManager.SetOnlinePanelInactive();
+        // EventManager.Instance.StartAddingPoints();
     }
 
     public void OpenNumberOfPlayersScreen()

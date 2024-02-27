@@ -30,14 +30,13 @@ public class PlayerMovement : NetworkBehaviour
         playerAnimationHandler = GetComponent<PlayerAnimationHandler>();
         jetHandler = GetComponent<PlayerJetHandler>();
         playerRb = GetComponent<Rigidbody>();
-        playerStartPositionX = transform.position.x;
-        // gameObject.AddComponent<RunnerSimulatePhysics3D>();
+        playerStartPositionX = transform.localPosition.x;
+        gameObject.AddComponent<RunnerSimulatePhysics3D>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         movementInput = context.ReadValue<Vector2>();
-
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -45,7 +44,7 @@ public class PlayerMovement : NetworkBehaviour
         jumped = context.action.triggered;
     }
 
-    public void Update()
+    public override void FixedUpdateNetwork()
     {
 
         KeepPlayerOnRoad();
@@ -88,32 +87,32 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (jetHandler.GetJetOnBack()?.HasJet == true)
         {
-            if (transform.position.z > EdgePositionZWithJet)
-                transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
-            if (transform.position.y <= EdgePositionYWithJet)
-                transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
+            if (transform.localPosition.z > EdgePositionZWithJet)
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, EdgePositionZWithJet);
+            if (transform.localPosition.y <= EdgePositionYWithJet)
+                transform.localPosition = new Vector3(transform.localPosition.x, EdgePositionYWithJet, transform.localPosition.z);
         }
     }
 
     private void KeepPlayerOnRoad()
     {
-        if (transform.position.x < -MapEdgeConstants.EdgePosX + playerStartPositionX)
-            transform.position = new Vector3(-MapEdgeConstants.EdgePosX + playerStartPositionX, transform.position.y, transform.position.z);
+        if (transform.localPosition.x < -MapEdgeConstants.EdgePosX + playerStartPositionX)
+            transform.localPosition = new Vector3(-MapEdgeConstants.EdgePosX + playerStartPositionX, transform.localPosition.y, transform.localPosition.z);
 
-        if (transform.position.x > playerStartPositionX + MapEdgeConstants.EdgePosX)
-            transform.position = new Vector3(MapEdgeConstants.EdgePosX + playerStartPositionX, transform.position.y, transform.position.z);
+        if (transform.localPosition.x > playerStartPositionX + MapEdgeConstants.EdgePosX)
+            transform.localPosition = new Vector3(MapEdgeConstants.EdgePosX + playerStartPositionX, transform.localPosition.y, transform.localPosition.z);
 
-        if (transform.position.z < PlayerEdgePositionBackZ)
-            transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionBackZ);
+        if (transform.localPosition.z < PlayerEdgePositionBackZ)
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, PlayerEdgePositionBackZ);
 
-        if (transform.position.z > PlayerEdgePositionFrontZ)
-            transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionFrontZ);
+        if (transform.localPosition.z > PlayerEdgePositionFrontZ)
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, PlayerEdgePositionFrontZ);
     }
 
     public void MovePlayer(float horizontalInput, float verticalInput)
     {
-        transform.Translate(Vector3.right * movementSpeed * Time.deltaTime * horizontalInput, Space.World);
-        transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime * verticalInput, Space.World);
+        transform.Translate(horizontalInput * movementSpeed * Runner.DeltaTime * Vector3.right, Space.World);
+        transform.Translate(movementSpeed * Runner.DeltaTime * verticalInput * Vector3.forward, Space.World);
         SpinWhileFlying(horizontalInput);
     }
 

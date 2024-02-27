@@ -15,7 +15,7 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
 
     public Dictionary<PlayerRef, NetworkObject> SpawnedScreens = new Dictionary<PlayerRef, NetworkObject>();
-    private NetworkRunner _runner;
+    private NetworkRunner runner;
     public PlayerRef playerRef;
     private List<OneScreenController> screensInGame = new List<OneScreenController>();
     private List<Canvas> playerCanvases = new List<Canvas>();
@@ -32,15 +32,15 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     async void StartGame(GameMode mode)
     {
-        _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.ProvideInput = true;
+        runner = gameObject.AddComponent<NetworkRunner>();
+        runner.ProvideInput = true;
 
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         var sceneInfo = new NetworkSceneInfo();
         if (scene.IsValid)
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
 
-        await _runner.StartGame(new StartGameArgs()
+        await runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
             SessionName = "RunnerRoom",
@@ -51,7 +51,7 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void EnterAsHost()
     {
-        if (_runner == null)
+        if (runner == null)
         {
             StartGame(GameMode.Host);
         }
@@ -59,7 +59,7 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void EnterAsClient()
     {
-        if (_runner == null)
+        if (runner == null)
         {
             StartGame(GameMode.Client);
         }
@@ -85,7 +85,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnConnectedToServer(NetworkRunner runner)
     {
-
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
@@ -99,12 +98,16 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             SetupListsForEvents();
             SetCamerasForPlayers();
-            StartGames();
         }
+
+
+        GameManager.Instance.StartGame();
+        StartGames();
     }
 
     private void SetupListsForEvents()
     {
+        int i = 0;
         foreach (OneScreenController screen in screensInGame)
         {
             if (!playerCanvases.Contains(screen.GetComponentInChildren<Canvas>()))
@@ -112,6 +115,12 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
             if (!movementManagers.Contains(screen.GetComponentInChildren<MovementManager>()))
                 movementManagers.Add(screen.GetComponentInChildren<MovementManager>());
+
+            PlayerRef[] players = runner.ActivePlayers.ToArray();
+
+            screen.GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3(players[i].PlayerId * SplitScreenManager.SpaceBetweenStages, 0, 0));
+
+            i++;
         }
     }
 
@@ -133,7 +142,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
                 break;
             }
         }
-
         SetCamerasForPlayers();
     }
 

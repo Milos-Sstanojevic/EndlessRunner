@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
-public class SpawnManager : MonoBehaviour
+public class SpawnManager : NetworkBehaviour
 {
     private const float OffsetFromCenterOfChunk = 12f;
     private const float minimumChunkSpawningDelay = 0.5f;
@@ -25,6 +26,8 @@ public class SpawnManager : MonoBehaviour
         InitializeChancesForObstacles();
         InitializeChancesForCollectables();
         InitializeChancesForChunks();
+
+        gameObject.AddComponent<NetworkRunner>();
     }
 
     private void OnEnable()

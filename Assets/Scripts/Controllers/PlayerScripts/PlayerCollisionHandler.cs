@@ -1,7 +1,8 @@
 using System.Collections;
+using Fusion;
 using UnityEngine;
 
-public class PlayerCollisionHandler : MonoBehaviour
+public class PlayerCollisionHandler : NetworkBehaviour
 {
     private const float ZeroPosition = 0;
     private const float OffsetForPrefab = 0.5f;

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Fusion;
 using UnityEngine;
 
-public class MovementManager : MonoBehaviour
+public class MovementManager : NetworkBehaviour
 {
     private const int NumberOfStagesInScene = 2;
     private const float SpeedIncrease = 1f;

@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
-public class ChunkController : NetworkBehaviour
+public class ChunkController : MonoBehaviour
 {
     [SerializeField] private int chanceOfThisChunk;
     [SerializeField] private bool isThisRandomChunk;
@@ -32,7 +31,7 @@ public class ChunkController : NetworkBehaviour
         }
     }
 
-    public override void FixedUpdateNetwork()
+    public void Update()
     {
         if (transform.position.z <= MapEdgeConstants.PositionBehindPlayerAxisZ)
             Destroy();
