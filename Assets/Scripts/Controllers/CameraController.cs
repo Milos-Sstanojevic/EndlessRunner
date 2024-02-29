@@ -17,6 +17,6 @@ public class CameraController : NetworkBehaviour
 
     private void LateUpdate()
     {
-        transform.SetPositionAndRotation(new Vector3(player.position.x, startPositionY, startPositionZ), startRotation);
+        transform.SetPositionAndRotation(new Vector3(player.localPosition.x, startPositionY, startPositionZ), startRotation);
     }
 }

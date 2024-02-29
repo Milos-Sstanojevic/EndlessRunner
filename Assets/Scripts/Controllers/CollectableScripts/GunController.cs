@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Fusion;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GunController : NetworkBehaviour, IDestroyable
@@ -25,7 +26,7 @@ public class GunController : NetworkBehaviour, IDestroyable
         collectableComponent = GetComponent<CollectableController>();
     }
 
-    private void Update()
+    public void Update()
     {
         if (!HasGun)
         {

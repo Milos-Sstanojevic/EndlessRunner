@@ -715,6 +715,7 @@ GameObject:
   - component: {fileID: 8056657919502811744}
   - component: {fileID: 53614081130899892}
   - component: {fileID: 7220131489059951886}
+  - component: {fileID: -483472134491884199}
   m_Layer: 3
   m_Name: Enemy
   m_TagString: Enemy
@@ -986,6 +987,24 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: -4834785537647469847}
+  - {fileID: 6055068201185905270}
+  - {fileID: -483472134491884199}
+--- !u!114 &-483472134491884199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6850901344987526839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &6850901344987526841
 GameObject:
   m_ObjectHideFlags: 0

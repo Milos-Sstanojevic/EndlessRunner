@@ -1,8 +1,9 @@
 using System.Collections;
+using Fusion;
 using TMPro;
 using UnityEngine;
 
-public class ScoreManager : MonoBehaviour
+public class ScoreManager : NetworkBehaviour
 {
     private const int ScoreStep = 100;
     private const int OneScorePoint = 1;
@@ -12,6 +13,7 @@ public class ScoreManager : MonoBehaviour
     private int score;
     private int speedupRound = 1;
     private bool canAddPoints;
+    private OneScreenController screenOfThisScore;
 
     public void Initialize()
     {
@@ -47,7 +49,7 @@ public class ScoreManager : MonoBehaviour
             return;
 
         EventManager.Instance.OnDecreaseSpawningTimeOfChunk(spawnManager);
-        EventManager.Instance.OnIncreaseSpeed(transform.GetComponentInParent<OneScreenController>());
+        EventManager.Instance.OnIncreaseSpeed(screenOfThisScore);
         speedupRound++;
     }
 
@@ -66,6 +68,16 @@ public class ScoreManager : MonoBehaviour
     {
         score += points;
         EventManager.Instance.OnChangeScoreOnScreen(score, playersScoreText);
+    }
+
+    public void SetSpawnManager(SpawnManager spawn)
+    {
+        spawnManager = spawn;
+    }
+
+    public void SetScreenController(OneScreenController screen)
+    {
+        screenOfThisScore = screen;
     }
 
     private void OnDestroy()

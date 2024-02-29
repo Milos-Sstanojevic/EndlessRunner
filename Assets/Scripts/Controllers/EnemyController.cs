@@ -1,4 +1,5 @@
 using Fusion;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,7 +47,7 @@ public class EnemyController : NetworkBehaviour, IDestroyable
         minimumHealth = enemyScriptableObject.minimumHealth;
     }
 
-    private void Update()
+    public void Update()
     {
         MoveLeftAndRight();
 

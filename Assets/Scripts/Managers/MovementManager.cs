@@ -9,7 +9,7 @@ public class MovementManager : NetworkBehaviour
     private const int NumberOfStagesInScene = 2;
     private const float SpeedIncrease = 1f;
     private const float PlayerSpeedBalancer = 1;
-    [SerializeField] private PlayerMovement playerMovement;
+    private PlayerMovement playerMovement;
     private List<ChunkController> chunksInGame;
     [SerializeField] private List<EnvironmentMovementController> objectsMovements;
     private float speed;
@@ -154,6 +154,12 @@ public class MovementManager : NetworkBehaviour
 
         speed += SpeedIncrease;
         SetMovementSpeedOfObjects(oneScreen);
+    }
+
+
+    public void SetPlayerMovementComponentOnScreen(PlayerMovement player)
+    {
+        playerMovement = player;
     }
 
     private void OnDisable()

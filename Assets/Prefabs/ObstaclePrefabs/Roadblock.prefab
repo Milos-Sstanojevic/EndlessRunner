@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 8918729545995436716}
   - component: {fileID: 3695551406997525399}
   - component: {fileID: 6027595725735332152}
+  - component: {fileID: -9156831954207756858}
+  - component: {fileID: 4431601675405022080}
+  - component: {fileID: -7753127308679961343}
   m_Layer: 0
   m_Name: Roadblock
   m_TagString: Obstacle
@@ -119,8 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chanceForThisObstacle: 0
   isStage: 0
-  obstacleScriptableObject: {fileID: 11400000, guid: 53b26a47f4da8594191435e694e2ef2e, type: 2}
 --- !u!54 &6027595725735332152
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -148,3 +151,52 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &-9156831954207756858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556322498249618804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
+--- !u!114 &4431601675405022080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556322498249618804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 3680953912
+  ObjectInterest: 1
+  Flags: 1
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 3695551406997525399}
+  - {fileID: -9156831954207756858}
+--- !u!114 &-7753127308679961343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556322498249618804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1541381998, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Guid:
+    RawGuidValue: 00000000000000000000000000000000

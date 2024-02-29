@@ -3,7 +3,7 @@ using Fusion;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public abstract class BasePoolingSystem<T> : MonoBehaviour where T : MonoBehaviour
+public abstract class BasePoolingSystem<T> : NetworkBehaviour where T : NetworkBehaviour
 {
     [SerializeField] private int defaultCapacity = 40;
     [SerializeField] private int maxCapacity = 100;

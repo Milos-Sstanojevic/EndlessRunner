@@ -14,6 +14,7 @@ public class SplitScreenManager : NetworkBehaviour
 
     [SerializeField] private Transform parentOfScreens;
     [SerializeField] private NetworkPrefabRef oneScreenInstancePrefabNetwork;
+    [SerializeField] private NetworkPrefabRef playerInstancePrefabNetwork;
     [SerializeField] private OneScreenController oneScreenInstance;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> playerCanvases;
@@ -21,8 +22,6 @@ public class SplitScreenManager : NetworkBehaviour
 
     private List<MovementManager> movementManagers = new List<MovementManager>();
 
-
-    private static List<OneScreenController> screensInGame = new List<OneScreenController>();
     [SerializeField] private OneScreenController[] screenInstances;
 
     private bool shouldReset;
@@ -42,12 +41,31 @@ public class SplitScreenManager : NetworkBehaviour
 
     public NetworkObject SpawnOnlineScreen(NetworkRunner runner, PlayerRef player)
     {
-        NetworkObject screen = runner.Spawn(oneScreenInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
+        return runner.Spawn(oneScreenInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
+
+        // playerOnScreen.transform.SetParent(screen.transform);
+    }
+
+    public NetworkObject SpawnOnlinePlayer(NetworkRunner runner, PlayerRef player)
+    {
+        return runner.Spawn(playerInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, 0.5f, -10.5f), Quaternion.identity, player);
+    }
+
+
+    public void InitializeNetworkedScreen(OneScreenController screen, PlayerController playerOnScreen, PlayerRef player)
+    {
+        playerOnScreen.name = $"Player: {player.PlayerId}";
+        playerOnScreen.GetComponent<PlayerMovement>().SetStartPositionOfOfPlayer(player.PlayerId * SpaceBetweenStages);
+        screen.name = $"Screen: {player.PlayerId}";
+        screen.transform.SetParent(parentOfScreens);
+        screen.GetComponent<OneScreenController>().SetPlayerControllerOnScreen(playerOnScreen.GetComponent<PlayerController>());
+        screen.GetComponentInChildren<MovementManager>().SetPlayerMovementComponentOnScreen(playerOnScreen.GetComponent<PlayerMovement>());
+
+        playerOnScreen.GetComponent<PlayerController>().SetScreenOfPlayer(screen.GetComponent<OneScreenController>());
+        playerOnScreen.GetComponent<ScoreManager>().SetSpawnManager(screen.GetComponentInChildren<SpawnManager>(true));
+        playerOnScreen.GetComponent<ScoreManager>().SetScreenController(screen);
 
         screen.GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3(player.PlayerId * SpaceBetweenStages, 0, 0));
-        screensInGame.Add(screen.GetComponent<OneScreenController>());
-
-        return screen;
     }
 
     public void Split(int numberOfPlayers)

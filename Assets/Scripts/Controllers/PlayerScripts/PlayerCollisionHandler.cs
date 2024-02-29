@@ -18,7 +18,7 @@ public class PlayerCollisionHandler : NetworkBehaviour
     private PlayerCollectingHandler playerCollectingHandler;
     private PlayerMovement playerMovement;
 
-    private void Start()
+    private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerCollectingHandler = GetComponent<PlayerCollectingHandler>();
@@ -50,7 +50,7 @@ public class PlayerCollisionHandler : NetworkBehaviour
         if (!IsPlayerOnGround())
         {
             playerController.transform.position = new Vector3(playerController.transform.position.x, ZeroPosition + OffsetForPrefab, playerController.transform.position.z);
-            playerController.transform.eulerAngles = Vector3.zero;
+            // playerController.transform.eulerAngles = Vector3.zero;
         }
 
         characterAnimator.PlayDeadAnimation();
@@ -62,12 +62,6 @@ public class PlayerCollisionHandler : NetworkBehaviour
 
     private void HandleGroundCollision()
     {
-        StartCoroutine(WaitToLoad());
-    }
-
-    private IEnumerator WaitToLoad()
-    {
-        yield return new WaitForEndOfFrame();
         playerMovement.SetCanJumpToTrue();
         playerParticleSystem.PlayLandingParticleEffect();
         characterAnimator.StopJumpAnimation();

@@ -30,8 +30,6 @@ public class PlayerMovement : NetworkBehaviour
         playerAnimationHandler = GetComponent<PlayerAnimationHandler>();
         jetHandler = GetComponent<PlayerJetHandler>();
         playerRb = GetComponent<Rigidbody>();
-        playerStartPositionX = transform.localPosition.x;
-        gameObject.AddComponent<RunnerSimulatePhysics3D>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -111,8 +109,19 @@ public class PlayerMovement : NetworkBehaviour
 
     public void MovePlayer(float horizontalInput, float verticalInput)
     {
-        transform.Translate(horizontalInput * movementSpeed * Runner.DeltaTime * Vector3.right, Space.World);
-        transform.Translate(movementSpeed * Runner.DeltaTime * verticalInput * Vector3.forward, Space.World);
+        if (GetInput(out NetworkInputData data))
+        {
+            data.MovementInput = movementInput;
+
+            Vector3 moveDirection = (transform.forward * data.MovementInput.y + transform.right * data.MovementInput.x) * NetworkSpawner.Instance.GetNetworkRunner().DeltaTime;
+            moveDirection.Normalize();
+
+            NetworkSpawner.BufferedInput = data;
+            transform.Translate(moveDirection);
+        }
+
+        // transform.Translate(horizontalInput * movementSpeed * Runner.DeltaTime * Vector3.right, Space.World);
+        // transform.Translate(movementSpeed * Runner.DeltaTime * verticalInput * Vector3.forward, Space.World);
         SpinWhileFlying(horizontalInput);
     }
 
@@ -139,4 +148,9 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     public bool IsMovementEnabled() => movementEnabled;
+
+    public void SetStartPositionOfOfPlayer(float posX)
+    {
+        playerStartPositionX = posX;
+    }
 }

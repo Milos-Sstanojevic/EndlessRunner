@@ -26,8 +26,6 @@ public class SpawnManager : NetworkBehaviour
         InitializeChancesForObstacles();
         InitializeChancesForCollectables();
         InitializeChancesForChunks();
-
-        gameObject.AddComponent<NetworkRunner>();
     }
 
     private void OnEnable()

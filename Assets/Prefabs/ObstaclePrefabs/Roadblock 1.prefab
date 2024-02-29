@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8897532546625882831}
   - component: {fileID: 5707862660727839584}
+  - component: {fileID: 3665731567572705426}
+  - component: {fileID: -6533643069231082069}
+  - component: {fileID: -5231876183557685879}
   m_Layer: 0
   m_Name: Roadblock 1
   m_TagString: Untagged
@@ -47,6 +50,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chanceForThisObstacle: 60
   isStage: 0
+--- !u!114 &3665731567572705426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2815072543197602860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
+--- !u!114 &-6533643069231082069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2815072543197602860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 538012927
+  ObjectInterest: 1
+  Flags: 1
+  NestedObjects:
+  - {fileID: 6877683900703888878}
+  NetworkedBehaviours:
+  - {fileID: 5707862660727839584}
+  - {fileID: 3665731567572705426}
+--- !u!114 &-5231876183557685879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2815072543197602860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1541381998, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Guid:
+    RawGuidValue: 00000000000000000000000000000000
 --- !u!1001 &7129839431336986222
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55,6 +108,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8897532546625882831}
     m_Modifications:
+    - target: {fileID: 4431601675405022080, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+      propertyPath: Flags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4431601675405022080, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+      propertyPath: SortKey
+      value: 661313233
+      objectReference: {fileID: 0}
+    - target: {fileID: 4431601675405022080, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+      propertyPath: NetworkedBehaviours.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4431601675405022080, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+      propertyPath: NetworkedBehaviours.Array.data[0]
+      value: 
+      objectReference: {fileID: 5889436466704176633}
+    - target: {fileID: 4431601675405022080, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+      propertyPath: NetworkedBehaviours.Array.data[1]
+      value: 
+      objectReference: {fileID: 7070126903766166440}
     - target: {fileID: 4556322498249618804, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
       propertyPath: m_Name
       value: Roadblock
@@ -109,3 +182,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8931418723279060729, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
   m_PrefabInstance: {fileID: 7129839431336986222}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5889436466704176633 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3695551406997525399, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+  m_PrefabInstance: {fileID: 7129839431336986222}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181557893da1dba499032a63201d3b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6877683900703888878 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4431601675405022080, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+  m_PrefabInstance: {fileID: 7129839431336986222}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7070126903766166440 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -9156831954207756858, guid: 6127fcd9b28b55b42be4a3a96a0f821d, type: 3}
+  m_PrefabInstance: {fileID: 7129839431336986222}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

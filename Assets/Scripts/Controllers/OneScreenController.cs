@@ -6,23 +6,22 @@ using UnityEngine;
 public class OneScreenController : NetworkBehaviour
 {
     [SerializeField] private MovementManager movementManager;
-    [SerializeField] private PlayerController playerController;
     [SerializeField] private SpawnManager spawnManager;
-    [SerializeField] private Camera playerCamera;
+    private PlayerController playerController;
 
     private void Start()
     {
-        NetworkSpawner.Instance.RPC_SpawnedObject(this);
-    }
-
-    public void SetCameraRect(Rect rect)
-    {
-        playerCamera.rect = rect;
+        NetworkSpawner.Instance.RPC_SpawnedScreen(this);
     }
 
     private void OnDestroy()
     {
-        NetworkSpawner.Instance.RPC_DespawnedObject(this);
+        NetworkSpawner.Instance.RPC_DespawnedScreen(this);
+    }
+
+    public void SetPlayerControllerOnScreen(PlayerController player)
+    {
+        playerController = player;
     }
 
     public MovementManager GetMovementManagerInOneScreen() => movementManager;

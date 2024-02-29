@@ -10375,6 +10375,8 @@ MonoBehaviour:
   parentOfScreens: {fileID: 695137337}
   oneScreenInstancePrefabNetwork:
     RawGuidValue: a1f07e4a5242ae944a3213ab8ba16e6a
+  playerInstancePrefabNetwork:
+    RawGuidValue: 7ed98f9a59d8b594ea0e985fa9f8141d
   oneScreenInstance: {fileID: 6441918331126861878, guid: a1f07e4a5242ae944a3213ab8ba16e6a, type: 3}
   startMenuCanvas: {fileID: 1691291086}
   playerCanvases: []

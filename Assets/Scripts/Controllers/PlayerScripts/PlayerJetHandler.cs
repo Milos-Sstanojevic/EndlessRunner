@@ -27,12 +27,17 @@ public class PlayerJetHandler : MonoBehaviour
         if (playerMovement.IsMovementEnabled())
             ContinueJetCoroutine();
 
-
         if (jetOnBack?.HasJet == false && isInAir)
         {
-            StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.position.x, ZeroPosition + OffsetFromGround, transform.position.z)));
+            StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.localPosition.x, ZeroPosition + OffsetFromGround, transform.localPosition.z)));
             jetOnBack = null;
         }
+    }
+
+    private void ContinueJetCoroutine()
+    {
+        if (jetOnBack != null)
+            jetOnBack.UnpauseCoroutine();
     }
 
     public IEnumerator SlowlyStartOrStopFlying(Vector3 endRotation, Vector3 endPosition)
@@ -40,7 +45,7 @@ public class PlayerJetHandler : MonoBehaviour
         isInAir = !isInAir;
         playerCollider.enabled = false;
 
-        Vector3 startPos = transform.position;
+        Vector3 startPos = transform.localPosition;
         Vector3 startRotation = transform.rotation.eulerAngles;
         Quaternion startQuaternion = Quaternion.Euler(startRotation);
         Quaternion endQuaternion = Quaternion.Euler(endRotation);
@@ -49,8 +54,8 @@ public class PlayerJetHandler : MonoBehaviour
 
         while (remainingDistance > 0)
         {
-            transform.position = Vector3.Lerp(startPos, endPosition, 1 - (remainingDistance / distance));
-            transform.rotation = Quaternion.Slerp(startQuaternion, endQuaternion, 1 - (remainingDistance / distance));
+            transform.localPosition = Vector3.Lerp(startPos, endPosition, 1 - (remainingDistance / distance));
+            transform.localRotation = Quaternion.Slerp(startQuaternion, endQuaternion, 1 - (remainingDistance / distance));
 
             remainingDistance -= AsscendingSpeed * Time.deltaTime;
 
@@ -58,7 +63,7 @@ public class PlayerJetHandler : MonoBehaviour
         }
 
         playerCollider.enabled = true;
-        transform.position = endPosition;
+        transform.localPosition = endPosition;
         transform.eulerAngles = endRotation;
     }
 
@@ -69,7 +74,7 @@ public class PlayerJetHandler : MonoBehaviour
         if (jetOnBack == null && !isInAir)
         {
             jetOnBack = jet;
-            StartCoroutine(SlowlyStartOrStopFlying(RotateAroundX, new Vector3(transform.position.x, ZeroPosition + FlyingPosition, transform.position.z)));
+            StartCoroutine(SlowlyStartOrStopFlying(RotateAroundX, new Vector3(transform.localPosition.x, ZeroPosition + FlyingPosition, transform.localPosition.z)));
             jet.MoveOnPlayerBack(this, jetPosition.transform.position);
         }
         else
@@ -78,12 +83,6 @@ public class PlayerJetHandler : MonoBehaviour
         AudioManager.Instance.PlayJetCollectedSound();
 
         return CollectablePointsWorth * 2;
-    }
-
-    private void ContinueJetCoroutine()
-    {
-        if (jetOnBack != null)
-            jetOnBack.UnpauseCoroutine();
     }
 
     public void ReleaseJetIfHaveOne()

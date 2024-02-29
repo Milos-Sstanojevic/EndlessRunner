@@ -1,7 +1,7 @@
 using Fusion;
 using UnityEngine;
 
-public class EnvironmentMovementController : MonoBehaviour, IDestroyable
+public class EnvironmentMovementController : NetworkBehaviour, IDestroyable
 {
     [SerializeField] private int chanceForThisObstacle;
     [SerializeField] private bool isStage;

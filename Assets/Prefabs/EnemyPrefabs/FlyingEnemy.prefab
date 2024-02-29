@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -4034522299286884636}
   - component: {fileID: -4818505287291182368}
   - component: {fileID: -5511936469216486810}
+  - component: {fileID: 445569670224026693}
   m_Layer: 0
   m_Name: FlyingEnemy
   m_TagString: Enemy
@@ -250,6 +251,24 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7236899872907980071}
+  - {fileID: 3688416927143806199}
+  - {fileID: 445569670224026693}
+--- !u!114 &445569670224026693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2602784294582894025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &4912557126358083072
 GameObject:
   m_ObjectHideFlags: 0
