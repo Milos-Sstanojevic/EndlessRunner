@@ -42,30 +42,32 @@ public class SplitScreenManager : NetworkBehaviour
     public NetworkObject SpawnOnlineScreen(NetworkRunner runner, PlayerRef player)
     {
         return runner.Spawn(oneScreenInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
-
-        // playerOnScreen.transform.SetParent(screen.transform);
     }
 
     public NetworkObject SpawnOnlinePlayer(NetworkRunner runner, PlayerRef player)
     {
-        return runner.Spawn(playerInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, 0.5f, -10.5f), Quaternion.identity, player);
+        NetworkObject playerOnScreen = runner.Spawn(playerInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, 0.5f, -10.5f), Quaternion.identity, player);
+        playerOnScreen.GetComponent<PlayerController>().SetPlayerId(player.PlayerId);
+
+        return playerOnScreen;
     }
 
 
-    public void InitializeNetworkedScreen(OneScreenController screen, PlayerController playerOnScreen, PlayerRef player)
+    public void InitializeNetworkedScreen(OneScreenController screen, PlayerController playerOnScreen)
     {
-        playerOnScreen.name = $"Player: {player.PlayerId}";
-        playerOnScreen.GetComponent<PlayerMovement>().SetStartPositionOfOfPlayer(player.PlayerId * SpaceBetweenStages);
-        screen.name = $"Screen: {player.PlayerId}";
+        playerOnScreen.name = $"Player: {playerOnScreen.PlayerId}";
+        playerOnScreen.GetComponent<PlayerMovement>().SetStartPositionOfOfPlayer(playerOnScreen.PlayerId * SpaceBetweenStages);
+        screen.name = $"Screen: {playerOnScreen.PlayerId}";
         screen.transform.SetParent(parentOfScreens);
         screen.GetComponent<OneScreenController>().SetPlayerControllerOnScreen(playerOnScreen.GetComponent<PlayerController>());
         screen.GetComponentInChildren<MovementManager>().SetPlayerMovementComponentOnScreen(playerOnScreen.GetComponent<PlayerMovement>());
 
+        playerOnScreen.SetScreenOfPlayer(screen);
         playerOnScreen.GetComponent<PlayerController>().SetScreenOfPlayer(screen.GetComponent<OneScreenController>());
         playerOnScreen.GetComponent<ScoreManager>().SetSpawnManager(screen.GetComponentInChildren<SpawnManager>(true));
         playerOnScreen.GetComponent<ScoreManager>().SetScreenController(screen);
 
-        screen.GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3(player.PlayerId * SpaceBetweenStages, 0, 0));
+        screen.GetComponentInChildren<SpawnManager>(true).SetOffsetToRespectedStage(new Vector3(playerOnScreen.PlayerId * SpaceBetweenStages, 0, 0));
     }
 
     public void Split(int numberOfPlayers)

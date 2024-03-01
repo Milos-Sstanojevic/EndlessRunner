@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using Fusion;
 using UnityEngine;
@@ -110,9 +111,9 @@ public class MovementManager : NetworkBehaviour
             movement.SetMovementSpeed(speed);
     }
 
-    private void DisableMovementForOneScreen(PlayerController playerController, GameObject endScreen)
+    private void DisableMovementForOneScreen(int id, PlayerController playerController, GameObject endScreen)
     {
-        if (playerMovement == playerController.GetPlayerMovementComponentOfPlayer())
+        if (playerMovement == playerController.GetPlayerMovementComponentOfPlayer() && playerMovement.GetComponent<PlayerController>().GetPlayerId() == id)
             DisableMovementOfMovableObjects(playerController.GetScreenOfPlayer());
     }
 

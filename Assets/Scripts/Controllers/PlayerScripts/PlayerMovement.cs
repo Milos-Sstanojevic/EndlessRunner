@@ -2,6 +2,7 @@ using Fusion;
 using Fusion.Addons.Physics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -51,29 +52,32 @@ public class PlayerMovement : NetworkBehaviour
         if (!movementEnabled)
             return;
 
-        HandleMovementInput();
-        HandleJumpInput();
+        MovePlayer();
+        HandlePlayerJumping();
     }
 
-
-    private void HandleMovementInput()
-    {
-        MovePlayer(movementInput.x, movementInput.y);
-    }
-
-    private void HandleJumpInput()
-    {
-        if (jumped && canJump && !jetHandler.IsInAir())
-            HandlePlayerJumping();
-    }
 
     private void HandlePlayerJumping()
     {
+        if (jumped && canJump && !jetHandler.IsInAir())
+            if (GetInput(out NetworkInputData data))
+            {
+
+                RPC_HandlePlayerJumping(this, data);
+                // playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            }
+    }
+
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_HandlePlayerJumping(PlayerMovement playerMovement, NetworkInputData data)
+    {
+        playerMovement.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        data.Jumped = jumped;
         playerParticleSystem.PlayJumpingParticleEffect();
         playerAnimationHandler.PlayJumpAnimation();
         AudioManager.Instance.PlayJumpSound();
         canJump = false;
-        playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
     public void SetCanJumpToTrue()
@@ -107,22 +111,25 @@ public class PlayerMovement : NetworkBehaviour
             transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, PlayerEdgePositionFrontZ);
     }
 
-    public void MovePlayer(float horizontalInput, float verticalInput)
+    public void MovePlayer()
     {
         if (GetInput(out NetworkInputData data))
         {
             data.MovementInput = movementInput;
+            data.Jumped = jumped;
 
-            Vector3 moveDirection = (transform.forward * data.MovementInput.y + transform.right * data.MovementInput.x) * NetworkSpawner.Instance.GetNetworkRunner().DeltaTime;
-            moveDirection.Normalize();
+            RPC_MovePlayer(this, data);
 
+            SpinWhileFlying(data.MovementInput.x);
             NetworkSpawner.BufferedInput = data;
-            transform.Translate(moveDirection);
         }
+    }
 
-        // transform.Translate(horizontalInput * movementSpeed * Runner.DeltaTime * Vector3.right, Space.World);
-        // transform.Translate(movementSpeed * Runner.DeltaTime * verticalInput * Vector3.forward, Space.World);
-        SpinWhileFlying(horizontalInput);
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RPC_MovePlayer(PlayerMovement player, NetworkInputData data)
+    {
+        player.transform.Translate(data.MovementInput.x * movementSpeed * Runner.DeltaTime * Vector3.right, Space.World);
+        player.transform.Translate(movementSpeed * Runner.DeltaTime * data.MovementInput.y * Vector3.forward, Space.World);
     }
 
     private void SpinWhileFlying(float horizontalInput)

@@ -44,7 +44,7 @@ public class PlayerCollisionHandler : NetworkBehaviour
 
     private void HandleEnemyOrObstacleCollision()
     {
-        EventManager.Instance.OnPlayerDead(playerController, gameOverScreen);
+        NetworkSpawner.Instance.RPC_PlayerDied(playerController.PlayerId, playerController, gameOverScreen);
         playerController.PlayerDied();
 
         if (!IsPlayerOnGround())
@@ -71,8 +71,8 @@ public class PlayerCollisionHandler : NetworkBehaviour
     {
         CollectableController collectable = other.GetComponent<CollectableController>();
 
-        if (collectable != null)
-            HandleCollectableCollision(collectable);
+        // if (collectable != null)
+        //     HandleCollectableCollision(collectable);
     }
 
     private void HandleCollectableCollision(CollectableController collectable)

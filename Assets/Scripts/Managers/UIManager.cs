@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Fusion;
 using TMPro;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : NetworkBehaviour
 {
     private const string ScoreText = "Score: ";
     [SerializeField] private GameObject startScreen;
@@ -78,7 +79,6 @@ public class UIManager : MonoBehaviour
         startScreen.SetActive(true);
     }
 
-    //Unity event, called when player is dead
     public void SetEndScreenActive(GameObject endScreen)
     {
         endScreen.SetActive(true);

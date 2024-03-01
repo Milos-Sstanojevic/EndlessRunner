@@ -15,7 +15,7 @@ public class EventManager : MonoBehaviour
     private event Action<CollectableController> onSpaceshipDestroyAction;
     private event Action<ChunkController> onChunkDestroyAction;
     private event Action<int> onEnemyKilledAction;
-    private event Action<PlayerController, GameObject> onPlayerDeadAction;
+    private event Action<int, PlayerController, GameObject> onPlayerDeadAction;
     private event Action<SpawnManager> onObjectsInSceneChangedAction;
     private event Action<int, TextMeshProUGUI> onChangeScoreOnScreenAction;
     private event Action onStartAddingPointsAction;
@@ -174,7 +174,7 @@ public class EventManager : MonoBehaviour
         onEnemyKilledAction += action;
     }
 
-    public void SubscribeToOnPlayerDeadAction(Action<PlayerController, GameObject> action)
+    public void SubscribeToOnPlayerDeadAction(Action<int, PlayerController, GameObject> action)
     {
         onPlayerDeadAction += action;
     }
@@ -224,7 +224,7 @@ public class EventManager : MonoBehaviour
         onEnemyKilledAction -= action;
     }
 
-    public void UnsubscribeFromOnPlayerDeadAction(Action<PlayerController, GameObject> action)
+    public void UnsubscribeFromOnPlayerDeadAction(Action<int, PlayerController, GameObject> action)
     {
         onPlayerDeadAction -= action;
     }
@@ -393,9 +393,9 @@ public class EventManager : MonoBehaviour
         onStopAddingPointsAction?.Invoke();
     }
 
-    public void OnPlayerDead(PlayerController player, GameObject gameOverScreen)
+    public void OnPlayerDead(int id, PlayerController player, GameObject gameOverScreen)
     {
-        onPlayerDeadAction?.Invoke(player, gameOverScreen);
+        onPlayerDeadAction?.Invoke(id, player, gameOverScreen);
     }
 
     public void OnEnemyDestroyed(EnemyController enemy)

@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const string IsRestarted = "IsRestarted";
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Unity event, called when player is dead
-    public void GameOver(PlayerController player, GameObject endScreen)
+    public void GameOver(int id, PlayerController player, GameObject endScreen)
     {
         numberOfDeadPlayers++;
         if (numberOfDeadPlayers == screensInGame.Count)

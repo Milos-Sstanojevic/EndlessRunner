@@ -53,9 +53,9 @@ public class ScoreManager : NetworkBehaviour
         speedupRound++;
     }
 
-    public void StopAddingPointsForThisPlayer(PlayerController player, GameObject endScreen)
+    public void StopAddingPointsForThisPlayer(int id, PlayerController player, GameObject endScreen)
     {
-        if (player == GetComponent<PlayerController>())
+        if (player == GetComponent<PlayerController>() && GetComponent<PlayerController>().GetPlayerId() == id)
             canAddPoints = false;
     }
 

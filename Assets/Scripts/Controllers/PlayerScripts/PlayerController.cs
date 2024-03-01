@@ -8,14 +8,13 @@ public class PlayerController : NetworkBehaviour
     private bool isPlayerDead;
     private PlayerMovement playerMovement;
     private OneScreenController screenOfPlayer;
-    private int playerId;
+    [Networked] public int PlayerId { get; set; }
 
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
         ScoreManager = GetComponent<ScoreManager>();
         NetworkSpawner.Instance.RPC_SpawnedPlayer(this);
-        playerId = NetworkSpawner.Instance.GetNetworkRunner().LocalPlayer.PlayerId;
         ScoreManager.Initialize();
 
     }
@@ -66,7 +65,12 @@ public class PlayerController : NetworkBehaviour
         playerCamera.rect = rect;
     }
 
-    public int GetPlayerId() => playerId;
+    public int GetPlayerId() => PlayerId;
+
+    public void SetPlayerId(int id)
+    {
+        PlayerId = id;
+    }
 
     private void OnDisable()
     {

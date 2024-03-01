@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using Fusion;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class SpawnManager : NetworkBehaviour
     private const float minimumChunkSpawningDelay = 0.5f;
     private const float spawningDelayDecreaser = 0.15f;
     private const float PosZ = 50f;
+
+    [SerializeField] private OneScreenController screenOfSpawnManager;
 
     private List<EnvironmentMovementController> chancesForObstacles;
     private List<CollectableController> chancesForCollectables;
@@ -20,12 +23,15 @@ public class SpawnManager : NetworkBehaviour
     private Vector3 endOfPreviousChunk;
     private ChunkController chunk;
     private Vector3 offsetToRespectedStage;
+    private int seedForPlayer;
 
     private void Awake()
     {
         InitializeChancesForObstacles();
         InitializeChancesForCollectables();
         InitializeChancesForChunks();
+
+        Random.InitState(seedForPlayer);
     }
 
     private void OnEnable()
@@ -100,7 +106,8 @@ public class SpawnManager : NetworkBehaviour
         foreach (var chance in chancesForChunks)
             totalWeight += chance.GetChanceForThisChunk();
 
-        int randomValue = Random.Range(0, totalWeight + 1);
+        int randomValue = Random.Range(0, totalWeight - 1);
+
         int coursor = 0;
         foreach (var chance in chancesForChunks)
         {
@@ -223,6 +230,7 @@ public class SpawnManager : NetworkBehaviour
             totalWeight += chance.GetChanceForThisCollectable();
 
         int randomValue = Random.Range(0, totalWeight);
+
         int coursor = 0;
 
         foreach (var chance in chancesForCollectables)
@@ -271,9 +279,9 @@ public class SpawnManager : NetworkBehaviour
         canSpawn = false;
     }
 
-    public void DisableSpawningForThisPlayer(PlayerController player, GameObject endScreen)
+    public void DisableSpawningForThisPlayer(int id, PlayerController player, GameObject endScreen)
     {
-        if (player == transform.parent.gameObject.GetComponentInChildren<PlayerController>())
+        if (player.GetScreenOfPlayer() == screenOfSpawnManager)
             canSpawn = false;
     }
 
@@ -310,6 +318,12 @@ public class SpawnManager : NetworkBehaviour
             delay = minimumChunkSpawningDelay;
 
         return delay;
+    }
+
+
+    public void SetSeedForRandomness(int seed)
+    {
+        seedForPlayer = seed;
     }
 
     private void OnDisable()
