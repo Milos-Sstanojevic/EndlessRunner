@@ -1,5 +1,6 @@
 using System.Collections;
 using Fusion;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class JetController : NetworkBehaviour, IDestroyable
@@ -10,7 +11,7 @@ public class JetController : NetworkBehaviour, IDestroyable
     private EnvironmentMovementController environmentComponent;
     private CollectableController collectableComponent;
     private ParticleSystemManager particleSystemManager;
-    public bool HasJet { get; private set; }
+    public NetworkBool HasJet { get; private set; }
 
     private void Awake()
     {
@@ -19,7 +20,7 @@ public class JetController : NetworkBehaviour, IDestroyable
         collectableComponent = GetComponent<CollectableController>();
     }
 
-    private void Update()
+    public override void FixedUpdateNetwork()
     {
         if (!HasJet)
         {

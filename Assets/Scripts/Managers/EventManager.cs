@@ -34,6 +34,9 @@ public class EventManager : MonoBehaviour
     private event Action onRestartButtonClickedAction;
     private event Action onExitButtonClickedAction;
     private event Action onSettingsButtonClickedAction;
+    private event Action<PlayerController> onPlayerReadyAction;
+    private event Action onSetOnlineScreenInactiveAction;
+    private event Action onStartGamesAction;
 
 
     private void Awake()
@@ -46,6 +49,21 @@ public class EventManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SubscribeToOnStartGamesAction(Action action)
+    {
+        onStartGamesAction += action;
+    }
+
+    public void SubscribeToOnSetOnlineScreenInactive(Action action)
+    {
+        onSetOnlineScreenInactiveAction += action;
+    }
+
+    public void SubscribeToOnPlayerReadyAction(Action<PlayerController> action)
+    {
+        onPlayerReadyAction += action;
     }
 
     public void SubscribeToOnSettingsButtonClickedAction(Action action)
@@ -317,6 +335,36 @@ public class EventManager : MonoBehaviour
     public void UnsubscribeFromOnRestartButtonClickedAction(Action action)
     {
         onRestartButtonClickedAction -= action;
+    }
+
+    public void UnsubscribeFromOnPlayerReadyAction(Action<PlayerController> action)
+    {
+        onPlayerReadyAction -= action;
+    }
+
+    public void UnsubscribeToOnSetOnlineScreenInactive(Action action)
+    {
+        onSetOnlineScreenInactiveAction -= action;
+    }
+
+    public void UnsubscribeToOnStartGamesAction(Action action)
+    {
+        onStartGamesAction -= action;
+    }
+
+    public void OnStartGames()
+    {
+        onStartGamesAction?.Invoke();
+    }
+
+    public void OnSetOnlineScreenInactive()
+    {
+        onSetOnlineScreenInactiveAction?.Invoke();
+    }
+
+    public void OnPlayerReady(PlayerController player)
+    {
+        onPlayerReadyAction?.Invoke(player);
     }
 
     public void OnNumberOfPlayersChosen()

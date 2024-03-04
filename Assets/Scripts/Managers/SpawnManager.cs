@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class SpawnManager : NetworkBehaviour
 {
+
+    private const int Seed = 22012002;
     private const float OffsetFromCenterOfChunk = 12f;
     private const float minimumChunkSpawningDelay = 0.5f;
     private const float spawningDelayDecreaser = 0.15f;
@@ -31,7 +33,7 @@ public class SpawnManager : NetworkBehaviour
         InitializeChancesForCollectables();
         InitializeChancesForChunks();
 
-        Random.InitState(seedForPlayer);
+        Random.InitState(Seed);
     }
 
     private void OnEnable()
@@ -320,10 +322,10 @@ public class SpawnManager : NetworkBehaviour
         return delay;
     }
 
-
     public void SetSeedForRandomness(int seed)
     {
         seedForPlayer = seed;
+        Random.InitState(seedForPlayer);
     }
 
     private void OnDisable()

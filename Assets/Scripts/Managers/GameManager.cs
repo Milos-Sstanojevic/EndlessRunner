@@ -54,6 +54,7 @@ public class GameManager : NetworkBehaviour
 
     private void SubscribeToEvents()
     {
+        EventManager.Instance.SubscribeToOnStartGamesAction(StartGame);
         EventManager.Instance.SubscribeToOnNumberOfScreensChangedAction(SetSpawnManagers);
         EventManager.Instance.SubscribeToOnPlayerDeadAction(GameOver);
         EventManager.Instance.SubscribeToChangeScoreOnScreen(SetScoreOnScreen);
@@ -253,7 +254,7 @@ public class GameManager : NetworkBehaviour
         // StartCoroutine(StartPlaying());
         uiManager.SetScoreScreenActive();
         uiManager.SetNumberOfPlayersScreenInactive();
-        uiManager.SetOnlinePanelInactive();
+        // uiManager.SetOnlinePanelInactive();
         EventManager.Instance.StartAddingPoints();
         SetGameState(GameStates.Playing);
     }

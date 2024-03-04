@@ -16,7 +16,6 @@ public class PlayerMovement : NetworkBehaviour
     private PlayerAnimationHandler playerAnimationHandler;
     private ParticleSystemManager playerParticleSystem;
     private float playerStartPositionX;
-    private Rigidbody playerRb;
     private float movementSpeed;
     private PlayerJetHandler jetHandler;
     private bool movementEnabled;
@@ -30,7 +29,6 @@ public class PlayerMovement : NetworkBehaviour
         playerParticleSystem = GetComponent<ParticleSystemManager>();
         playerAnimationHandler = GetComponent<PlayerAnimationHandler>();
         jetHandler = GetComponent<PlayerJetHandler>();
-        playerRb = GetComponent<Rigidbody>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -59,13 +57,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void HandlePlayerJumping()
     {
-        if (jumped && canJump && !jetHandler.IsInAir())
-            if (GetInput(out NetworkInputData data))
-            {
-
-                RPC_HandlePlayerJumping(this, data);
-                // playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            }
+        if (jumped && canJump && !jetHandler.IsInAir() && GetInput(out NetworkInputData data))
+            RPC_HandlePlayerJumping(this, data);
     }
 
 
@@ -89,26 +82,26 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (jetHandler.GetJetOnBack()?.HasJet == true)
         {
-            if (transform.localPosition.z > EdgePositionZWithJet)
-                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, EdgePositionZWithJet);
-            if (transform.localPosition.y <= EdgePositionYWithJet)
-                transform.localPosition = new Vector3(transform.localPosition.x, EdgePositionYWithJet, transform.localPosition.z);
+            if (transform.position.z > EdgePositionZWithJet)
+                transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
+            if (transform.position.y <= EdgePositionYWithJet)
+                transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
         }
     }
 
     private void KeepPlayerOnRoad()
     {
-        if (transform.localPosition.x < -MapEdgeConstants.EdgePosX + playerStartPositionX)
-            transform.localPosition = new Vector3(-MapEdgeConstants.EdgePosX + playerStartPositionX, transform.localPosition.y, transform.localPosition.z);
+        if (transform.position.x < -MapEdgeConstants.EdgePosX + playerStartPositionX)
+            transform.position = new Vector3(-MapEdgeConstants.EdgePosX + playerStartPositionX, transform.position.y, transform.position.z);
 
-        if (transform.localPosition.x > playerStartPositionX + MapEdgeConstants.EdgePosX)
-            transform.localPosition = new Vector3(MapEdgeConstants.EdgePosX + playerStartPositionX, transform.localPosition.y, transform.localPosition.z);
+        if (transform.position.x > playerStartPositionX + MapEdgeConstants.EdgePosX)
+            transform.position = new Vector3(MapEdgeConstants.EdgePosX + playerStartPositionX, transform.position.y, transform.position.z);
 
-        if (transform.localPosition.z < PlayerEdgePositionBackZ)
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, PlayerEdgePositionBackZ);
+        if (transform.position.z < PlayerEdgePositionBackZ)
+            transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionBackZ);
 
-        if (transform.localPosition.z > PlayerEdgePositionFrontZ)
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, PlayerEdgePositionFrontZ);
+        if (transform.position.z > PlayerEdgePositionFrontZ)
+            transform.position = new Vector3(transform.position.x, transform.position.y, PlayerEdgePositionFrontZ);
     }
 
     public void MovePlayer()

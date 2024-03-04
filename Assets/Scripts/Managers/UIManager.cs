@@ -20,6 +20,7 @@ public class UIManager : NetworkBehaviour
         EventManager.Instance.SubscribeToOnChangeNumberOfPlayersAction(ChangeNumberOfPlayers);
         EventManager.Instance.SubscribeToOnNumberOfPlayersSavedAction(SetNumberOfPlayersScreenInactive);
         EventManager.Instance.SubscribeToNumberOfScoreScreensChangedAction(SetScoreScreens);
+        EventManager.Instance.SubscribeToOnSetOnlineScreenInactive(SetOnlinePanelInactive);
     }
 
     private void SetScoreScreens(List<Canvas> screens)
@@ -157,5 +158,6 @@ public class UIManager : NetworkBehaviour
     {
         EventManager.Instance.UnsubscribeFromOnChangeNumberOfPlayersAction(ChangeNumberOfPlayers);
         EventManager.Instance.UnsubscribeFromOnNumberOfPlayersSavedAction(SetNumberOfPlayersScreenInactive);
+        EventManager.Instance.UnsubscribeToOnSetOnlineScreenInactive(SetOnlinePanelInactive);
     }
 }

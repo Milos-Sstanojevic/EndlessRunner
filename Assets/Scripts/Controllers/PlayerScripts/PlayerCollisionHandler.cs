@@ -33,7 +33,7 @@ public class PlayerCollisionHandler : NetworkBehaviour
     {
         if (/*other.gameObject.CompareTag(ObstacleTag) ||*/ other.gameObject.CompareTag(EnemyTag))
         {
-            HandleEnemyOrObstacleCollision();
+            RPC_HandleEnemyOrObstacleCollision();
         }
 
         if (other.gameObject.CompareTag(GroundTag))
@@ -42,7 +42,8 @@ public class PlayerCollisionHandler : NetworkBehaviour
         }
     }
 
-    private void HandleEnemyOrObstacleCollision()
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RPC_HandleEnemyOrObstacleCollision()
     {
         NetworkSpawner.Instance.RPC_PlayerDied(playerController.PlayerId, playerController, gameOverScreen);
         playerController.PlayerDied();
@@ -50,7 +51,7 @@ public class PlayerCollisionHandler : NetworkBehaviour
         if (!IsPlayerOnGround())
         {
             playerController.transform.position = new Vector3(playerController.transform.position.x, ZeroPosition + OffsetForPrefab, playerController.transform.position.z);
-            // playerController.transform.eulerAngles = Vector3.zero;
+            playerController.transform.eulerAngles = Vector3.zero;
         }
 
         characterAnimator.PlayDeadAnimation();
@@ -71,8 +72,8 @@ public class PlayerCollisionHandler : NetworkBehaviour
     {
         CollectableController collectable = other.GetComponent<CollectableController>();
 
-        // if (collectable != null)
-        //     HandleCollectableCollision(collectable);
+        if (collectable != null)
+            HandleCollectableCollision(collectable);
     }
 
     private void HandleCollectableCollision(CollectableController collectable)

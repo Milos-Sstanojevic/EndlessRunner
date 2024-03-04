@@ -1,4 +1,5 @@
 using System.Collections;
+using Fusion;
 using UnityEngine;
 
 public class PlayerJetHandler : MonoBehaviour
@@ -8,7 +9,7 @@ public class PlayerJetHandler : MonoBehaviour
     [SerializeField] private GameObject jetPosition;
     private const float FlyingPosition = 4.65f;
     private const float OffsetFromGround = 0.65f;
-    private const float AsscendingSpeed = 5;
+    private const float AsscendingSpeed = 0.05f;
     private const float ZeroPosition = 0;
     private JetController jetOnBack;
     private Collider playerCollider;
@@ -26,10 +27,12 @@ public class PlayerJetHandler : MonoBehaviour
     {
         if (playerMovement.IsMovementEnabled())
             ContinueJetCoroutine();
+        else
+            PauseJetCoroutine();
 
         if (jetOnBack?.HasJet == false && isInAir)
         {
-            StartCoroutine(SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.localPosition.x, ZeroPosition + OffsetFromGround, transform.localPosition.z)));
+            SlowlyStartOrStopFlying(Vector3.zero, new Vector3(transform.localPosition.x, ZeroPosition + OffsetFromGround, transform.localPosition.z));
             jetOnBack = null;
         }
     }
@@ -40,12 +43,18 @@ public class PlayerJetHandler : MonoBehaviour
             jetOnBack.UnpauseCoroutine();
     }
 
-    public IEnumerator SlowlyStartOrStopFlying(Vector3 endRotation, Vector3 endPosition)
+    private void PauseJetCoroutine()
+    {
+        if (jetOnBack != null)
+            jetOnBack.PauseCoroutine();
+    }
+
+    public void SlowlyStartOrStopFlying(Vector3 endRotation, Vector3 endPosition)
     {
         isInAir = !isInAir;
         playerCollider.enabled = false;
 
-        Vector3 startPos = transform.localPosition;
+        Vector3 startPos = transform.position;
         Vector3 startRotation = transform.rotation.eulerAngles;
         Quaternion startQuaternion = Quaternion.Euler(startRotation);
         Quaternion endQuaternion = Quaternion.Euler(endRotation);
@@ -58,13 +67,11 @@ public class PlayerJetHandler : MonoBehaviour
             transform.localRotation = Quaternion.Slerp(startQuaternion, endQuaternion, 1 - (remainingDistance / distance));
 
             remainingDistance -= AsscendingSpeed * Time.deltaTime;
-
-            yield return null;
         }
 
         playerCollider.enabled = true;
-        transform.localPosition = endPosition;
-        transform.eulerAngles = endRotation;
+        transform.position = endPosition;
+        GetComponent<Rigidbody>().MoveRotation(endQuaternion);
     }
 
     public int CollectJet(JetController collectable)
@@ -74,7 +81,7 @@ public class PlayerJetHandler : MonoBehaviour
         if (jetOnBack == null && !isInAir)
         {
             jetOnBack = jet;
-            StartCoroutine(SlowlyStartOrStopFlying(RotateAroundX, new Vector3(transform.localPosition.x, ZeroPosition + FlyingPosition, transform.localPosition.z)));
+            SlowlyStartOrStopFlying(RotateAroundX, new Vector3(transform.position.x, ZeroPosition + FlyingPosition, transform.position.z));
             jet.MoveOnPlayerBack(this, jetPosition.transform.position);
         }
         else

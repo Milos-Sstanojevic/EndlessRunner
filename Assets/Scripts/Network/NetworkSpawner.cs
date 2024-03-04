@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
@@ -22,7 +23,7 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
     private List<Canvas> playerCanvases = new List<Canvas>();
     private List<MovementManager> movementManagers = new List<MovementManager>();
     private List<PlayerController> playersInGame = new List<PlayerController>();
-
+    public static NetworkInputData BufferedInput = new NetworkInputData();
 
     private void Awake()
     {
@@ -30,6 +31,11 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Instance = this;
         else
             Destroy(Instance.gameObject);
+    }
+
+    private void OnEnable()
+    {
+        // EventManager.Instance.SubscribeToOnPlayerReadyAction(StartGames);
     }
 
     async void StartGame(GameMode mode)
@@ -53,6 +59,7 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         gameObject.AddComponent<RunnerSimulatePhysics3D>();
     }
 
+    //Called when player presses Host button 
     public void EnterAsHost()
     {
         if (runner == null)
@@ -61,13 +68,18 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    //Called when player presses Join button 
     public void EnterAsClient()
     {
         if (runner == null)
         {
             StartGame(GameMode.Client);
+
+            //ovde mozes da proveravas dal neko poksava da se ukljuci tako da mora njegov ready da se ceka
+            //isto ovde treba da aktiviras kanvas sa ready dugmetom
         }
     }
+
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -75,7 +87,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             NetworkObject screen = SplitScreenManager.Instance.SpawnOnlineScreen(runner, player);
             NetworkObject playerOnScreen = SplitScreenManager.Instance.SpawnOnlinePlayer(runner, player);
-            // SplitScreenManager.Instance.InitializeNetworkedScreen(screen.GetComponent<OneScreenController>(), playerOnScreen.GetComponent<PlayerController>());
             SpawnedScreens.Add(player, screen);
             SpawnedPlayers.Add(player, playerOnScreen);
         }
@@ -95,16 +106,12 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
             SpawnedPlayers.Remove(player);
             playerCanvases.Remove(playerOnScreen.GetComponentInChildren<Canvas>());
         }
-
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
     {
-        for (int i = 0; i < screensInGame.Count; i++)
-            screensInGame[i].GetSpawnManagerOfOneScreen().SetSeedForRandomness(Seed + playersInGame[i].PlayerId * 132);
     }
 
-    public static NetworkInputData BufferedInput = new NetworkInputData();
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         input.Set(BufferedInput);
@@ -121,8 +128,31 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         if (screensInGame != null)
             SetupListsForEvents();
+    }
 
-        StartGames();
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_StartGames(int numberOfPlayersReady)
+    {
+        foreach (PlayerController player in playersInGame)
+        {
+            player.IncreaseNumberOfPlayersReady();
+        }
+
+        numberOfPlayersReady++;
+
+        if (numberOfPlayersReady != playersInGame.Count + 1)
+            return;
+
+        WaitForPlayersToBeReady();
+    }
+
+    private void WaitForPlayersToBeReady()
+    {
+        EventManager.Instance.OnNumberOfScreensChanged(screensInGame.ToArray());
+        EventManager.Instance.OnNumberOfScoreScreensChanged(playerCanvases);
+        EventManager.Instance.OnNumberOfMovementManagersChanged(movementManagers);
+        GameManager.Instance.StartGame();
     }
 
 
@@ -196,14 +226,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    private void StartGames()
-    {
-        EventManager.Instance.OnNumberOfScreensChanged(screensInGame.ToArray());
-        EventManager.Instance.OnNumberOfScoreScreensChanged(playerCanvases);
-        EventManager.Instance.OnNumberOfMovementManagersChanged(movementManagers);
-        GameManager.Instance.StartGame();
-    }
-
     private void SetCamerasForPlayers()
     {
         Rect[] rects = SplitScreenManager.Instance.CalculateSplitRectangles(playersInGame.Count);
@@ -229,7 +251,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
     {
-        Debug.Log("TryingToConnect");
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
@@ -239,7 +260,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
-        Debug.Log("PlayerLeftTheServer");
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
