@@ -18,7 +18,6 @@ public class SplitScreenManager : NetworkBehaviour
     [SerializeField] private OneScreenController oneScreenInstance;
     [SerializeField] private Canvas startMenuCanvas;
     [SerializeField] private List<Canvas> playerCanvases;
-    [SerializeField] private GameObject cameraSplitController;
 
     private List<MovementManager> movementManagers = new List<MovementManager>();
 
@@ -38,7 +37,6 @@ public class SplitScreenManager : NetworkBehaviour
         }
     }
 
-
     public NetworkObject SpawnOnlineScreen(NetworkRunner runner, PlayerRef player)
     {
         return runner.Spawn(oneScreenInstancePrefabNetwork, new Vector3(player.PlayerId * SpaceBetweenStages, StagePositionY, StagePositionZ), Quaternion.identity, player);
@@ -51,7 +49,6 @@ public class SplitScreenManager : NetworkBehaviour
 
         return playerOnScreen;
     }
-
 
     public void InitializeNetworkedScreen(OneScreenController screen, PlayerController playerOnScreen)
     {

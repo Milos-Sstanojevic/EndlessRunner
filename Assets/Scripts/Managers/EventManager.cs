@@ -37,6 +37,8 @@ public class EventManager : MonoBehaviour
     private event Action<PlayerController> onPlayerReadyAction;
     private event Action onSetOnlineScreenInactiveAction;
     private event Action onStartGamesAction;
+    private event Action onSetGameToOnlineAction;
+    private event Action onSetGameToOfflineAction;
 
 
     private void Awake()
@@ -49,6 +51,16 @@ public class EventManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SubscribeToOnSetGameToOnlineAction(Action action)
+    {
+        onSetGameToOnlineAction += action;
+    }
+
+    public void SubscribeToOnSetGameToOfflineAction(Action action)
+    {
+        onSetGameToOfflineAction += action;
     }
 
     public void SubscribeToOnStartGamesAction(Action action)
@@ -350,6 +362,26 @@ public class EventManager : MonoBehaviour
     public void UnsubscribeToOnStartGamesAction(Action action)
     {
         onStartGamesAction -= action;
+    }
+
+    public void UnsubscribeToOnSetGameToOnlineAction(Action action)
+    {
+        onSetGameToOnlineAction -= action;
+    }
+
+    public void UnsubscribeToOnSetGameToOfflineAction(Action action)
+    {
+        onSetGameToOfflineAction -= action;
+    }
+
+    public void OnSetGameToOnline()
+    {
+        onSetGameToOnlineAction?.Invoke();
+    }
+
+    public void OnSetGameToOffline()
+    {
+        onSetGameToOfflineAction?.Invoke();
     }
 
     public void OnStartGames()

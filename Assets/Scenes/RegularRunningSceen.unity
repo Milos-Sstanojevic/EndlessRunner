@@ -1872,70 +1872,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1081107745}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &408766940
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 408766941}
-  - component: {fileID: 408766943}
-  - component: {fileID: 408766942}
-  m_Layer: 0
-  m_Name: CameraSplitController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &408766941
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408766940}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 148.1273, y: -29.115854, z: -73.44622}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1950996646}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &408766942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408766940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SortKey: 953328367
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 408766943}
---- !u!114 &408766943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 408766940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3cf9331ffd67fc40a830f5ee070ac18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _screensInGame: []
 --- !u!1 &425346590
 GameObject:
   m_ObjectHideFlags: 0
@@ -10326,10 +10262,9 @@ MonoBehaviour:
     RawGuidValue: a1f07e4a5242ae944a3213ab8ba16e6a
   playerInstancePrefabNetwork:
     RawGuidValue: 7ed98f9a59d8b594ea0e985fa9f8141d
-  oneScreenInstance: {fileID: 6441918331126861878, guid: a1f07e4a5242ae944a3213ab8ba16e6a, type: 3}
+  oneScreenInstance: {fileID: 3428632739542027497, guid: 132da58fe6bc2e74bb04e48fc3319a72, type: 3}
   startMenuCanvas: {fileID: 1691291086}
   playerCanvases: []
-  cameraSplitController: {fileID: 408766940}
   screenInstances: []
 --- !u!114 &1627847480
 MonoBehaviour:
@@ -11658,7 +11593,6 @@ Transform:
   - {fileID: 1627847478}
   - {fileID: 1981790934}
   - {fileID: 820341685}
-  - {fileID: 408766941}
   - {fileID: 645728454}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

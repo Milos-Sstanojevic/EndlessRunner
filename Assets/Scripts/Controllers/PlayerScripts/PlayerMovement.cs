@@ -18,17 +18,46 @@ public class PlayerMovement : NetworkBehaviour
     private float playerStartPositionX;
     private float movementSpeed;
     private PlayerJetHandler jetHandler;
+    private Rigidbody playerRb;
     private bool movementEnabled;
     private Vector2 movementInput = Vector2.zero;
     private bool jumped;
     private bool canJump = true;
-
+    private bool isGameOnline;
 
     private void Awake()
     {
         playerParticleSystem = GetComponent<ParticleSystemManager>();
         playerAnimationHandler = GetComponent<PlayerAnimationHandler>();
         jetHandler = GetComponent<PlayerJetHandler>();
+        playerRb = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        if (!isGameOnline)
+            playerStartPositionX = transform.position.x;
+    }
+
+    public override void Spawned()
+    {
+        SetGameToOnline();
+    }
+
+    private void OnEnable()
+    {
+        EventManager.Instance.SubscribeToOnSetGameToOnlineAction(SetGameToOnline);
+        EventManager.Instance.SubscribeToOnSetGameToOfflineAction(SetGameToOfflline);
+    }
+
+    private void SetGameToOnline()
+    {
+        isGameOnline = true;
+    }
+
+    private void SetGameToOfflline()
+    {
+        isGameOnline = false;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -41,9 +70,24 @@ public class PlayerMovement : NetworkBehaviour
         jumped = context.action.triggered;
     }
 
+    private void Update()
+    {
+        if (isGameOnline)
+            return;
+
+        MovementFunctionsCall();
+    }
+
     public override void FixedUpdateNetwork()
     {
+        if (!isGameOnline)
+            return;
 
+        MovementFunctionsCall();
+    }
+
+    private void MovementFunctionsCall()
+    {
         KeepPlayerOnRoad();
         KeepPlayerInCameraFieldIfHasJet();
 
@@ -57,10 +101,21 @@ public class PlayerMovement : NetworkBehaviour
 
     private void HandlePlayerJumping()
     {
+        if (!isGameOnline && jumped && canJump && !jetHandler.IsInAir())
+            Jump();
+
         if (jumped && canJump && !jetHandler.IsInAir() && GetInput(out NetworkInputData data))
             RPC_HandlePlayerJumping(this, data);
     }
 
+    private void Jump()
+    {
+        playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        playerParticleSystem.PlayJumpingParticleEffect();
+        playerAnimationHandler.PlayJumpAnimation();
+        AudioManager.Instance.PlayJumpSound();
+        canJump = false;
+    }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_HandlePlayerJumping(PlayerMovement playerMovement, NetworkInputData data)
@@ -84,6 +139,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             if (transform.position.z > EdgePositionZWithJet)
                 transform.position = new Vector3(transform.position.x, transform.position.y, EdgePositionZWithJet);
+
             if (transform.position.y <= EdgePositionYWithJet)
                 transform.position = new Vector3(transform.position.x, EdgePositionYWithJet, transform.position.z);
         }
@@ -106,16 +162,27 @@ public class PlayerMovement : NetworkBehaviour
 
     public void MovePlayer()
     {
-        if (GetInput(out NetworkInputData data))
+        if (!isGameOnline)
+        {
+            Move();
+        }
+        else if (GetInput(out NetworkInputData data))
         {
             data.MovementInput = movementInput;
             data.Jumped = jumped;
 
             RPC_MovePlayer(this, data);
 
-            SpinWhileFlying(data.MovementInput.x);
             NetworkSpawner.BufferedInput = data;
         }
+
+        SpinWhileFlying(movementInput.x);
+    }
+
+    private void Move()
+    {
+        transform.Translate(movementInput.x * movementSpeed * Time.deltaTime * Vector3.right, Space.World);
+        transform.Translate(movementSpeed * Time.deltaTime * movementInput.y * Vector3.forward, Space.World);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]

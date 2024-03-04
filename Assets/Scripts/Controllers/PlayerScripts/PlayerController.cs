@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
@@ -7,7 +6,9 @@ public class PlayerController : NetworkBehaviour
     public ScoreManager ScoreManager { get; private set; }
     [SerializeField] private Camera playerCamera;
     [SerializeField] private GameObject readyScreen;
+    [SerializeField] private NetworkObject playerCanvas;
     private bool isPlayerDead;
+    [SerializeField] private bool isGameOnline;
     private PlayerMovement playerMovement;
     private OneScreenController screenOfPlayer;
     [Networked] public int NumberOfPlayersReady { get; set; }
@@ -17,20 +18,40 @@ public class PlayerController : NetworkBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         ScoreManager = GetComponent<ScoreManager>();
-        NetworkSpawner.Instance.RPC_SpawnedPlayer(this);
+        if (isGameOnline)
+            NetworkSpawner.Instance.RPC_SpawnedPlayer(this);
         ScoreManager.Initialize();
-        SetReadyScreenActive();
+    }
+
+    public override void Spawned()
+    {
+        SetGameToOnline();
     }
 
     private void Start()
     {
         Time.timeScale = 1f;
+
+        if (isGameOnline)
+            SetReadyScreenActive();
     }
 
     private void OnEnable()
     {
         EventManager.Instance.SubscribeToStartAddingPointsAction(ScoreManager.StartAddingPoints);
         EventManager.Instance.SubscribeToStopAddingPointsAction(ScoreManager.StopAddingPoints);
+        EventManager.Instance.SubscribeToOnSetGameToOnlineAction(SetGameToOnline);
+        EventManager.Instance.SubscribeToOnSetGameToOfflineAction(SetGameToOffline);
+    }
+
+    private void SetGameToOnline()
+    {
+        isGameOnline = true;
+    }
+
+    private void SetGameToOffline()
+    {
+        isGameOnline = false;
     }
 
     public void PlayerDied()
@@ -38,11 +59,6 @@ public class PlayerController : NetworkBehaviour
         isPlayerDead = true;
     }
 
-    public bool IsPlayerDead() => isPlayerDead;
-
-    public PlayerMovement GetPlayerMovementComponentOfPlayer() => playerMovement;
-
-    public OneScreenController GetScreenOfPlayer() => screenOfPlayer;
     public void SetScreenOfPlayer(OneScreenController screen)
     {
         screenOfPlayer = screen;
@@ -94,17 +110,20 @@ public class PlayerController : NetworkBehaviour
         playerCamera.rect = rect;
     }
 
-    public int GetPlayerId() => PlayerId;
+    public void SetCanvasRect()
+    {
+        playerCanvas.gameObject.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvas.gameObject.GetComponent<RectTransform>().rect.width / 2);
+    }
 
     public void SetPlayerId(int id)
     {
         PlayerId = id;
     }
 
-    public void StartGame(List<OneScreenController> screensInGame, List<Canvas> playerCanvases, List<MovementManager> movementManagers)
-    {
-
-    }
+    public int GetPlayerId() => PlayerId;
+    public bool IsPlayerDead() => isPlayerDead;
+    public PlayerMovement GetPlayerMovementComponentOfPlayer() => playerMovement;
+    public OneScreenController GetScreenOfPlayer() => screenOfPlayer;
 
     private void OnDisable()
     {

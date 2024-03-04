@@ -7,16 +7,34 @@ public class OneScreenController : NetworkBehaviour
 {
     [SerializeField] private MovementManager movementManager;
     [SerializeField] private SpawnManager spawnManager;
-    private PlayerController playerController;
+    [SerializeField] private PlayerController playerController;
+    private bool isGameOnline;
+
+    private void OnEnable()
+    {
+        EventManager.Instance.SubscribeToOnSetGameToOnlineAction(SetGameToOnline);
+        EventManager.Instance.SubscribeToOnSetGameToOfflineAction(SetGameToOffline);
+    }
 
     private void Start()
     {
-        NetworkSpawner.Instance.RPC_SpawnedScreen(this);
+        if (isGameOnline)
+            NetworkSpawner.Instance.RPC_SpawnedScreen(this);
     }
 
-    private void OnDestroy()
+    public override void Spawned()
     {
-        NetworkSpawner.Instance.RPC_DespawnedScreen(this);
+        SetGameToOnline();
+    }
+
+    public void SetGameToOnline()
+    {
+        isGameOnline = true;
+    }
+
+    public void SetGameToOffline()
+    {
+        isGameOnline = false;
     }
 
     public void SetPlayerControllerOnScreen(PlayerController player)
@@ -28,4 +46,16 @@ public class OneScreenController : NetworkBehaviour
     public PlayerController GetPlayerControllerInOneScreen() => playerController;
     public List<EnvironmentMovementController> GetEnvironmentMovementControllersInOneScreen() => gameObject.GetComponentsInChildren<EnvironmentMovementController>().ToList();
     public SpawnManager GetSpawnManagerOfOneScreen() => spawnManager;
+
+    private void OnDisable()
+    {
+        EventManager.Instance.UnsubscribeToOnSetGameToOnlineAction(SetGameToOnline);
+        EventManager.Instance.UnsubscribeToOnSetGameToOfflineAction(SetGameToOffline);
+    }
+
+    private void OnDestroy()
+    {
+        if (isGameOnline)
+            NetworkSpawner.Instance.RPC_DespawnedScreen(this);
+    }
 }

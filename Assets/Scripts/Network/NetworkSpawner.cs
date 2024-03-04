@@ -5,6 +5,7 @@ using System.Linq;
 using Fusion;
 using Fusion.Addons.Physics;
 using Fusion.Sockets;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -12,8 +13,6 @@ using UnityEngine.SceneManagement;
 public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     public static NetworkSpawner Instance { get; set; }
-
-    private const int Seed = 22012002;
     private const int TwoPlayers = 2;
     public Dictionary<PlayerRef, NetworkObject> SpawnedScreens = new Dictionary<PlayerRef, NetworkObject>();
     public Dictionary<PlayerRef, NetworkObject> SpawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
@@ -31,11 +30,6 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Instance = this;
         else
             Destroy(Instance.gameObject);
-    }
-
-    private void OnEnable()
-    {
-        // EventManager.Instance.SubscribeToOnPlayerReadyAction(StartGames);
     }
 
     async void StartGame(GameMode mode)
@@ -63,21 +57,14 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void EnterAsHost()
     {
         if (runner == null)
-        {
             StartGame(GameMode.Host);
-        }
     }
 
     //Called when player presses Join button 
     public void EnterAsClient()
     {
         if (runner == null)
-        {
             StartGame(GameMode.Client);
-
-            //ovde mozes da proveravas dal neko poksava da se ukljuci tako da mora njegov ready da se ceka
-            //isto ovde treba da aktiviras kanvas sa ready dugmetom
-        }
     }
 
 
@@ -233,12 +220,9 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         for (int i = 0; i < playersInGame.Count; i++)
         {
             playersInGame[i].SetCameraRect(rects[i]);
-        }
 
-        if (screensInGame.Count == TwoPlayers)
-        {
-            playerCanvases[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[0].GetComponent<RectTransform>().rect.width / 2);
-            playerCanvases[1].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, playerCanvases[1].GetComponent<RectTransform>().rect.width / 2);
+            if (playersInGame.Count == TwoPlayers)
+                playersInGame[i].SetCanvasRect();
         }
     }
 

@@ -12,13 +12,14 @@ public class GameManager : NetworkBehaviour
     private const string NumberOfPlayers = "NumberOfPlayers";
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int gravityModifier;
-    private GameStates CurrentState;
     [SerializeField] private List<MovementManager> movementManagers = new List<MovementManager>();
-    private List<OneScreenController> screensInGame = new List<OneScreenController>();
     [SerializeField] private List<SpawnManager> spawnManagers = new List<SpawnManager>();
+    private List<OneScreenController> screensInGame = new List<OneScreenController>();
+    private GameStates CurrentState;
     private bool canEnableSpawnManagers = true;
     private int numberOfPlayers = 0;
     private int numberOfDeadPlayers = 0;
+    private bool isGameOnline;
 
     private void Awake()
     {
@@ -37,13 +38,17 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
-        // if (PlayerPrefs.GetInt(IsRestarted) == 1)
-        // {
-        //     numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
+        // if (isGameOnline)
+        //     return;
 
-        //     EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
-        //     SplitScreenManager.Instance.Split(numberOfPlayers);
-        // }
+        // if (PlayerPrefs.GetInt(IsRestarted) != 1)
+        //     return;
+
+
+        // numberOfPlayers = PlayerPrefs.GetInt(NumberOfPlayers);
+
+        // EventManager.Instance.OnLoadNumberOfPlayers(numberOfPlayers);
+        // SplitScreenManager.Instance.Split(numberOfPlayers);
     }
 
     private void OnEnable()
@@ -217,15 +222,15 @@ public class GameManager : NetworkBehaviour
         if (!canEnableSpawnManagers)
             return;
 
-        if (spawnManagers != null)
+        if (spawnManagers == null)
+            return;
+
+        foreach (SpawnManager spawnManager in spawnManagers)
         {
-            foreach (SpawnManager spawnManager in spawnManagers)
+            if (spawnManager != null)
             {
-                if (spawnManager != null)
-                {
-                    spawnManager.EnableSpawning();
-                    spawnManager.gameObject.SetActive(true);
-                }
+                spawnManager.EnableSpawning();
+                spawnManager.gameObject.SetActive(true);
             }
         }
         canEnableSpawnManagers = false;
@@ -233,13 +238,13 @@ public class GameManager : NetworkBehaviour
 
     private void DisableSpawnManagers()
     {
-        if (spawnManagers != null)
+        if (spawnManagers == null)
+            return;
+
+        foreach (SpawnManager spawnManager in spawnManagers)
         {
-            foreach (SpawnManager spawnManager in spawnManagers)
-            {
-                spawnManager.DisableSpawning();
-                spawnManager.gameObject.SetActive(false);
-            }
+            spawnManager.DisableSpawning();
+            spawnManager.gameObject.SetActive(false);
         }
         canEnableSpawnManagers = true;
     }
@@ -247,26 +252,28 @@ public class GameManager : NetworkBehaviour
     //Bind with Unity event, on start game button
     public void StartGame()
     {
-        // if (PlayerPrefs.GetInt(IsRestarted) == 0 || PlayerPrefs.GetInt(NumberOfPlayers) != numberOfPlayers)
-        EventManager.Instance.OnNumberOfPlayersChosen();
-        // else
-        //     PlayerPrefs.SetInt(IsRestarted, 0);
-        // StartCoroutine(StartPlaying());
-        uiManager.SetScoreScreenActive();
-        uiManager.SetNumberOfPlayersScreenInactive();
-        // uiManager.SetOnlinePanelInactive();
-        EventManager.Instance.StartAddingPoints();
-        SetGameState(GameStates.Playing);
+        if (PlayerPrefs.GetInt(IsRestarted) == 0 || PlayerPrefs.GetInt(NumberOfPlayers) != numberOfPlayers || isGameOnline)
+            EventManager.Instance.OnNumberOfPlayersChosen();
+        else
+            PlayerPrefs.SetInt(IsRestarted, 0);
+        if (!isGameOnline)
+            StartCoroutine(StartPlaying());
+        else
+        {
+            uiManager.SetScoreScreenActive();
+            uiManager.SetNumberOfPlayersScreenInactive();
+            EventManager.Instance.StartAddingPoints();
+            SetGameState(GameStates.Playing);
+        }
     }
 
     private IEnumerator StartPlaying()
     {
         yield return new WaitForEndOfFrame();
-        // SetGameState(GameStates.Playing);
-        // uiManager.SetScoreScreenActive();
-        // uiManager.SetNumberOfPlayersScreenInactive();
-        // uiManager.SetOnlinePanelInactive();
-        // EventManager.Instance.StartAddingPoints();
+        SetGameState(GameStates.Playing);
+        uiManager.SetScoreScreenActive();
+        uiManager.SetNumberOfPlayersScreenInactive();
+        EventManager.Instance.StartAddingPoints();
     }
 
     public void OpenNumberOfPlayersScreen()
@@ -321,12 +328,20 @@ public class GameManager : NetworkBehaviour
     //Go to online pannel when Online button is pressed
     public void OpenOnlinePannel()
     {
+        isGameOnline = true;
+        EventManager.Instance.OnSetGameToOnline();
+
         uiManager.OpenOnlinePannel();
     }
 
     //Go back to main menu from Online menu when Back button is pressed
     public void GoBackToMainMenu()
     {
+        if (isGameOnline)
+        {
+            isGameOnline = false;
+            EventManager.Instance.OnSetGameToOffline();
+        }
         uiManager.GoBackToMainMenu();
     }
 
@@ -352,7 +367,6 @@ public class GameManager : NetworkBehaviour
         PlayerPrefs.SetInt(NumberOfPlayers, 1);
     }
 }
-
 
 public enum GameStates
 {

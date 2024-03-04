@@ -6,11 +6,14 @@ public class UINumberOfPlayersController : MonoBehaviour
     private const int MinimumNumberOfPlayers = 1;
     private const int MaximumNumberOfPlayers = 4;
     private int currentNumber = 1;
+    private bool isGameOnline;
 
     private void OnEnable()
     {
         EventManager.Instance.SubscribeToOnLoadNumberOfPlayersFromStart(SetNumberOfPlayers);
         EventManager.Instance.SubscribeToOnNumberOfPlayersChosen(SaveNumberOfPlayers);
+        EventManager.Instance.SubscribeToOnSetGameToOnlineAction(SetGameToOnline);
+        EventManager.Instance.SubscribeToOnSetGameToOfflineAction(SetGameToOffline);
     }
 
     private void SetNumberOfPlayers(int number)
@@ -44,7 +47,8 @@ public class UINumberOfPlayersController : MonoBehaviour
     {
         PlayerPrefs.SetInt(NumberOfPlayers, currentNumber);
         EventManager.Instance.OnNumberOfPlayersSaved();
-        // SplitScreenManager.Instance.Split(currentNumber);
+        if (!isGameOnline)
+            SplitScreenManager.Instance.Split(currentNumber);
     }
 
     // Update the UI text with the current number
@@ -53,9 +57,21 @@ public class UINumberOfPlayersController : MonoBehaviour
         EventManager.Instance.OnNumberOfPlayersChanged(currentNumber);
     }
 
+    public void SetGameToOnline()
+    {
+        isGameOnline = true;
+    }
+
+    public void SetGameToOffline()
+    {
+        isGameOnline = false;
+    }
 
     private void OnDisable()
     {
         EventManager.Instance.UnsubscribeFromOnNumberOfPlayersChosen(SaveNumberOfPlayers);
+        EventManager.Instance.UnsubscribeFromOnLoadNumberOfPlayersFromStart(SetNumberOfPlayers);
+        EventManager.Instance.UnsubscribeToOnSetGameToOnlineAction(SetGameToOnline);
+        EventManager.Instance.UnsubscribeToOnSetGameToOfflineAction(SetGameToOffline);
     }
 }
